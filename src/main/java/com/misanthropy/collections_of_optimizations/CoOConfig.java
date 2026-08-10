@@ -31,6 +31,11 @@ public final class CoOConfig {
     public static boolean geckolibCacheBoneLookup = true;
 
     public static boolean saintsdragonsSkipRedundantBoneTracking = true;
+    public static boolean saintsdragonsCacheShakeScan = true;
+
+    public static boolean immediatelyfastSingleBufferLookup = true;
+
+    public static int fancymenuSeamlessCaptureInterval = 30;
 
     public static boolean emfDropZeroAngerEntries = true;
 
@@ -86,6 +91,7 @@ public final class CoOConfig {
     public static boolean konweaponSkipItemAnimationCopies = true;
     public static boolean immersiveaircraftBatchOverlay = true;
     public static boolean ftbchunksSkipHiddenMinimapWork = true;
+    public static boolean ftbchunksFastRegionWrite = true;
     public static boolean punchyCacheResourceStackMisses = true;
     public static boolean l2hostilitySkipTraitlessCapLookup = true;
     public static boolean iceandfireFastEntityDataLookup = true;
@@ -106,10 +112,22 @@ public final class CoOConfig {
     public static boolean mowziesmobsHoistChainRenderMatrix = true;
     public static int mowziesmobsDynamicChainSubstepCap = 4;
     public static boolean mowziesmobsCacheUmvuthanaLeader = true;
+    public static boolean mowziesmobsLeanModelBoxVectors = true;
+    public static boolean mowziesmobsSkipBlankElokosaTransform = true;
+    public static boolean mowziesmobsLeanLayerBoneScan = true;
+    public static boolean mowziesmobsCacheEffectRenderTypes = true;
+    public static boolean pickupnotifierSkipOpaqueSpriteBuffer = true;
+    public static boolean placeboSkipEmptyEnchantmentEvent = true;
+
+    public static boolean photonLeanParticleQuads = true;
+    public static boolean photonLeanParticleLight = true;
+    public static boolean photonLeanTrailVertices = true;
+    public static boolean photonDropEmptyEffectCacheEntries = true;
     public static boolean integratedapiSkipEmptyBeardifier = true;
     public static boolean echelonCacheTierAttributeUuids = true;
     public static boolean elysiumapiMemoClimateSample = true;
     public static boolean elysiumapiSkipUnusedBiomeReplacerLookup = true;
+    public static boolean enigmaticdiceFastCurioMiss = true;
     public static boolean balmMemoDynamicModelKeys = true;
 
     public static boolean dungeoncrawlSkipBlockEntityProbe = true;
@@ -159,6 +177,7 @@ public final class CoOConfig {
 
     public static boolean alexscavesMemoRareBiomeQuads = true;
     public static boolean alexscavesMemoClimateSample = true;
+    public static boolean alexscavesCacheShakeScan = true;
 
     public static boolean adastraMemoPlanetDefaults = true;
 
@@ -170,6 +189,8 @@ public final class CoOConfig {
     public static boolean vanillaLeanSuffocationScan = true;
     public static boolean vanillaLeanMenuBroadcast = true;
     public static boolean vanillaLeanTrackerDelta = true;
+    public static boolean vanillaCacheBiomeQuartLookups = true;
+    public static boolean vanillaMemoCameraFluid = true;
 
     private final ForgeConfigSpec.BooleanValue masterEnabledValue;
 
@@ -193,6 +214,11 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue geckolibCacheBoneLookupValue;
 
     private final ForgeConfigSpec.BooleanValue saintsdragonsSkipRedundantBoneTrackingValue;
+    private final ForgeConfigSpec.BooleanValue saintsdragonsCacheShakeScanValue;
+
+    private final ForgeConfigSpec.BooleanValue immediatelyfastSingleBufferLookupValue;
+
+    private final ForgeConfigSpec.IntValue fancymenuSeamlessCaptureIntervalValue;
 
     private final ForgeConfigSpec.BooleanValue emfDropZeroAngerEntriesValue;
 
@@ -248,6 +274,7 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue konweaponSkipItemAnimationCopiesValue;
     private final ForgeConfigSpec.BooleanValue immersiveaircraftBatchOverlayValue;
     private final ForgeConfigSpec.BooleanValue ftbchunksSkipHiddenMinimapWorkValue;
+    private final ForgeConfigSpec.BooleanValue ftbchunksFastRegionWriteValue;
     private final ForgeConfigSpec.BooleanValue punchyCacheResourceStackMissesValue;
     private final ForgeConfigSpec.BooleanValue l2hostilitySkipTraitlessCapLookupValue;
     private final ForgeConfigSpec.BooleanValue iceandfireFastEntityDataLookupValue;
@@ -268,10 +295,21 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue mowziesmobsHoistChainRenderMatrixValue;
     private final ForgeConfigSpec.IntValue mowziesmobsDynamicChainSubstepCapValue;
     private final ForgeConfigSpec.BooleanValue mowziesmobsCacheUmvuthanaLeaderValue;
+    private final ForgeConfigSpec.BooleanValue mowziesmobsLeanModelBoxVectorsValue;
+    private final ForgeConfigSpec.BooleanValue mowziesmobsSkipBlankElokosaTransformValue;
+    private final ForgeConfigSpec.BooleanValue mowziesmobsLeanLayerBoneScanValue;
+    private final ForgeConfigSpec.BooleanValue mowziesmobsCacheEffectRenderTypesValue;
+    private final ForgeConfigSpec.BooleanValue pickupnotifierSkipOpaqueSpriteBufferValue;
+    private final ForgeConfigSpec.BooleanValue placeboSkipEmptyEnchantmentEventValue;
+    private final ForgeConfigSpec.BooleanValue photonLeanParticleQuadsValue;
+    private final ForgeConfigSpec.BooleanValue photonLeanParticleLightValue;
+    private final ForgeConfigSpec.BooleanValue photonLeanTrailVerticesValue;
+    private final ForgeConfigSpec.BooleanValue photonDropEmptyEffectCacheEntriesValue;
     private final ForgeConfigSpec.BooleanValue integratedapiSkipEmptyBeardifierValue;
     private final ForgeConfigSpec.BooleanValue echelonCacheTierAttributeUuidsValue;
     private final ForgeConfigSpec.BooleanValue elysiumapiMemoClimateSampleValue;
     private final ForgeConfigSpec.BooleanValue elysiumapiSkipUnusedBiomeReplacerLookupValue;
+    private final ForgeConfigSpec.BooleanValue enigmaticdiceFastCurioMissValue;
     private final ForgeConfigSpec.BooleanValue balmMemoDynamicModelKeysValue;
 
     private final ForgeConfigSpec.BooleanValue dungeoncrawlSkipBlockEntityProbeValue;
@@ -321,6 +359,7 @@ public final class CoOConfig {
 
     private final ForgeConfigSpec.BooleanValue alexscavesMemoRareBiomeQuadsValue;
     private final ForgeConfigSpec.BooleanValue alexscavesMemoClimateSampleValue;
+    private final ForgeConfigSpec.BooleanValue alexscavesCacheShakeScanValue;
 
     private final ForgeConfigSpec.BooleanValue adastraMemoPlanetDefaultsValue;
 
@@ -332,6 +371,8 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue vanillaLeanSuffocationScanValue;
     private final ForgeConfigSpec.BooleanValue vanillaLeanMenuBroadcastValue;
     private final ForgeConfigSpec.BooleanValue vanillaLeanTrackerDeltaValue;
+    private final ForgeConfigSpec.BooleanValue vanillaCacheBiomeQuartLookupsValue;
+    private final ForgeConfigSpec.BooleanValue vanillaMemoCameraFluidValue;
 
     static {
         Pair<CoOConfig, ForgeConfigSpec> pair = new ForgeConfigSpec.Builder().configure(CoOConfig::new);
@@ -411,6 +452,21 @@ public final class CoOConfig {
         this.saintsdragonsSkipRedundantBoneTrackingValue = builder
                 .comment("Enable matrix tracking on a dragon's bones once per model instead of every pass.")
                 .define("skipRedundantBoneTracking", true);
+        this.saintsdragonsCacheShakeScanValue = builder
+                .comment("Look for screen shaking dragons once per tick instead of once per frame.")
+                .define("cacheShakeScan", true);
+        builder.pop();
+
+        builder.comment("ImmediatelyFast patches.").push("immediatelyfast");
+        this.immediatelyfastSingleBufferLookupValue = builder
+                .comment("Find a render layer's buffer with one map lookup instead of a contains check plus a get.")
+                .define("singleBufferLookup", true);
+        builder.pop();
+
+        builder.comment("FancyMenu patches.").push("fancymenu");
+        this.fancymenuSeamlessCaptureIntervalValue = builder
+                .comment("Seconds between seamless world loading screenshots. FancyMenu reads back the whole framebuffer each time, which stalls the render thread. Stock behaviour is 1.")
+                .defineInRange("seamlessCaptureInterval", 30, 1, 600);
         builder.pop();
 
         builder.comment("Entity Model Features patches.").push("emf");
@@ -451,7 +507,7 @@ public final class CoOConfig {
 
         builder.comment("Nature's Aura patches.").push("naturesaura");
         this.naturesauraFastAuraChunkSweepValue = builder
-                .comment("Replace Nature's Aura's once-per-second sweep over every loaded chunk with a leaner equivalent loop.")
+                .comment("Keep each chunk's Nature's Aura capability handle instead of walking the capability dispatcher once per loaded chunk per second.")
                 .define("fastAuraChunkSweep", true);
         builder.pop();
 
@@ -591,6 +647,9 @@ public final class CoOConfig {
         this.ftbchunksSkipHiddenMinimapWorkValue = builder
                 .comment("Stop building the minimap texture when the minimap is not being shown.")
                 .define("skipHiddenMinimapWork", true);
+        this.ftbchunksFastRegionWriteValue = builder
+                .comment("Copy a map region's five images straight into their pixel arrays instead of making 1.3 million per pixel setRGB calls on the calling thread.")
+                .define("fastRegionWrite", true);
         builder.pop();
 
         builder.comment("Punchy patches.").push("punchy");
@@ -666,6 +725,45 @@ public final class CoOConfig {
         this.mowziesmobsCacheUmvuthanaLeaderValue = builder
                 .comment("Stop every Umvuthana follower re-scanning a 64x64x64 region for its leader every tick.")
                 .define("cacheUmvuthanaLeader", true);
+        this.mowziesmobsLeanModelBoxVectorsValue = builder
+                .comment("Reuse one vector pair per cube in Mowzie's llibrary model renderer instead of allocating 30 per cube per frame.")
+                .define("leanModelBoxVectors", true);
+        this.mowziesmobsSkipBlankElokosaTransformValue = builder
+                .comment("Skip the Elokosa transformation layer's full model re-render while it is fully transparent.")
+                .define("skipBlankElokosaTransform", true);
+        this.mowziesmobsLeanLayerBoneScanValue = builder
+                .comment("Test the bone name before pushing a matrix in the Umvuthana and Umvuthi render layers.")
+                .define("leanLayerBoneScan", true);
+        this.mowziesmobsCacheEffectRenderTypesValue = builder
+                .comment("Build the sunstrike, solar beam and solar flare render types once instead of once per entity per frame.")
+                .define("cacheEffectRenderTypes", true);
+        builder.pop();
+
+        builder.comment("Pick Up Notifier patches.").push("pickupnotifier");
+        this.pickupnotifierSkipOpaqueSpriteBufferValue = builder
+                .comment("Draw fully opaque pick-up sprites straight to the screen instead of routing every one through a window sized off-screen render target and a full screen blit.")
+                .define("skipOpaqueSpriteBuffer", true);
+        builder.pop();
+
+        builder.comment("Placebo patches.").push("placebo");
+        this.placeboSkipEmptyEnchantmentEventValue = builder
+                .comment("Skip the HashMap, event object and event bus dispatch Placebo builds on every single ItemStack enchantment level lookup while nothing is listening to GetEnchantmentLevelEvent.")
+                .define("skipEmptyEnchantmentEvent", true);
+        builder.pop();
+
+        builder.comment("Photon patches.").push("photon");
+        this.photonLeanParticleQuadsValue = builder
+                .comment("Emit billboard particle vertices from reusable scratch vectors instead of allocating around ten JOML objects per particle per frame.")
+                .define("leanParticleQuads", true);
+        this.photonLeanParticleLightValue = builder
+                .comment("Reuse the particle's block position for the per tick light lookup while it stays inside the same block.")
+                .define("leanParticleLight", true);
+        this.photonLeanTrailVerticesValue = builder
+                .comment("Build trail ribbons from float locals instead of allocating about ten vectors per trail segment per frame.")
+                .define("leanTrailVertices", true);
+        this.photonDropEmptyEffectCacheEntriesValue = builder
+                .comment("Drop the emptied block effect cache entry instead of leaving one map entry and one empty list per block position for the rest of the session.")
+                .define("dropEmptyEffectCacheEntries", true);
         builder.pop();
 
         builder.comment("Integrated API patches.").push("integratedapi");
@@ -687,6 +785,12 @@ public final class CoOConfig {
         this.elysiumapiSkipUnusedBiomeReplacerLookupValue = builder
                 .comment("Skip Elysium API's duplicate biome resolution entirely when no biome replacer exists.")
                 .define("skipUnusedBiomeReplacerLookup", true);
+        builder.pop();
+
+        builder.comment("Enigmatic Dice patches.").push("enigmaticdice");
+        this.enigmaticdiceFastCurioMissValue = builder
+                .comment("Answer the isWearing checks for the Moai Charm, Ring of Agility and Divine Shield from the per-tick curio set.")
+                .define("fastCurioMiss", true);
         builder.pop();
 
         builder.comment("Balm patches.").push("balm");
@@ -841,6 +945,9 @@ public final class CoOConfig {
         this.alexscavesMemoClimateSampleValue = builder
                 .comment("Answer Alex's Caves' duplicate climate sample from a one entry cache.")
                 .define("memoClimateSample", true);
+        this.alexscavesCacheShakeScanValue = builder
+                .comment("Look for screen shaking mobs once per tick instead of once per frame.")
+                .define("cacheShakeScan", true);
         builder.pop();
 
         builder.comment("Ad Astra patches.").push("adastra");
@@ -874,6 +981,12 @@ public final class CoOConfig {
         this.vanillaLeanTrackerDeltaValue = builder
                 .comment("Stop the entity tracker allocating a movement vector for entities that did not move.")
                 .define("leanTrackerDelta", true);
+        this.vanillaCacheBiomeQuartLookupsValue = builder
+                .comment("Answer repeated biome lookups on the render thread from a small per tick cache. Fog and sky colour sample 27 biomes per call, several times a frame.")
+                .define("cacheBiomeQuartLookups", true);
+        this.vanillaMemoCameraFluidValue = builder
+                .comment("Work out what fluid the camera is in once per camera position instead of once per caller.")
+                .define("memoCameraFluid", true);
         builder.pop();
     }
 
@@ -905,6 +1018,9 @@ public final class CoOConfig {
         geckolibReuseRenderVectors = masterEnabled && VALUES.geckolibReuseRenderVectorsValue.get();
         geckolibCacheBoneLookup = masterEnabled && VALUES.geckolibCacheBoneLookupValue.get();
         saintsdragonsSkipRedundantBoneTracking = masterEnabled && VALUES.saintsdragonsSkipRedundantBoneTrackingValue.get();
+        saintsdragonsCacheShakeScan = masterEnabled && VALUES.saintsdragonsCacheShakeScanValue.get();
+        immediatelyfastSingleBufferLookup = masterEnabled && VALUES.immediatelyfastSingleBufferLookupValue.get();
+        fancymenuSeamlessCaptureInterval = masterEnabled ? VALUES.fancymenuSeamlessCaptureIntervalValue.get() : 1;
         emfDropZeroAngerEntries = masterEnabled && VALUES.emfDropZeroAngerEntriesValue.get();
         etfFastValidPath = masterEnabled && VALUES.etfFastValidPathValue.get();
         oculusSkipSignTextInShadowPass = masterEnabled && VALUES.oculusSkipSignTextInShadowPassValue.get();
@@ -945,6 +1061,7 @@ public final class CoOConfig {
         konweaponSkipItemAnimationCopies = masterEnabled && VALUES.konweaponSkipItemAnimationCopiesValue.get();
         immersiveaircraftBatchOverlay = masterEnabled && VALUES.immersiveaircraftBatchOverlayValue.get();
         ftbchunksSkipHiddenMinimapWork = masterEnabled && VALUES.ftbchunksSkipHiddenMinimapWorkValue.get();
+        ftbchunksFastRegionWrite = masterEnabled && VALUES.ftbchunksFastRegionWriteValue.get();
         punchyCacheResourceStackMisses = masterEnabled && VALUES.punchyCacheResourceStackMissesValue.get();
         l2hostilitySkipTraitlessCapLookup = masterEnabled && VALUES.l2hostilitySkipTraitlessCapLookupValue.get();
         iceandfireFastEntityDataLookup = masterEnabled && VALUES.iceandfireFastEntityDataLookupValue.get();
@@ -965,10 +1082,21 @@ public final class CoOConfig {
         mowziesmobsHoistChainRenderMatrix = masterEnabled && VALUES.mowziesmobsHoistChainRenderMatrixValue.get();
         mowziesmobsDynamicChainSubstepCap = masterEnabled ? VALUES.mowziesmobsDynamicChainSubstepCapValue.get() : 0;
         mowziesmobsCacheUmvuthanaLeader = masterEnabled && VALUES.mowziesmobsCacheUmvuthanaLeaderValue.get();
+        mowziesmobsLeanModelBoxVectors = masterEnabled && VALUES.mowziesmobsLeanModelBoxVectorsValue.get();
+        mowziesmobsSkipBlankElokosaTransform = masterEnabled && VALUES.mowziesmobsSkipBlankElokosaTransformValue.get();
+        mowziesmobsLeanLayerBoneScan = masterEnabled && VALUES.mowziesmobsLeanLayerBoneScanValue.get();
+        mowziesmobsCacheEffectRenderTypes = masterEnabled && VALUES.mowziesmobsCacheEffectRenderTypesValue.get();
+        pickupnotifierSkipOpaqueSpriteBuffer = masterEnabled && VALUES.pickupnotifierSkipOpaqueSpriteBufferValue.get();
+        placeboSkipEmptyEnchantmentEvent = masterEnabled && VALUES.placeboSkipEmptyEnchantmentEventValue.get();
+        photonLeanParticleQuads = masterEnabled && VALUES.photonLeanParticleQuadsValue.get();
+        photonLeanParticleLight = masterEnabled && VALUES.photonLeanParticleLightValue.get();
+        photonLeanTrailVertices = masterEnabled && VALUES.photonLeanTrailVerticesValue.get();
+        photonDropEmptyEffectCacheEntries = masterEnabled && VALUES.photonDropEmptyEffectCacheEntriesValue.get();
         integratedapiSkipEmptyBeardifier = masterEnabled && VALUES.integratedapiSkipEmptyBeardifierValue.get();
         echelonCacheTierAttributeUuids = masterEnabled && VALUES.echelonCacheTierAttributeUuidsValue.get();
         elysiumapiMemoClimateSample = masterEnabled && VALUES.elysiumapiMemoClimateSampleValue.get();
         elysiumapiSkipUnusedBiomeReplacerLookup = masterEnabled && VALUES.elysiumapiSkipUnusedBiomeReplacerLookupValue.get();
+        enigmaticdiceFastCurioMiss = masterEnabled && VALUES.enigmaticdiceFastCurioMissValue.get();
         balmMemoDynamicModelKeys = masterEnabled && VALUES.balmMemoDynamicModelKeysValue.get();
         dungeoncrawlSkipBlockEntityProbe = masterEnabled && VALUES.dungeoncrawlSkipBlockEntityProbeValue.get();
         moonlightSkipEmptyMapMarkerScan = masterEnabled && VALUES.moonlightSkipEmptyMapMarkerScanValue.get();
@@ -1005,6 +1133,7 @@ public final class CoOConfig {
         alexsmobsReleaseLevelMaps = masterEnabled && VALUES.alexsmobsReleaseLevelMapsValue.get();
         alexscavesMemoRareBiomeQuads = masterEnabled && VALUES.alexscavesMemoRareBiomeQuadsValue.get();
         alexscavesMemoClimateSample = masterEnabled && VALUES.alexscavesMemoClimateSampleValue.get();
+        alexscavesCacheShakeScan = masterEnabled && VALUES.alexscavesCacheShakeScanValue.get();
         adastraMemoPlanetDefaults = masterEnabled && VALUES.adastraMemoPlanetDefaultsValue.get();
         itemEntityRenderCap = masterEnabled ? VALUES.itemEntityRenderCapValue.get() : 0;
         vanillaFasterStructureLocation = masterEnabled && VALUES.vanillaFasterStructureLocationValue.get();
@@ -1014,5 +1143,7 @@ public final class CoOConfig {
         vanillaLeanSuffocationScan = masterEnabled && VALUES.vanillaLeanSuffocationScanValue.get();
         vanillaLeanMenuBroadcast = masterEnabled && VALUES.vanillaLeanMenuBroadcastValue.get();
         vanillaLeanTrackerDelta = masterEnabled && VALUES.vanillaLeanTrackerDeltaValue.get();
+        vanillaCacheBiomeQuartLookups = masterEnabled && VALUES.vanillaCacheBiomeQuartLookupsValue.get();
+        vanillaMemoCameraFluid = masterEnabled && VALUES.vanillaMemoCameraFluidValue.get();
     }
 }

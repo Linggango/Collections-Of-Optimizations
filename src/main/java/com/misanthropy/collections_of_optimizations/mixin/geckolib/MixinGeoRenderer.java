@@ -15,10 +15,6 @@ import software.bernie.geckolib.renderer.GeoRenderer;
 @Mixin(value = GeoRenderer.class, remap = false)
 public interface MixinGeoRenderer {
 
-    /**
-     * @author Misanthropy
-     * @reason Removes one Vector4f allocation per model vertex per frame
-     */
     @Overwrite(remap = false)
     default void createVerticesOfQuad(GeoQuad quad, Matrix4f poseState, Vector3f normal, VertexConsumer buffer,
                                       int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {

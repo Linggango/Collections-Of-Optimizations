@@ -44,11 +44,13 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("bloodmagic", "bloodmagic"),
             Map.entry("animus", "animus"),
             Map.entry("patchouli", "patchouli"),
+            Map.entry("placebo", "placebo"),
             Map.entry("punchy", "punchy"),
             Map.entry("l2hostility", "l2hostility"),
             Map.entry("integratedapi", "integrated_api"),
             Map.entry("elysiumapi", "elysium_api"),
             Map.entry("echelon", "tiered"),
+            Map.entry("enigmaticdice", "enigmaticdice"),
             Map.entry("balm", "balm"),
             Map.entry("macabre", "macabre"),
             Map.entry("alexsmobs", "alexsmobs"),
@@ -67,7 +69,11 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("etf", "entity_texture_features"),
             Map.entry("iceandfire", "iceandfire"),
             Map.entry("iafdragonfix", "iceandfire"),
-            Map.entry("mowziesmobs", "mowziesmobs")
+            Map.entry("mowziesmobs", "mowziesmobs"),
+            Map.entry("pickupnotifier", "pickupnotifier"),
+            Map.entry("photon", "photon"),
+            Map.entry("immediatelyfast", "immediatelyfast"),
+            Map.entry("fancymenu", "fancymenu")
     );
 
     private static final Map<String, String[]> GROUP_CONFLICTS = Map.of(

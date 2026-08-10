@@ -12,29 +12,25 @@ import org.spongepowered.asm.mixin.Unique;
 public abstract class MixinLevelChunkAuraCache implements AuraChunkHolder {
 
     @Unique
-    private Object coo$auraChunk;
+    private LazyOptional<?> coo$auraChunkCap;
 
     @Unique
-    private boolean coo$auraChunkResolved;
+    private boolean coo$auraChunkCapResolved;
 
     @Override
-    public Object coo$auraChunk() {
-        if (this.coo$auraChunkResolved) {
-            return this.coo$auraChunk;
+    public LazyOptional<?> coo$auraChunkCap() {
+        if (this.coo$auraChunkCapResolved) {
+            return this.coo$auraChunkCap;
         }
 
-        LazyOptional<IAuraChunk> optional =
+        LazyOptional<IAuraChunk> resolved =
                 ((LevelChunk) (Object) this).getCapability(NaturesAuraAPI.CAP_AURA_CHUNK, null);
-        IAuraChunk resolved = optional.orElse(null);
-        this.coo$auraChunk = resolved;
-        this.coo$auraChunkResolved = true;
-
-        if (resolved != null) {
-            optional.addListener(ignored -> {
-                this.coo$auraChunk = null;
-                this.coo$auraChunkResolved = false;
-            });
-        }
+        this.coo$auraChunkCap = resolved;
+        this.coo$auraChunkCapResolved = true;
+        resolved.addListener(ignored -> {
+            this.coo$auraChunkCap = null;
+            this.coo$auraChunkCapResolved = false;
+        });
         return resolved;
     }
 }

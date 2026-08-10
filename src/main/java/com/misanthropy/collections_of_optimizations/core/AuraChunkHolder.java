@@ -1,6 +1,8 @@
 package com.misanthropy.collections_of_optimizations.core;
 
+import net.minecraftforge.common.util.LazyOptional;
+
 public interface AuraChunkHolder {
 
-    Object coo$auraChunk();
+    LazyOptional<?> coo$auraChunkCap();
 }
