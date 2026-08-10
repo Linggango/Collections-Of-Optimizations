@@ -1,0 +1,15 @@
+.gradle/
+build/
+out/
+.idea/
+*.iml
+*.ipr
+*.iws
+run/
+run-data/
+runs/
+logs/
+libs-compile/
+snippets/
+Thumbs.db
+.DS_Store

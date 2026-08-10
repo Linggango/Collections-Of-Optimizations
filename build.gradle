@@ -1,0 +1,275 @@
+buildscript {
+    repositories {
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
+}
+
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+}
+
+apply plugin: 'org.spongepowered.mixin'
+
+group = mod_group_id
+version = mod_version
+
+base {
+    archivesName = mod_id
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+minecraft {
+    mappings channel: mapping_channel, version: mapping_version
+
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    copyIdeResources = true
+
+
+
+    runs {
+        configureEach {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        client {
+            property 'forge.enabledGameTestNamespaces', mod_id
+        }
+
+        server {
+            property 'forge.enabledGameTestNamespaces', mod_id
+            args '--nogui'
+        }
+
+        gameTestServer {
+            property 'forge.enabledGameTestNamespaces', mod_id
+        }
+
+        data {
+            workingDirectory project.file('run-data')
+
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+        }
+    }
+}
+
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
+
+    config "${mod_id}.mixins.json"
+}
+
+afterEvaluate {
+    tasks.withType(JavaExec).matching { it.name.startsWith('run') }.configureEach {
+        classpath sourceSets.main.output.resourcesDir
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    flatDir {
+        dir 'libs'
+    }
+    mavenCentral()
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        name "FDD Maven"
+        url "https://maven.firstdark.dev/releases"
+    }
+    maven {
+        name "Architectury"
+        url "https://maven.architectury.dev/"
+    }
+    maven {
+        name "Shedaniel"
+        url "https://maven.shedaniel.me/"
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.7:processor'
+
+    implementation("org.jspecify:jspecify:1.0.0")
+
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.4"))
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:[0.5.4,)")) {
+        jarJar.ranged(it, "[0.5.4,)")
+    }
+    implementation fg.deobf("curse.maven:curios-309927:6418456")
+    implementation fg.deobf("curse.maven:artifacts-312353:7903806")
+    implementation fg.deobf("curse.maven:caelus-308989:5281700")
+    implementation fg.deobf("curse.maven:lootr-361276:7263076")
+    implementation fg.deobf("curse.maven:mekalus-oculus-fork-with-fixed-mekanism-mekasuit-1130957:6994299")
+    runtimeOnly fg.deobf("dev.architectury:architectury-forge:9.2.14")
+    runtimeOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:11.1.136")
+    implementation fg.deobf("curse.maven:block-swap-468893:4598162")
+    implementation fg.deobf("curse.maven:just-dire-things-forge-1533501:8520551")
+    implementation fg.deobf("curse.maven:farmers-delight-398521:7953735")
+    implementation fg.deobf("curse.maven:goety-586095:8443949")
+    implementation fg.deobf("curse.maven:goety-delight-1363736:8445609")
+    implementation fg.deobf("curse.maven:geckolib-388172:8285794")
+    implementation fg.deobf("curse.maven:embeddium-908741:5681725")
+    implementation fg.deobf("curse.maven:cupboard-326652:8382158")
+    implementation fg.deobf("curse.maven:natures-aura-306626:4963590")
+    implementation fg.deobf("curse.maven:macabre-933001:6442644")
+    implementation fg.deobf("curse.maven:balm-531761:8404830")
+    implementation fg.deobf("curse.maven:patchouli-306770:7731017")
+    implementation fg.deobf("curse.maven:blood-magic-224791:8516586")
+    implementation fg.deobf("curse.maven:animus-229664:8427262")
+    implementation fg.deobf("curse.maven:kubejs-238086:8020595")
+    implementation fg.deobf("curse.maven:rhino-416294:6186971")
+    implementation fg.deobf("curse.maven:xaeros-minimap-263420:8449808")
+    implementation fg.deobf("curse.maven:xaeros-world-map-317780:8449908")
+    implementation fg.deobf("curse.maven:xaeros-minimap-world-map-waystones-compability-887484:4637926")
+    implementation fg.deobf("curse.maven:waystones-245755:7682270")
+    implementation fg.deobf("curse.maven:terrablender-563928:6290448")
+    implementation fg.deobf("curse.maven:terramity-1084134:6054971")
+    implementation fg.deobf("curse.maven:mariums-soulslike-weaponry-632066:8302956")
+    implementation fg.deobf("curse.maven:immersive-aircraft-666014:8213149")
+    implementation fg.deobf("curse.maven:ftb-chunks-forge-314906:8216874")
+    implementation fg.deobf("curse.maven:ftb-library-forge-404465:8226927")
+    implementation fg.deobf("curse.maven:ftb-ranks-forge-314905:6522073")
+    implementation fg.deobf("curse.maven:ftb-teams-forge-404468:7499810")
+    implementation fg.deobf("curse.maven:structurify-1087551:8521816")
+    implementation fg.deobf("curse.maven:yacl-667299:6336646")
+    implementation fg.deobf("curse.maven:alexs-mobs-426558:5698791")
+    implementation fg.deobf("curse.maven:attributefix-280510:7612291")
+    implementation fg.deobf("curse.maven:alexs-caves-924854:5848216")
+    implementation fg.deobf("curse.maven:ad-astra-635042:6262032")
+    implementation fg.deobf("curse.maven:expandability-465066:5301414")
+    implementation fg.deobf("curse.maven:integrated-api-817709:7921671")
+    implementation fg.deobf("curse.maven:elysium-api-1158628:6589093")
+    implementation fg.deobf("curse.maven:echelon-linggango-variant-1401279:7832714")
+    implementation("org.apache.commons:commons-compress:1.28.0")
+    implementation 'commons-io:commons-io:2.15.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.25.4'
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
+    implementation 'org.codehaus.plexus:plexus-utils:4.0.3'
+    implementation 'io.netty:netty-common:4.1.118.Final'
+    implementation("io.netty:netty-handler:4.2.12.Final")
+    implementation 'io.netty:netty-codec:4.1.125.Final'
+    implementation 'com.google.guava:guava:33.0.0-jre'
+
+    compileOnly files('libs-compile/armageddon-3.0.05.jar')
+    compileOnly files('libs-compile/born_in_chaos-1.7.5.jar')
+    compileOnly files('libs-compile/bossesrise-1.0.9.2b.jar')
+    compileOnly files('libs-compile/kon-weapon-0.1.5.jar')
+    compileOnly files('libs-compile/l2hostility-2.5.19.jar')
+    compileOnly files('libs-compile/brutality-0.8.5-1.20.1.jar')
+    compileOnly files('libs-compile/lithostitched-forge-1.20.1-1.4.11.jar')
+    compileOnly files('libs-compile/GoetyRevelation-2.3.1.jar')
+    compileOnly files('libs-compile/Dungeon Crawl-1.20.1-2.3.15.jar')
+    compileOnly files('libs-compile/Zeta-1.0-31.jar')
+    compileOnly files('libs-compile/Quark-4.0-462.jar')
+    compileOnly files('libs-compile/Perception-FORGE-0.1.4+1.20.1.jar')
+    compileOnly files('libs-compile/pehkui-3.8.2-apionly.jar')
+    compileOnly files('libs-compile/moonlight-2.16.34-apionly.jar')
+    compileOnly files('libs-compile/SubtleEffects-forge-1.20.1-1.14.3.jar')
+    compileOnly files('libs-compile/fzzy_config-0.7.3+1.20.1+forge.jar')
+    compileOnly files('libs-compile/TonsOfEnchants-1.20.1-1.0.jar')
+    compileOnly files('libs-compile/citadel-2.6.3-1.20.1.jar')
+    compileOnly files('libs-compile/iceandfire-2.1.13-1.20.1-beta-5.jar')
+    compileOnly files('libs-compile/mowziesmobs-1.8.2.jar')
+
+    implementation fg.deobf(fileTree(dir: 'libs', include: ['*.jar']))
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
+                             forge_version       : forge_version, forge_version_range: forge_version_range,
+                             loader_version_range: loader_version_range,
+                             mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+                             mod_authors         : mod_authors, mod_description: mod_description,]
+
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes(["Specification-Title"     : mod_id,
+                    "Specification-Vendor"    : mod_authors,
+                    "Specification-Version"   : "1",
+                    "Implementation-Title"    : project.name,
+                    "Implementation-Version"  : project.jar.archiveVersion,
+                    "Implementation-Vendor"   : mod_authors,
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")])
+    }
+
+    finalizedBy 'reobfJar'
+}
+
+// jarJar builds the -all jar, which is the artifact that actually gets installed. ForgeGradle creates
+// reobfJarJar but does not wire it as a finalizer the way it does for jar, so `gradlew clean jar
+// jarJar` happily produces an -all jar still carrying official names: every mixin body would then hit
+// NoSuchMethodError in production and every @Shadow would fail to resolve. Make the reobf step
+// unskippable instead.
+tasks.named('jarJar').configure {
+    finalizedBy 'reobfJarJar'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+// The mixin refmap is what maps the Minecraft member names written in our annotations
+// (official/mojmap, e.g. "getChunks") onto the SRG names the game actually uses in production
+// (e.g. "m_140416_"). collections_of_optimizations.mixins.json declares it by name, but nothing
+// makes the jar task fail when it is absent: on an incremental build where compileJava is
+// UP-TO-DATE, MixinGradle does not regenerate build/tmp/compileJava/*.refmap.json and the jar is
+// silently assembled without it.
+//
+// The resulting jar loads and looks fine, but at runtime every annotation reference to a
+// Minecraft member stays unremapped:
+//   - @Invoker / @Accessor / @Shadow throw and take the target mod's class load down with them
+//     (this is what crashed Nature's Aura via naturesaura.ChunkMapAccessor)
+//   - every @Inject / @At in this project uses require = 0, so those degrade to doing nothing
+//     at all, with no log line above DEBUG to say so
+//
+// So a missing refmap is worse than a build failure. Make it one.
+tasks.matching { it.name == 'reobfJar' }.configureEach {
+    doLast {
+        def jarFile = tasks.named('jar', Jar).get().archiveFile.get().asFile
+        def expected = "${mod_id}.refmap.json"
+        def present = new java.util.zip.ZipFile(jarFile).withCloseable { zip ->
+            zip.getEntry(expected) != null
+        }
+        if (!present) {
+            throw new GradleException(
+                    "${expected} is missing from ${jarFile.name}.\n" +
+                    "Mixin would run with no name remapping: accessors crash, injections silently " +
+                    "no-op.\nRun './gradlew clean jar' to regenerate the refmap.")
+        }
+        logger.lifecycle("Verified ${expected} is packaged in ${jarFile.name}")
+    }
+}

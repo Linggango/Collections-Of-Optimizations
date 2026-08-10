@@ -1,0 +1,15 @@
+{
+  "structures": [
+    { "structure": "collections_of_optimizations:fire_dragon_cave", "weight": 1 },
+    { "structure": "collections_of_optimizations:ice_dragon_cave", "weight": 1 },
+    { "structure": "collections_of_optimizations:lightning_dragon_cave", "weight": 1 }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 8,
+    "salt": 198273645,
+    "frequency": 0.6,
+    "frequency_reduction_method": "default"
+  }
+}

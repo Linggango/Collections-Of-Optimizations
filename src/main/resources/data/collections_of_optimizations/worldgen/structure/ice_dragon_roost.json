@@ -1,0 +1,7 @@
+{
+  "type": "collections_of_optimizations:iaf_dragon_den",
+  "dragon_type": "ice_dragon_roost",
+  "biomes": "#collections_of_optimizations:has_ice_dragon_roost",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}
