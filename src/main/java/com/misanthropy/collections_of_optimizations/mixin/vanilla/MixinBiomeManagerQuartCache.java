@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.misanthropy.collections_of_optimizations.CoOConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
@@ -25,7 +25,7 @@ public abstract class MixinBiomeManagerQuartCache {
     private Holder<Biome>[] coo$quartValues;
 
     @Unique
-    private long coo$quartStamp;
+    private int coo$quartStamp;
 
     @SuppressWarnings("unchecked")
     @WrapMethod(method = "getNoiseBiomeAtQuart(III)Lnet/minecraft/core/Holder;", require = 0)
@@ -33,12 +33,13 @@ public abstract class MixinBiomeManagerQuartCache {
         if (!CoOConfig.vanillaCacheBiomeQuartLookups || !RenderSystem.isOnRenderThread()) {
             return original.call(x, y, z);
         }
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null) {
+
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) {
             return original.call(x, y, z);
         }
 
-        long now = level.getGameTime();
+        int now = player.tickCount;
         Holder<Biome>[] values = this.coo$quartValues;
         if (values == null) {
             values = (Holder<Biome>[]) new Holder[512];

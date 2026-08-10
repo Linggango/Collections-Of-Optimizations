@@ -1,6 +1,10 @@
 package com.misanthropy.collections_of_optimizations.mixin.pehkui;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.misanthropy.collections_of_optimizations.CoOConfig;
+import com.misanthropy.collections_of_optimizations.core.InteractionBoxScaleHolder;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -40,5 +44,35 @@ public abstract class MixinScaleUtils {
         }
 
         ci.cancel();
+    }
+
+    @WrapMethod(method = "getInteractionBoxWidthScale(Lnet/minecraft/world/entity/Entity;)F", require = 0)
+    private static float coo$memoBoxWidthScale(Entity entity, Operation<Float> original) {
+        if (!CoOConfig.pehkuiMemoInteractionBoxScales || entity == null) {
+            return original.call(entity);
+        }
+        InteractionBoxScaleHolder holder = (InteractionBoxScaleHolder) entity;
+        int stamp = entity.tickCount;
+        if (holder.coo$boxWidthStamp() == stamp) {
+            return holder.coo$boxWidthScale();
+        }
+        float width = original.call(entity);
+        holder.coo$storeBoxWidthScale(stamp, width);
+        return width;
+    }
+
+    @WrapMethod(method = "getInteractionBoxHeightScale(Lnet/minecraft/world/entity/Entity;)F", require = 0)
+    private static float coo$memoBoxHeightScale(Entity entity, Operation<Float> original) {
+        if (!CoOConfig.pehkuiMemoInteractionBoxScales || entity == null) {
+            return original.call(entity);
+        }
+        InteractionBoxScaleHolder holder = (InteractionBoxScaleHolder) entity;
+        int stamp = entity.tickCount;
+        if (holder.coo$boxHeightStamp() == stamp) {
+            return holder.coo$boxHeightScale();
+        }
+        float height = original.call(entity);
+        holder.coo$storeBoxHeightScale(stamp, height);
+        return height;
     }
 }

@@ -162,6 +162,14 @@ public final class CoOConfig {
     public static boolean goetyFastEmptyAllyCheck = true;
     public static boolean goetyFastCurioItemMiss = true;
     public static boolean goetySkipBossMusicTargetLookup = true;
+    public static boolean goetyCacheFogWightScan = true;
+
+    public static boolean mythsandlegendsCacheFogBossScan = true;
+    public static boolean mythsandlegendsCacheShakeScan = true;
+
+    public static boolean ambientsoundsMemoBiomeMatch = true;
+    public static int arsnouveauSkyTextureInterval = 1;
+    public static boolean pehkuiMemoInteractionBoxScales = true;
 
     public static boolean goetyrevelationCacheHaloLookup = true;
     public static boolean revelationfixSkipMobFluidStandScan = true;
@@ -344,6 +352,14 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue goetyFastEmptyAllyCheckValue;
     private final ForgeConfigSpec.BooleanValue goetyFastCurioItemMissValue;
     private final ForgeConfigSpec.BooleanValue goetySkipBossMusicTargetLookupValue;
+    private final ForgeConfigSpec.BooleanValue goetyCacheFogWightScanValue;
+
+    private final ForgeConfigSpec.BooleanValue mythsandlegendsCacheFogBossScanValue;
+    private final ForgeConfigSpec.BooleanValue mythsandlegendsCacheShakeScanValue;
+
+    private final ForgeConfigSpec.BooleanValue ambientsoundsMemoBiomeMatchValue;
+    private final ForgeConfigSpec.IntValue arsnouveauSkyTextureIntervalValue;
+    private final ForgeConfigSpec.BooleanValue pehkuiMemoInteractionBoxScalesValue;
 
     private final ForgeConfigSpec.BooleanValue goetyrevelationCacheHaloLookupValue;
     private final ForgeConfigSpec.BooleanValue revelationfixSkipMobFluidStandScanValue;
@@ -809,6 +825,9 @@ public final class CoOConfig {
         this.pehkuiLeanScaleTickValue = builder
                 .comment("Stop allocating two throwaway lambdas per scale type per entity per tick.")
                 .define("leanScaleTick", true);
+        this.pehkuiMemoInteractionBoxScalesValue = builder
+                .comment("Work out an entity's interaction box scales once a tick instead of twice for every entity walked by every AABB query. A scale set part way through a tick is seen on the next one.")
+                .define("memoInteractionBoxScales", true);
         builder.pop();
 
         builder.comment("Tons Of Enchants patches.").push("tonsofenchants");
@@ -896,6 +915,30 @@ public final class CoOConfig {
         this.goetySkipBossMusicTargetLookupValue = builder
                 .comment("Skip the boss music target lookup for entities that have no boss music. Client.")
                 .define("skipBossMusicTargetLookup", true);
+        this.goetyCacheFogWightScanValue = builder
+                .comment("Run the fog listener's Wight#findWight scan once per tick instead of once per posted RenderFog event. Client.")
+                .define("cacheFogWightScan", true);
+        builder.pop();
+
+        builder.comment("Myths and Legends patches.").push("mythsandlegends");
+        this.mythsandlegendsCacheFogBossScanValue = builder
+                .comment("Run the boss scan behind the fog and fog colour listeners once per tick instead of once per posted event. Client.")
+                .define("cacheFogBossScan", true);
+        this.mythsandlegendsCacheShakeScanValue = builder
+                .comment("Run the screen shake entity scan once per tick instead of once per frame. Client.")
+                .define("cacheShakeScan", true);
+        builder.pop();
+
+        builder.comment("AmbientSounds patches.").push("ambientsounds");
+        this.ambientsoundsMemoBiomeMatchValue = builder
+                .comment("Work out whether a biome matches a region's biome patterns once instead of running the regex every client tick. Client.")
+                .define("memoBiomeMatch", true);
+        builder.pop();
+
+        builder.comment("Ars Nouveau patches.").push("arsnouveau");
+        this.arsnouveauSkyTextureIntervalValue = builder
+                .comment("Ticks between refreshes of the offscreen sky texture, which costs a second full sky, cloud and weather pass plus a fog event post every frame. 1 refreshes once a tick, 0 restores the stock every frame behaviour. Client.")
+                .defineInRange("skyTextureInterval", 1, 0, 200);
         builder.pop();
 
         builder.comment("Goety Revelation patches.").push("goetyrevelation");
@@ -1122,6 +1165,12 @@ public final class CoOConfig {
         goetyFastEmptyAllyCheck = masterEnabled && VALUES.goetyFastEmptyAllyCheckValue.get();
         goetyFastCurioItemMiss = masterEnabled && VALUES.goetyFastCurioItemMissValue.get();
         goetySkipBossMusicTargetLookup = masterEnabled && VALUES.goetySkipBossMusicTargetLookupValue.get();
+        goetyCacheFogWightScan = masterEnabled && VALUES.goetyCacheFogWightScanValue.get();
+        mythsandlegendsCacheFogBossScan = masterEnabled && VALUES.mythsandlegendsCacheFogBossScanValue.get();
+        mythsandlegendsCacheShakeScan = masterEnabled && VALUES.mythsandlegendsCacheShakeScanValue.get();
+        ambientsoundsMemoBiomeMatch = masterEnabled && VALUES.ambientsoundsMemoBiomeMatchValue.get();
+        arsnouveauSkyTextureInterval = masterEnabled ? VALUES.arsnouveauSkyTextureIntervalValue.get() : 0;
+        pehkuiMemoInteractionBoxScales = masterEnabled && VALUES.pehkuiMemoInteractionBoxScalesValue.get();
         goetyrevelationCacheHaloLookup = masterEnabled && VALUES.goetyrevelationCacheHaloLookupValue.get();
         revelationfixSkipMobFluidStandScan = masterEnabled && VALUES.revelationfixSkipMobFluidStandScanValue.get();
         revelationfixSkipNonSpiderHurtByTargetEvents = masterEnabled && VALUES.revelationfixSkipNonSpiderHurtByTargetEventsValue.get();
