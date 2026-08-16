@@ -16,6 +16,7 @@ public final class CoOConfig {
     public static boolean curiosSkipNonPlayerRenderLayer = true;
     public static boolean curiosCacheEntitySlotLookup = true;
     public static boolean curiosFastEquippedItemMiss = true;
+    public static boolean curiosFastFindFirstMiss = true;
 
     public static boolean artifactsSkipClientTickOnNonPlayers = true;
     public static boolean artifactsFastPathKittySlippers = true;
@@ -25,7 +26,18 @@ public final class CoOConfig {
 
     public static boolean blockswapPaletteFilteredRetroGen = true;
     public static boolean justdirethingsAvoidChunkTickets = true;
+    public static boolean justdirethingsLeanAreaPreviewScan = true;
     public static int goetydelightCakeScanInterval = 4;
+    public static boolean goetydelightSkipIdleVisualEffects = true;
+
+    public static boolean bettercombatCacheWeaponAttributes = true;
+
+    public static boolean cofhCacheTranslucentRenderers = true;
+
+    public static boolean createDedupeBigOutlineProbes = true;
+
+    public static boolean xaerolibCacheConfigProfile = true;
+    public static boolean xaerolibCacheEnforcementCheck = true;
 
     public static boolean geckolibReuseRenderVectors = true;
     public static boolean geckolibCacheBoneLookup = true;
@@ -36,6 +48,7 @@ public final class CoOConfig {
     public static boolean immediatelyfastSingleBufferLookup = true;
 
     public static int fancymenuSeamlessCaptureInterval = 30;
+    public static boolean fancymenuSkipRedundantScaleWrites = true;
 
     public static boolean emfDropZeroAngerEntries = true;
 
@@ -87,6 +100,7 @@ public final class CoOConfig {
     public static boolean structurifySkipStartCheckWrap = true;
 
     public static boolean bossesriseNarrowCinematicScan = true;
+    public static boolean bossesriseLeanVfxScan = true;
     public static boolean soulsweaponsLeanDespawnTimer = true;
     public static boolean konweaponSkipItemAnimationCopies = true;
     public static boolean immersiveaircraftBatchOverlay = true;
@@ -199,6 +213,8 @@ public final class CoOConfig {
     public static boolean vanillaLeanTrackerDelta = true;
     public static boolean vanillaCacheBiomeQuartLookups = true;
     public static boolean vanillaMemoCameraFluid = true;
+    public static boolean vanillaMemoSkyColour = true;
+    public static boolean gnetumMemoCacheSettings = true;
 
     private final ForgeConfigSpec.BooleanValue masterEnabledValue;
 
@@ -207,6 +223,7 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue curiosSkipNonPlayerRenderLayerValue;
     private final ForgeConfigSpec.BooleanValue curiosCacheEntitySlotLookupValue;
     private final ForgeConfigSpec.BooleanValue curiosFastEquippedItemMissValue;
+    private final ForgeConfigSpec.BooleanValue curiosFastFindFirstMissValue;
 
     private final ForgeConfigSpec.BooleanValue artifactsSkipClientTickOnNonPlayersValue;
     private final ForgeConfigSpec.BooleanValue artifactsFastPathKittySlippersValue;
@@ -216,7 +233,18 @@ public final class CoOConfig {
 
     private final ForgeConfigSpec.BooleanValue blockswapPaletteFilteredRetroGenValue;
     private final ForgeConfigSpec.BooleanValue justdirethingsAvoidChunkTicketsValue;
+    private final ForgeConfigSpec.BooleanValue justdirethingsLeanAreaPreviewScanValue;
     private final ForgeConfigSpec.IntValue goetydelightCakeScanIntervalValue;
+    private final ForgeConfigSpec.BooleanValue goetydelightSkipIdleVisualEffectsValue;
+
+    private final ForgeConfigSpec.BooleanValue bettercombatCacheWeaponAttributesValue;
+
+    private final ForgeConfigSpec.BooleanValue cofhCacheTranslucentRenderersValue;
+
+    private final ForgeConfigSpec.BooleanValue createDedupeBigOutlineProbesValue;
+
+    private final ForgeConfigSpec.BooleanValue xaerolibCacheConfigProfileValue;
+    private final ForgeConfigSpec.BooleanValue xaerolibCacheEnforcementCheckValue;
 
     private final ForgeConfigSpec.BooleanValue geckolibReuseRenderVectorsValue;
     private final ForgeConfigSpec.BooleanValue geckolibCacheBoneLookupValue;
@@ -227,6 +255,7 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue immediatelyfastSingleBufferLookupValue;
 
     private final ForgeConfigSpec.IntValue fancymenuSeamlessCaptureIntervalValue;
+    private final ForgeConfigSpec.BooleanValue fancymenuSkipRedundantScaleWritesValue;
 
     private final ForgeConfigSpec.BooleanValue emfDropZeroAngerEntriesValue;
 
@@ -278,6 +307,7 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue structurifySkipStartCheckWrapValue;
 
     private final ForgeConfigSpec.BooleanValue bossesriseNarrowCinematicScanValue;
+    private final ForgeConfigSpec.BooleanValue bossesriseLeanVfxScanValue;
     private final ForgeConfigSpec.BooleanValue soulsweaponsLeanDespawnTimerValue;
     private final ForgeConfigSpec.BooleanValue konweaponSkipItemAnimationCopiesValue;
     private final ForgeConfigSpec.BooleanValue immersiveaircraftBatchOverlayValue;
@@ -389,6 +419,8 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue vanillaLeanTrackerDeltaValue;
     private final ForgeConfigSpec.BooleanValue vanillaCacheBiomeQuartLookupsValue;
     private final ForgeConfigSpec.BooleanValue vanillaMemoCameraFluidValue;
+    private final ForgeConfigSpec.BooleanValue vanillaMemoSkyColourValue;
+    private final ForgeConfigSpec.BooleanValue gnetumMemoCacheSettingsValue;
 
     static {
         Pair<CoOConfig, ForgeConfigSpec> pair = new ForgeConfigSpec.Builder().configure(CoOConfig::new);
@@ -417,6 +449,9 @@ public final class CoOConfig {
         this.curiosFastEquippedItemMissValue = builder
                 .comment("Answer 'this entity is not wearing that item' from a per-tick set instead of a full curios inventory walk.")
                 .define("fastEquippedItemMiss", true);
+        this.curiosFastFindFirstMissValue = builder
+                .comment("Answer ICuriosItemHandler#findFirstCurio(Item) from the same per-tick set instead of walking every slot handler.")
+                .define("fastFindFirstMiss", true);
         builder.pop();
 
         builder.comment("Artifacts patches.").push("artifacts");
@@ -447,12 +482,45 @@ public final class CoOConfig {
         this.justdirethingsAvoidChunkTicketsValue = builder
                 .comment("Read the item entity's block state through getChunkNow instead of the loading getChunk.")
                 .define("avoidChunkTickets", true);
+        this.justdirethingsLeanAreaPreviewScanValue = builder
+                .comment("Stop the area preview renderer copying every block entity of all 169 nearby chunks into a fresh list every frame.")
+                .define("leanAreaPreviewScan", true);
         builder.pop();
 
         builder.comment("Goety's Delight patches.").push("goetydelight");
         this.goetydelightCakeScanIntervalValue = builder
                 .comment("Run the cherry blossom cake entity sweep once every N server ticks instead of every tick.")
                 .defineInRange("cakeScanInterval", 4, 1, 100);
+        this.goetydelightSkipIdleVisualEffectsValue = builder
+                .comment("Skip the per-frame walk over every entity in the level while no entity carries a visual effect. The walk re-arms as soon as one is added or synced.")
+                .define("skipIdleVisualEffects", true);
+        builder.pop();
+
+        builder.comment("Better Combat patches.").push("bettercombat");
+        this.bettercombatCacheWeaponAttributesValue = builder
+                .comment("Cache WeaponRegistry#getAttributes per item. Stock does a registry reverse lookup plus a map get on every Player#getItemBySlot call, twice.")
+                .define("cacheWeaponAttributes", true);
+        builder.pop();
+
+        builder.comment("CoFH Core patches.").push("cofh");
+        this.cofhCacheTranslucentRenderersValue = builder
+                .comment("Remember which entity classes have a translucent renderer so the per-frame entity walk skips the renderer lookup for the rest.")
+                .define("cacheTranslucentRenderers", true);
+        builder.pop();
+
+        builder.comment("Create patches.").push("create");
+        this.createDedupeBigOutlineProbesValue = builder
+                .comment("Read each block position at most once per big outline pick. Stock tests a 3x3x3 neighbourhood at every raycast step, so neighbouring steps re-read the same positions.")
+                .define("dedupeBigOutlineProbes", true);
+        builder.pop();
+
+        builder.comment("XaeroLib patches.").push("xaerolib");
+        this.xaerolibCacheConfigProfileValue = builder
+                .comment("Resolve the active config profile once per client tick instead of on every single config read.")
+                .define("cacheConfigProfile", true);
+        this.xaerolibCacheEnforcementCheckValue = builder
+                .comment("Answer the server-enforcement check once per client tick. Stock runs a second full config read inside every config read.")
+                .define("cacheEnforcementCheck", true);
         builder.pop();
 
         builder.comment("GeckoLib patches.").push("geckolib");
@@ -483,6 +551,9 @@ public final class CoOConfig {
         this.fancymenuSeamlessCaptureIntervalValue = builder
                 .comment("Seconds between seamless world loading screenshots. FancyMenu reads back the whole framebuffer each time, which stalls the render thread. Stock behaviour is 1.")
                 .defineInRange("seamlessCaptureInterval", 30, 1, 600);
+        this.fancymenuSkipRedundantScaleWritesValue = builder
+                .comment("Skip FancyMenu's ThreadLocal render scale write when the value is unchanged. Stock writes it on every PoseStack push, pop and scale.")
+                .define("skipRedundantScaleWrites", true);
         builder.pop();
 
         builder.comment("Entity Model Features patches.").push("emf");
@@ -639,6 +710,9 @@ public final class CoOConfig {
         this.bossesriseNarrowCinematicScanValue = builder
                 .comment("Only collect Bosses' Rises entities in its per player cinematic scan.")
                 .define("narrowCinematicScan", true);
+        this.bossesriseLeanVfxScanValue = builder
+                .comment("Walk only Bosses' Rises entities in the per frame boss VFX pass instead of every entity in the level.")
+                .define("leanVfxScan", true);
         builder.pop();
 
         builder.comment("Marium's Soulslike Weaponry patches.").push("soulsweapons");
@@ -1030,6 +1104,15 @@ public final class CoOConfig {
         this.vanillaMemoCameraFluidValue = builder
                 .comment("Work out what fluid the camera is in once per camera position instead of once per caller.")
                 .define("memoCameraFluid", true);
+        this.vanillaMemoSkyColourValue = builder
+                .comment("Work out the sky colour once per camera position per frame. Fog setup, the sky renderer and shader uniform packs each ask for it separately and every call samples 27 biomes.")
+                .define("memoSkyColour", true);
+        builder.pop();
+
+        builder.push("gnetum");
+        this.gnetumMemoCacheSettingsValue = builder
+                .comment("Answer gnetum's per element caching question once per tick instead of once per element per frame. Each ask is a set lookup plus a guava cache lookup and there are dozens of elements.")
+                .define("memoCacheSettings", true);
         builder.pop();
     }
 
@@ -1051,19 +1134,28 @@ public final class CoOConfig {
         curiosSkipNonPlayerRenderLayer = masterEnabled && VALUES.curiosSkipNonPlayerRenderLayerValue.get();
         curiosCacheEntitySlotLookup = masterEnabled && VALUES.curiosCacheEntitySlotLookupValue.get();
         curiosFastEquippedItemMiss = masterEnabled && VALUES.curiosFastEquippedItemMissValue.get();
+        curiosFastFindFirstMiss = masterEnabled && VALUES.curiosFastFindFirstMissValue.get();
         artifactsSkipClientTickOnNonPlayers = masterEnabled && VALUES.artifactsSkipClientTickOnNonPlayersValue.get();
         artifactsFastPathKittySlippers = masterEnabled && VALUES.artifactsFastPathKittySlippersValue.get();
         artifactsFastPathUmbrella = masterEnabled && VALUES.artifactsFastPathUmbrellaValue.get();
         caelusSkipGroundedNonPlayers = masterEnabled && VALUES.caelusSkipGroundedNonPlayersValue.get();
         blockswapPaletteFilteredRetroGen = masterEnabled && VALUES.blockswapPaletteFilteredRetroGenValue.get();
         justdirethingsAvoidChunkTickets = masterEnabled && VALUES.justdirethingsAvoidChunkTicketsValue.get();
+        justdirethingsLeanAreaPreviewScan = masterEnabled && VALUES.justdirethingsLeanAreaPreviewScanValue.get();
         goetydelightCakeScanInterval = masterEnabled ? VALUES.goetydelightCakeScanIntervalValue.get() : 1;
+        goetydelightSkipIdleVisualEffects = masterEnabled && VALUES.goetydelightSkipIdleVisualEffectsValue.get();
+        bettercombatCacheWeaponAttributes = masterEnabled && VALUES.bettercombatCacheWeaponAttributesValue.get();
+        cofhCacheTranslucentRenderers = masterEnabled && VALUES.cofhCacheTranslucentRenderersValue.get();
+        createDedupeBigOutlineProbes = masterEnabled && VALUES.createDedupeBigOutlineProbesValue.get();
+        xaerolibCacheConfigProfile = masterEnabled && VALUES.xaerolibCacheConfigProfileValue.get();
+        xaerolibCacheEnforcementCheck = masterEnabled && VALUES.xaerolibCacheEnforcementCheckValue.get();
         geckolibReuseRenderVectors = masterEnabled && VALUES.geckolibReuseRenderVectorsValue.get();
         geckolibCacheBoneLookup = masterEnabled && VALUES.geckolibCacheBoneLookupValue.get();
         saintsdragonsSkipRedundantBoneTracking = masterEnabled && VALUES.saintsdragonsSkipRedundantBoneTrackingValue.get();
         saintsdragonsCacheShakeScan = masterEnabled && VALUES.saintsdragonsCacheShakeScanValue.get();
         immediatelyfastSingleBufferLookup = masterEnabled && VALUES.immediatelyfastSingleBufferLookupValue.get();
         fancymenuSeamlessCaptureInterval = masterEnabled ? VALUES.fancymenuSeamlessCaptureIntervalValue.get() : 1;
+        fancymenuSkipRedundantScaleWrites = masterEnabled && VALUES.fancymenuSkipRedundantScaleWritesValue.get();
         emfDropZeroAngerEntries = masterEnabled && VALUES.emfDropZeroAngerEntriesValue.get();
         etfFastValidPath = masterEnabled && VALUES.etfFastValidPathValue.get();
         oculusSkipSignTextInShadowPass = masterEnabled && VALUES.oculusSkipSignTextInShadowPassValue.get();
@@ -1100,6 +1192,7 @@ public final class CoOConfig {
         structurifyCacheStructureSetEntries = masterEnabled && VALUES.structurifyCacheStructureSetEntriesValue.get();
         structurifySkipStartCheckWrap = masterEnabled && VALUES.structurifySkipStartCheckWrapValue.get();
         bossesriseNarrowCinematicScan = masterEnabled && VALUES.bossesriseNarrowCinematicScanValue.get();
+        bossesriseLeanVfxScan = masterEnabled && VALUES.bossesriseLeanVfxScanValue.get();
         soulsweaponsLeanDespawnTimer = masterEnabled && VALUES.soulsweaponsLeanDespawnTimerValue.get();
         konweaponSkipItemAnimationCopies = masterEnabled && VALUES.konweaponSkipItemAnimationCopiesValue.get();
         immersiveaircraftBatchOverlay = masterEnabled && VALUES.immersiveaircraftBatchOverlayValue.get();
@@ -1193,6 +1286,8 @@ public final class CoOConfig {
         vanillaLeanMenuBroadcast = masterEnabled && VALUES.vanillaLeanMenuBroadcastValue.get();
         vanillaLeanTrackerDelta = masterEnabled && VALUES.vanillaLeanTrackerDeltaValue.get();
         vanillaCacheBiomeQuartLookups = masterEnabled && VALUES.vanillaCacheBiomeQuartLookupsValue.get();
+        vanillaMemoSkyColour = masterEnabled && VALUES.vanillaMemoSkyColourValue.get();
+        gnetumMemoCacheSettings = masterEnabled && VALUES.gnetumMemoCacheSettingsValue.get();
         vanillaMemoCameraFluid = masterEnabled && VALUES.vanillaMemoCameraFluidValue.get();
     }
 }

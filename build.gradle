@@ -1,3 +1,5 @@
+import java.util.zip.ZipFile
+
 buildscript {
     repositories {
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
@@ -207,6 +209,11 @@ dependencies {
     compileOnly files('libs-compile/EnigmaticDice-1.3.1-1.20.1.jar')
     compileOnly files('libs-compile/Placebo-1.20.1-8.6.3.jar')
     compileOnly files('libs-compile/ImmediatelyFast-Forge-1.5.5+1.20.4.jar')
+    compileOnly files('libs-compile/bettercombat-forge-1.9.0+1.20.1.jar')
+    compileOnly files('libs-compile/cofh_core-1.20.1-11.0.2.56.jar')
+    compileOnly files('libs-compile/xaerolib-forge-1.20.1-1.7.1.jar')
+    compileOnly files('libs-compile/create-1.20.1-6.0.8.jar')
+    compileOnly files('libs-compile/gnetum-2.5.0-apionly.jar')
 
     implementation fg.deobf(fileTree(dir: 'libs', include: ['*.jar']))
 }
@@ -239,11 +246,6 @@ tasks.named('jar', Jar).configure {
     finalizedBy 'reobfJar'
 }
 
-// jarJar builds the -all jar, which is the artifact that actually gets installed. ForgeGradle creates
-// reobfJarJar but does not wire it as a finalizer the way it does for jar, so `gradlew clean jar
-// jarJar` happily produces an -all jar still carrying official names: every mixin body would then hit
-// NoSuchMethodError in production and every @Shadow would fail to resolve. Make the reobf step
-// unskippable instead.
 tasks.named('jarJar').configure {
     finalizedBy 'reobfJarJar'
 }
@@ -252,28 +254,11 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-// The mixin refmap is what maps the Minecraft member names written in our annotations
-// (official/mojmap, e.g. "getChunks") onto the SRG names the game actually uses in production
-// (e.g. "m_140416_"). collections_of_optimizations.mixins.json declares it by name, but nothing
-// makes the jar task fail when it is absent: on an incremental build where compileJava is
-// UP-TO-DATE, MixinGradle does not regenerate build/tmp/compileJava/*.refmap.json and the jar is
-// silently assembled without it.
-//
-// The resulting jar loads and looks fine, but at runtime every annotation reference to a
-// Minecraft member stays unremapped:
-//   - @Invoker / @Accessor / @Shadow throw and take the target class load down with them. This is
-//     what crashed Nature's Aura, via a ChunkMap @Invoker that has since been deleted; the live
-//     examples are terramity.ClipContextAccessor and terrablender.SurfaceContextAccessor, which are
-//     the only two mixins left whose Minecraft member names need remapping.
-//   - every @Inject / @At in this project uses require = 0, so those degrade to doing nothing
-//     at all, with no log line above DEBUG to say so
-//
-// So a missing refmap is worse than a build failure. Make it one.
 tasks.matching { it.name == 'reobfJar' }.configureEach {
     doLast {
         def jarFile = tasks.named('jar', Jar).get().archiveFile.get().asFile
         def expected = "${mod_id}.refmap.json"
-        def present = new java.util.zip.ZipFile(jarFile).withCloseable { zip ->
+        def present = new ZipFile(jarFile).withCloseable { zip ->
             zip.getEntry(expected) != null
         }
         if (!present) {

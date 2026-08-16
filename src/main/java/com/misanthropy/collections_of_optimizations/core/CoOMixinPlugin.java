@@ -1,5 +1,7 @@
 package com.misanthropy.collections_of_optimizations.core;
 
+import net.minecraftforge.forgespi.language.IModInfo;
+import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
 import net.minecraftforge.fml.loading.LoadingModList;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -30,6 +32,7 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("goetyrevelation", "goety_revelation"),
             Map.entry("revelationfix", "revelationfix"),
             Map.entry("geckolib", "geckolib"),
+            Map.entry("gnetum", "gnetum"),
             Map.entry("oculus", "oculus"),
             Map.entry("naturesaura", "naturesaura"),
             Map.entry("xaerominimap", "xaerominimap"),
@@ -76,7 +79,15 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("pickupnotifier", "pickupnotifier"),
             Map.entry("photon", "photon"),
             Map.entry("immediatelyfast", "immediatelyfast"),
-            Map.entry("fancymenu", "fancymenu")
+            Map.entry("fancymenu", "fancymenu"),
+            Map.entry("bettercombat", "bettercombat"),
+            Map.entry("cofh", "cofh_core"),
+            Map.entry("xaerolib", "xaerolib"),
+            Map.entry("create", "create")
+    );
+
+    private static final Map<String, Integer> GROUP_MIN_MAJOR = Map.of(
+            "structurify", 2
     );
 
     private static final Map<String, String[]> GROUP_CONFLICTS = Map.of(
@@ -106,6 +117,7 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
     );
 
     private static final Map<String, Boolean> LOADED_CACHE = new HashMap<>();
+    private static final Map<String, Integer> MAJOR_CACHE = new HashMap<>();
 
     @Override
     public void onLoad(String mixinPackage) {
@@ -142,6 +154,10 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
         } else {
             String modId = GROUP_TO_MODID.get(group);
             if (modId != null && !isModPresent(modId)) {
+                return false;
+            }
+            Integer minMajor = GROUP_MIN_MAJOR.get(group);
+            if (modId != null && minMajor != null && majorVersion(modId) < minMajor) {
                 return false;
             }
         }
@@ -202,5 +218,36 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
         }
         LOADED_CACHE.put(modId, present);
         return present;
+    }
+
+    private static synchronized int majorVersion(String modId) {
+        Integer cached = MAJOR_CACHE.get(modId);
+        if (cached != null) {
+            return cached;
+        }
+        int major = Integer.MAX_VALUE;
+        try {
+            ModFileInfo modFile = LoadingModList.get().getModFileById(modId);
+            if (modFile != null) {
+                for (IModInfo mod : modFile.getMods()) {
+                    if (!mod.getModId().equals(modId)) {
+                        continue;
+                    }
+                    String version = mod.getVersion().toString();
+                    int end = 0;
+                    while (end < version.length() && Character.isDigit(version.charAt(end))) {
+                        end++;
+                    }
+                    if (end > 0) {
+                        major = Integer.parseInt(version.substring(0, Math.min(end, 9)));
+                    }
+                    break;
+                }
+            }
+        } catch (Throwable throwable) {
+            major = Integer.MAX_VALUE;
+        }
+        MAJOR_CACHE.put(modId, major);
+        return major;
     }
 }

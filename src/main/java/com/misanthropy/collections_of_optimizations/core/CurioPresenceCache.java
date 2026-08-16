@@ -37,7 +37,7 @@ public final class CurioPresenceCache {
             return true;
         }
 
-        long stamp = entity.level().getGameTime();
+        long stamp = entity.tickCount;
         Set<Item> cached = holder.coo$curioPresence();
         if (cached == null || holder.coo$curioPresenceStamp() != stamp) {
             cached = build(entity);
@@ -57,7 +57,7 @@ public final class CurioPresenceCache {
             return null;
         }
 
-        long stamp = entity.level().getGameTime();
+        long stamp = entity.tickCount;
         Set<Item> cached = holder.coo$curioPresence();
         if (cached == null || holder.coo$curioPresenceStamp() != stamp) {
             cached = build(entity);
