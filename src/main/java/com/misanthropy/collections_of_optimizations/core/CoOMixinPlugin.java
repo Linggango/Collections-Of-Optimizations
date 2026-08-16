@@ -101,7 +101,9 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             "vanilla.MixinStructureCheck", new String[]{"modernfix"},
             "vanilla.MixinServerLevelStructureState", new String[]{"modernfix"},
 
-            "vanilla.MixinItemEntityRenderer", new String[]{"flerovium"}
+            "vanilla.MixinItemEntityRenderer", new String[]{"flerovium"},
+
+            "vanilla.MixinChunkMapEntityTracker", new String[]{"vmp", "hariplayer"}
     );
 
     private static final Map<String, String[]> MIXIN_REQUIRES = Map.of(
