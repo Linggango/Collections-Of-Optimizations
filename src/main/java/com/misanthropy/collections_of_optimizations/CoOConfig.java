@@ -39,6 +39,8 @@ public final class CoOConfig {
     public static boolean xaerolibCacheConfigProfile = true;
     public static boolean xaerolibCacheEnforcementCheck = true;
 
+    public static int xaeroworldmapVramPollInterval = 500;
+
     public static boolean geckolibReuseRenderVectors = true;
     public static boolean geckolibCacheBoneLookup = true;
 
@@ -175,8 +177,17 @@ public final class CoOConfig {
     public static boolean goetyMemoAttributeModifiers = true;
     public static boolean goetyFastEmptyAllyCheck = true;
     public static boolean goetyFastCurioItemMiss = true;
+    public static boolean goetyMemoCurioFilter = true;
     public static boolean goetySkipBossMusicTargetLookup = true;
     public static boolean goetyCacheFogWightScan = true;
+    public static boolean goetyCacheShakeScan = true;
+
+    public static boolean cataclysmCacheShakeScan = true;
+    public static boolean dodosmobsCacheShakeScan = true;
+    public static boolean eeeabsmobsCacheShakeScan = true;
+    public static boolean fromtheshadowsCacheShakeScan = true;
+    public static boolean gtbcsCacheShakeScan = true;
+    public static boolean legendarymonstersCacheShakeScan = true;
 
     public static boolean mythsandlegendsCacheFogBossScan = true;
     public static boolean mythsandlegendsCacheShakeScan = true;
@@ -245,6 +256,8 @@ public final class CoOConfig {
 
     private final ForgeConfigSpec.BooleanValue xaerolibCacheConfigProfileValue;
     private final ForgeConfigSpec.BooleanValue xaerolibCacheEnforcementCheckValue;
+
+    private final ForgeConfigSpec.IntValue xaeroworldmapVramPollIntervalValue;
 
     private final ForgeConfigSpec.BooleanValue geckolibReuseRenderVectorsValue;
     private final ForgeConfigSpec.BooleanValue geckolibCacheBoneLookupValue;
@@ -381,8 +394,17 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue goetyMemoAttributeModifiersValue;
     private final ForgeConfigSpec.BooleanValue goetyFastEmptyAllyCheckValue;
     private final ForgeConfigSpec.BooleanValue goetyFastCurioItemMissValue;
+    private final ForgeConfigSpec.BooleanValue goetyMemoCurioFilterValue;
     private final ForgeConfigSpec.BooleanValue goetySkipBossMusicTargetLookupValue;
     private final ForgeConfigSpec.BooleanValue goetyCacheFogWightScanValue;
+    private final ForgeConfigSpec.BooleanValue goetyCacheShakeScanValue;
+
+    private final ForgeConfigSpec.BooleanValue cataclysmCacheShakeScanValue;
+    private final ForgeConfigSpec.BooleanValue dodosmobsCacheShakeScanValue;
+    private final ForgeConfigSpec.BooleanValue eeeabsmobsCacheShakeScanValue;
+    private final ForgeConfigSpec.BooleanValue fromtheshadowsCacheShakeScanValue;
+    private final ForgeConfigSpec.BooleanValue gtbcsCacheShakeScanValue;
+    private final ForgeConfigSpec.BooleanValue legendarymonstersCacheShakeScanValue;
 
     private final ForgeConfigSpec.BooleanValue mythsandlegendsCacheFogBossScanValue;
     private final ForgeConfigSpec.BooleanValue mythsandlegendsCacheShakeScanValue;
@@ -521,6 +543,12 @@ public final class CoOConfig {
         this.xaerolibCacheEnforcementCheckValue = builder
                 .comment("Answer the server-enforcement check once per client tick. Stock runs a second full config read inside every config read.")
                 .define("cacheEnforcementCheck", true);
+        builder.pop();
+
+        builder.comment("Xaero's World Map patches.").push("xaeroworldmap");
+        this.xaeroworldmapVramPollIntervalValue = builder
+                .comment("Milliseconds between the map limiter's free VRAM query, which stock fires a blocking glGetIntegerv for on every single frame. 0 restores the stock every frame behaviour. Client.")
+                .defineInRange("vramPollInterval", 500, 0, 60000);
         builder.pop();
 
         builder.comment("GeckoLib patches.").push("geckolib");
@@ -992,6 +1020,48 @@ public final class CoOConfig {
         this.goetyCacheFogWightScanValue = builder
                 .comment("Run the fog listener's Wight#findWight scan once per tick instead of once per posted RenderFog event. Client.")
                 .define("cacheFogWightScan", true);
+        this.goetyMemoCurioFilterValue = builder
+                .comment("Answer repeated CuriosFinder#findCurio(LivingEntity, Predicate) lookups from a per-tick per-entity memo.")
+                .define("memoCurioFilter", true);
+        this.goetyCacheShakeScanValue = builder
+                .comment("Run the camera shake entity scan once per tick instead of once per frame. Client.")
+                .define("cacheShakeScan", true);
+        builder.pop();
+
+        builder.comment("L_Ender's Cataclysm patches.").push("cataclysm");
+        this.cataclysmCacheShakeScanValue = builder
+                .comment("Run the camera shake entity scan once per tick instead of once per frame. Client.")
+                .define("cacheShakeScan", true);
+        builder.pop();
+
+        builder.comment("Dodo's Mobs patches.").push("dodosmobs");
+        this.dodosmobsCacheShakeScanValue = builder
+                .comment("Run the camera shake entity scan once per tick instead of once per frame. Client.")
+                .define("cacheShakeScan", true);
+        builder.pop();
+
+        builder.comment("EEEAB's Mobs patches.").push("eeeabsmobs");
+        this.eeeabsmobsCacheShakeScanValue = builder
+                .comment("Run the camera shake entity scan once per tick instead of once per frame. Client.")
+                .define("cacheShakeScan", true);
+        builder.pop();
+
+        builder.comment("From The Shadows patches.").push("fromtheshadows");
+        this.fromtheshadowsCacheShakeScanValue = builder
+                .comment("Run the camera shake entity scan once per tick instead of once per frame. Client.")
+                .define("cacheShakeScan", true);
+        builder.pop();
+
+        builder.comment("GTBCS Spell Lib patches.").push("gtbcs");
+        this.gtbcsCacheShakeScanValue = builder
+                .comment("Run both camera shake entity scans once per tick instead of once per frame. Client.")
+                .define("cacheShakeScan", true);
+        builder.pop();
+
+        builder.comment("Legendary Monsters patches.").push("legendarymonsters");
+        this.legendarymonstersCacheShakeScanValue = builder
+                .comment("Run the camera shake and dynamic zoom entity scans once per tick instead of once per frame. Client.")
+                .define("cacheShakeScan", true);
         builder.pop();
 
         builder.comment("Myths and Legends patches.").push("mythsandlegends");
@@ -1149,6 +1219,7 @@ public final class CoOConfig {
         createDedupeBigOutlineProbes = masterEnabled && VALUES.createDedupeBigOutlineProbesValue.get();
         xaerolibCacheConfigProfile = masterEnabled && VALUES.xaerolibCacheConfigProfileValue.get();
         xaerolibCacheEnforcementCheck = masterEnabled && VALUES.xaerolibCacheEnforcementCheckValue.get();
+        xaeroworldmapVramPollInterval = masterEnabled ? VALUES.xaeroworldmapVramPollIntervalValue.get() : 0;
         geckolibReuseRenderVectors = masterEnabled && VALUES.geckolibReuseRenderVectorsValue.get();
         geckolibCacheBoneLookup = masterEnabled && VALUES.geckolibCacheBoneLookupValue.get();
         saintsdragonsSkipRedundantBoneTracking = masterEnabled && VALUES.saintsdragonsSkipRedundantBoneTrackingValue.get();
@@ -1259,6 +1330,14 @@ public final class CoOConfig {
         goetyFastCurioItemMiss = masterEnabled && VALUES.goetyFastCurioItemMissValue.get();
         goetySkipBossMusicTargetLookup = masterEnabled && VALUES.goetySkipBossMusicTargetLookupValue.get();
         goetyCacheFogWightScan = masterEnabled && VALUES.goetyCacheFogWightScanValue.get();
+        goetyMemoCurioFilter = masterEnabled && VALUES.goetyMemoCurioFilterValue.get();
+        goetyCacheShakeScan = masterEnabled && VALUES.goetyCacheShakeScanValue.get();
+        cataclysmCacheShakeScan = masterEnabled && VALUES.cataclysmCacheShakeScanValue.get();
+        dodosmobsCacheShakeScan = masterEnabled && VALUES.dodosmobsCacheShakeScanValue.get();
+        eeeabsmobsCacheShakeScan = masterEnabled && VALUES.eeeabsmobsCacheShakeScanValue.get();
+        fromtheshadowsCacheShakeScan = masterEnabled && VALUES.fromtheshadowsCacheShakeScanValue.get();
+        gtbcsCacheShakeScan = masterEnabled && VALUES.gtbcsCacheShakeScanValue.get();
+        legendarymonstersCacheShakeScan = masterEnabled && VALUES.legendarymonstersCacheShakeScanValue.get();
         mythsandlegendsCacheFogBossScan = masterEnabled && VALUES.mythsandlegendsCacheFogBossScanValue.get();
         mythsandlegendsCacheShakeScan = masterEnabled && VALUES.mythsandlegendsCacheShakeScanValue.get();
         ambientsoundsMemoBiomeMatch = masterEnabled && VALUES.ambientsoundsMemoBiomeMatchValue.get();

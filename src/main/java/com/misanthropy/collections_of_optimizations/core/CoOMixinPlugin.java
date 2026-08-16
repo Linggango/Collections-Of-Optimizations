@@ -83,7 +83,14 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("bettercombat", "bettercombat"),
             Map.entry("cofh", "cofh_core"),
             Map.entry("xaerolib", "xaerolib"),
-            Map.entry("create", "create")
+            Map.entry("create", "create"),
+            Map.entry("cataclysm", "cataclysm"),
+            Map.entry("dodosmobs", "dodosmobs"),
+            Map.entry("eeeabsmobs", "eeeabsmobs"),
+            Map.entry("fromtheshadows", "fromtheshadows"),
+            Map.entry("gtbcs", "gtbcs_spell_lib"),
+            Map.entry("legendarymonsters", "legendary_monsters"),
+            Map.entry("xaeroworldmap", "xaeroworldmap")
     );
 
     private static final Map<String, Integer> GROUP_MIN_MAJOR = Map.of(
@@ -111,7 +118,9 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
 
             "goetyrevelation.MixinATAHelper", new String[]{"curios"},
 
-            "goety.MixinCuriosFinder", new String[]{"curios"}
+            "goety.MixinCuriosFinder", new String[]{"curios"},
+
+            "goety.MixinCuriosFinderFilter", new String[]{"curios"}
     );
 
     private static final Map<String, String[]> MIXIN_ANY_OF = Map.of(
