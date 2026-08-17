@@ -20,7 +20,7 @@ public final class TranslucentEntityScan {
     private TranslucentEntityScan() {
     }
 
-    public static Iterable<Entity> matches(ClientLevel level, EntityRenderDispatcher dispatcher) {
+    public static List<Entity> matches(ClientLevel level, EntityRenderDispatcher dispatcher) {
         long now = level.getGameTime();
         if (stamp != now || scanned.get() != level) {
             stamp = now;

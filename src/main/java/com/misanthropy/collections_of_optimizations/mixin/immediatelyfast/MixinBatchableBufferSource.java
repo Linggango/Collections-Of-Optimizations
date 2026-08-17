@@ -3,13 +3,17 @@ package com.misanthropy.collections_of_optimizations.mixin.immediatelyfast;
 import com.misanthropy.collections_of_optimizations.CoOConfig;
 import com.misanthropy.collections_of_optimizations.mixin.vanilla.BufferSourceFixedBuffersAccessor;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceSet;
 import net.minecraft.client.renderer.RenderType;
 import net.raphimc.immediatelyfast.feature.core.BatchableBufferSource;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Collections;
@@ -23,7 +27,40 @@ public abstract class MixinBatchableBufferSource {
     protected Map<RenderType, ReferenceSet<BufferBuilder>> fallbackBuffers;
 
     @Shadow
+    @Final
+    protected Set<RenderType> activeLayers;
+
+    @Shadow
     protected abstract BufferBuilder addNewFallbackBuffer(RenderType layer);
+
+    @Unique
+    private final ReferenceLinkedOpenHashSet<RenderType> coo$busyLayers = new ReferenceLinkedOpenHashSet<>();
+
+    @Redirect(
+            method = "m_109911_()V",
+            at = @At(value = "INVOKE", target = "Ljava/util/Map;keySet()Ljava/util/Set;"),
+            require = 0
+    )
+    private Set<RenderType> coo$onlyBusyLayers(Map<RenderType, BufferBuilder> fixedBuffers) {
+        Set<RenderType> layers = fixedBuffers.keySet();
+        if (!CoOConfig.immediatelyfastSkipIdleLayers) {
+            return layers;
+        }
+        Set<RenderType> active = this.activeLayers;
+        Map<RenderType, ReferenceSet<BufferBuilder>> fallback = this.fallbackBuffers;
+        if (active.size() + fallback.size() >= layers.size()) {
+            return layers;
+        }
+        ReferenceLinkedOpenHashSet<RenderType> busy = this.coo$busyLayers;
+        busy.clear();
+        boolean checkFallback = !fallback.isEmpty();
+        for (RenderType layer : layers) {
+            if (active.contains(layer) || (checkFallback && fallback.containsKey(layer))) {
+                busy.add(layer);
+            }
+        }
+        return busy;
+    }
 
     @Inject(
             method = "getOrCreateBufferBuilder",

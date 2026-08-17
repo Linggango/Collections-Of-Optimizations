@@ -48,6 +48,7 @@ public final class CoOConfig {
     public static boolean saintsdragonsCacheShakeScan = true;
 
     public static boolean immediatelyfastSingleBufferLookup = true;
+    public static boolean immediatelyfastSkipIdleLayers = true;
 
     public static int fancymenuSeamlessCaptureInterval = 30;
     public static boolean fancymenuSkipRedundantScaleWrites = true;
@@ -273,6 +274,7 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue saintsdragonsCacheShakeScanValue;
 
     private final ForgeConfigSpec.BooleanValue immediatelyfastSingleBufferLookupValue;
+    private final ForgeConfigSpec.BooleanValue immediatelyfastSkipIdleLayersValue;
 
     private final ForgeConfigSpec.IntValue fancymenuSeamlessCaptureIntervalValue;
     private final ForgeConfigSpec.BooleanValue fancymenuSkipRedundantScaleWritesValue;
@@ -587,6 +589,9 @@ public final class CoOConfig {
         this.immediatelyfastSingleBufferLookupValue = builder
                 .comment("Find a render layer's buffer with one map lookup instead of a contains check plus a get.")
                 .define("singleBufferLookup", true);
+        this.immediatelyfastSkipIdleLayersValue = builder
+                .comment("End only the render layers that were actually drawn into instead of walking every fixed buffer on each flush.")
+                .define("skipIdleLayers", true);
         builder.pop();
 
         builder.comment("FancyMenu patches.").push("fancymenu");
@@ -1260,6 +1265,7 @@ public final class CoOConfig {
         saintsdragonsSkipRedundantBoneTracking = masterEnabled && VALUES.saintsdragonsSkipRedundantBoneTrackingValue.get();
         saintsdragonsCacheShakeScan = masterEnabled && VALUES.saintsdragonsCacheShakeScanValue.get();
         immediatelyfastSingleBufferLookup = masterEnabled && VALUES.immediatelyfastSingleBufferLookupValue.get();
+        immediatelyfastSkipIdleLayers = masterEnabled && VALUES.immediatelyfastSkipIdleLayersValue.get();
         fancymenuSeamlessCaptureInterval = masterEnabled ? VALUES.fancymenuSeamlessCaptureIntervalValue.get() : 1;
         fancymenuSkipRedundantScaleWrites = masterEnabled && VALUES.fancymenuSkipRedundantScaleWritesValue.get();
         emfDropZeroAngerEntries = masterEnabled && VALUES.emfDropZeroAngerEntriesValue.get();
