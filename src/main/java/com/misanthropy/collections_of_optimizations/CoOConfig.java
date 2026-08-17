@@ -214,7 +214,14 @@ public final class CoOConfig {
 
     public static boolean adastraMemoPlanetDefaults = true;
 
+    public static boolean supplementariesLeanEndermanSkullWatch = true;
+    public static boolean supplementariesSkipNonSignCapSync = true;
+    public static boolean supplementariesMemoMapTintLookup = true;
+
+    public static boolean amendmentsSkipIdleSwaySync = true;
+
     public static int itemEntityRenderCap = 1;
+    public static boolean vanillaMemoGlyphFontSet = true;
     public static boolean vanillaFasterStructureLocation = true;
     public static boolean vanillaFixBoatFallDamage = false;
     public static boolean vanillaPredictableItemDrops = false;
@@ -431,7 +438,14 @@ public final class CoOConfig {
 
     private final ForgeConfigSpec.BooleanValue adastraMemoPlanetDefaultsValue;
 
+    private final ForgeConfigSpec.BooleanValue supplementariesLeanEndermanSkullWatchValue;
+    private final ForgeConfigSpec.BooleanValue supplementariesSkipNonSignCapSyncValue;
+    private final ForgeConfigSpec.BooleanValue supplementariesMemoMapTintLookupValue;
+
+    private final ForgeConfigSpec.BooleanValue amendmentsSkipIdleSwaySyncValue;
+
     private final ForgeConfigSpec.IntValue itemEntityRenderCapValue;
+    private final ForgeConfigSpec.BooleanValue vanillaMemoGlyphFontSetValue;
     private final ForgeConfigSpec.BooleanValue vanillaFasterStructureLocationValue;
     private final ForgeConfigSpec.BooleanValue vanillaFixBoatFallDamageValue;
     private final ForgeConfigSpec.BooleanValue vanillaPredictableItemDropsValue;
@@ -1143,10 +1157,31 @@ public final class CoOConfig {
                 .define("memoPlanetDefaults", true);
         builder.pop();
 
+        builder.comment("Supplementaries patches.").push("supplementaries");
+        this.supplementariesLeanEndermanSkullWatchValue = builder
+                .comment("Skip the enderman skull's 64 block look ray when no player is aiming anywhere near it.")
+                .define("leanEndermanSkullWatch", true);
+        this.supplementariesSkipNonSignCapSyncValue = builder
+                .comment("Only run Supplementaries' antique ink chunk sync for signs instead of every block entity in every chunk sent.")
+                .define("skipNonSignCapSync", true);
+        this.supplementariesMemoMapTintLookupValue = builder
+                .comment("Cache the tinted map block lookup instead of walking five tags per map pixel per tick.")
+                .define("memoMapTintLookup", true);
+        builder.pop();
+
+        builder.comment("Amendments patches.").push("amendments");
+        this.amendmentsSkipIdleSwaySyncValue = builder
+                .comment("Stop wall lanterns broadcasting a sway packet every tick for entities that are not moving.")
+                .define("skipIdleSwaySync", true);
+        builder.pop();
+
         builder.comment("Vanilla patches. These are the only patches here that are not aimed at a specific mod.").push("vanilla");
         this.itemEntityRenderCapValue = builder
                 .comment("Maximum times a dropped item stack's model is drawn.")
                 .defineInRange("itemEntityRenderCap", 1, 0, 5);
+        this.vanillaMemoGlyphFontSetValue = builder
+                .comment("Resolve a rendered string's font set once instead of once per glyph.")
+                .define("memoGlyphFontSet", true);
         this.vanillaFasterStructureLocationValue = builder
                 .comment("Makes /locate a lot faster, especially for rare structures.")
                 .define("fasterStructureLocation", true);
@@ -1356,7 +1391,12 @@ public final class CoOConfig {
         alexscavesMemoClimateSample = masterEnabled && VALUES.alexscavesMemoClimateSampleValue.get();
         alexscavesCacheShakeScan = masterEnabled && VALUES.alexscavesCacheShakeScanValue.get();
         adastraMemoPlanetDefaults = masterEnabled && VALUES.adastraMemoPlanetDefaultsValue.get();
+        supplementariesLeanEndermanSkullWatch = masterEnabled && VALUES.supplementariesLeanEndermanSkullWatchValue.get();
+        supplementariesSkipNonSignCapSync = masterEnabled && VALUES.supplementariesSkipNonSignCapSyncValue.get();
+        supplementariesMemoMapTintLookup = masterEnabled && VALUES.supplementariesMemoMapTintLookupValue.get();
+        amendmentsSkipIdleSwaySync = masterEnabled && VALUES.amendmentsSkipIdleSwaySyncValue.get();
         itemEntityRenderCap = masterEnabled ? VALUES.itemEntityRenderCapValue.get() : 0;
+        vanillaMemoGlyphFontSet = masterEnabled && VALUES.vanillaMemoGlyphFontSetValue.get();
         vanillaFasterStructureLocation = masterEnabled && VALUES.vanillaFasterStructureLocationValue.get();
         vanillaFixBoatFallDamage = masterEnabled && VALUES.vanillaFixBoatFallDamageValue.get();
         vanillaPredictableItemDrops = masterEnabled && VALUES.vanillaPredictableItemDropsValue.get();

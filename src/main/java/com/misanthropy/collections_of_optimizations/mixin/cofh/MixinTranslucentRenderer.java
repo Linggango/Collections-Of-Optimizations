@@ -23,7 +23,7 @@ public interface MixinTranslucentRenderer {
             ),
             require = 0
     )
-    private static EntityRenderer coo$skipKnownOpaqueEntities(EntityRenderDispatcher dispatcher, Entity entity,
+    public static EntityRenderer coo$skipKnownOpaqueEntities(EntityRenderDispatcher dispatcher, Entity entity,
                                                               Operation<EntityRenderer> original) {
         if (!CoOConfig.cofhCacheTranslucentRenderers || entity == null) {
             return original.call(dispatcher, entity);

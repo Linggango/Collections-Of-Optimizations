@@ -23,7 +23,7 @@ public interface MixinTranslucentRendererScan {
             ),
             require = 0
     )
-    private static Iterable<Entity> coo$onlyWalkTranslucentEntities(ClientLevel level,
+    public static Iterable<Entity> coo$onlyWalkTranslucentEntities(ClientLevel level,
                                                                     Operation<Iterable<Entity>> original) {
         if (!CoOConfig.cofhCacheTranslucentRenderers) {
             return original.call(level);

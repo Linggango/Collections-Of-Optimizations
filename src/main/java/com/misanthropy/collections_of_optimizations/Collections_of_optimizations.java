@@ -4,6 +4,7 @@ import com.misanthropy.collections_of_optimizations.core.ClientTickStamp;
 import com.misanthropy.collections_of_optimizations.core.CurioPresenceCache;
 import com.misanthropy.collections_of_optimizations.core.CuriosSlotCache;
 import com.misanthropy.collections_of_optimizations.core.IafDenRegistry;
+import com.misanthropy.collections_of_optimizations.core.MapTintCache;
 import com.misanthropy.collections_of_optimizations.core.RecipeCacheGeneration;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -22,6 +23,10 @@ public class Collections_of_optimizations {
 
         if (ModList.get().isLoaded("bloodmagic")) {
             RecipeCacheGeneration.register();
+        }
+
+        if (ModList.get().isLoaded("supplementaries")) {
+            MapTintCache.register();
         }
 
         if (ModList.get().isLoaded("curios")) {

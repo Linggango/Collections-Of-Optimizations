@@ -71,6 +71,10 @@
     "punchy.MixinMultiPackResourceManager",
     "quark.EntityPersistentDataAccessor",
     "quark.MixinPigLittersModule",
+    "supplementaries.MixinEndermanSkullWatch",
+    "supplementaries.MixinBlockEntityInfoCapSync",
+    "supplementaries.MixinColoredMapTint",
+    "amendments.MixinWallLanternSway",
     "revelationfix.MixinEntityFluidStandScan",
     "revelationfix.MixinHurtByTargetGoalEvents",
     "soulsweapons.MixinDespawnTimerData",
@@ -126,6 +130,7 @@
     "vanilla.MixinStructureCheck"
   ],
   "client": [
+    "vanilla.MixinStringRenderOutputFontSet",
     "vanilla.MixinBiomeManagerQuartCache",
     "vanilla.MixinClientLevelSkyColour",
     "gnetum.MixinPassManager",
