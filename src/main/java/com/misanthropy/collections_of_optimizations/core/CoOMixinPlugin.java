@@ -66,6 +66,8 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("quark", "quark"),
             Map.entry("perception", "perception"),
             Map.entry("pehkui", "pehkui"),
+            Map.entry("relics", "relics"),
+            Map.entry("morehitboxes", "morehitboxes"),
             Map.entry("moonlight", "moonlight"),
             Map.entry("subtleeffects", "subtle_effects"),
             Map.entry("tonsofenchants", "tonsofenchants"),

@@ -65,6 +65,8 @@
     "naturesaura.MixinLevelChunkAuraCache",
     "patchouli.MixinItemStackUtil",
     "placebo.MixinPlaceboEventFactory",
+    "relics.MixinEssenceArcSpeed",
+    "morehitboxes.MixinMultiPartEntityQuery",
     "pehkui.MixinScaleUtils",
     "pehkui.MixinEntityBoxScaleCache",
     "perception.MixinEntityTrailData",

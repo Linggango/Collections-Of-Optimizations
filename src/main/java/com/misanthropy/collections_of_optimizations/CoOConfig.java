@@ -197,6 +197,11 @@ public final class CoOConfig {
     public static int arsnouveauSkyTextureInterval = 1;
     public static boolean pehkuiMemoInteractionBoxScales = true;
 
+    public static boolean relicsClampEssenceSpeed = true;
+    public static double relicsEssenceMaxSpeed = 4.0D;
+
+    public static boolean morehitboxesSkipAbsentMultiPartFilter = true;
+
     public static boolean goetyrevelationCacheHaloLookup = true;
     public static boolean revelationfixSkipMobFluidStandScan = true;
     public static boolean revelationfixSkipNonSpiderHurtByTargetEvents = true;
@@ -421,6 +426,11 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue ambientsoundsMemoBiomeMatchValue;
     private final ForgeConfigSpec.IntValue arsnouveauSkyTextureIntervalValue;
     private final ForgeConfigSpec.BooleanValue pehkuiMemoInteractionBoxScalesValue;
+
+    private final ForgeConfigSpec.BooleanValue relicsClampEssenceSpeedValue;
+    private final ForgeConfigSpec.DoubleValue relicsEssenceMaxSpeedValue;
+
+    private final ForgeConfigSpec.BooleanValue morehitboxesSkipAbsentMultiPartFilterValue;
 
     private final ForgeConfigSpec.BooleanValue goetyrevelationCacheHaloLookupValue;
     private final ForgeConfigSpec.BooleanValue revelationfixSkipMobFluidStandScanValue;
@@ -951,6 +961,21 @@ public final class CoOConfig {
                 .define("memoInteractionBoxScales", true);
         builder.pop();
 
+        builder.comment("Relics patches.").push("relics");
+        this.relicsClampEssenceSpeedValue = builder
+                .comment("Cap the homing speed of the Holy Locket death and life essences. Their arc step scales with both the distance to the target and their own age, so an essence that misses for long enough accelerates without bound until its query box overflows the entity section index and crashes the game.")
+                .define("clampEssenceSpeed", true);
+        this.relicsEssenceMaxSpeedValue = builder
+                .comment("Upper bound in blocks per tick for that cap. The step is also never allowed to exceed the remaining distance to the target, so the essence stops overshooting and converges instead.")
+                .defineInRange("essenceMaxSpeed", 4.0D, 0.5D, 64.0D);
+        builder.pop();
+
+        builder.comment("More Hitboxes patches.").push("morehitboxes");
+        this.morehitboxesSkipAbsentMultiPartFilterValue = builder
+                .comment("Skip More Hitboxes' multipart pass over the result of every entity box query when the result holds no multipart. The pass allocates a hash set and re-tests the predicate for each hit, and almost every query returns none.")
+                .define("skipAbsentMultiPartFilter", true);
+        builder.pop();
+
         builder.comment("Tons Of Enchants patches.").push("tonsofenchants");
         this.tonsofenchantsSkipAbsentAttributeRemovalValue = builder
                 .comment("Stop every player broadcasting a pointless attribute sync packet every tick.")
@@ -1384,6 +1409,9 @@ public final class CoOConfig {
         ambientsoundsMemoBiomeMatch = masterEnabled && VALUES.ambientsoundsMemoBiomeMatchValue.get();
         arsnouveauSkyTextureInterval = masterEnabled ? VALUES.arsnouveauSkyTextureIntervalValue.get() : 0;
         pehkuiMemoInteractionBoxScales = masterEnabled && VALUES.pehkuiMemoInteractionBoxScalesValue.get();
+        relicsClampEssenceSpeed = masterEnabled && VALUES.relicsClampEssenceSpeedValue.get();
+        relicsEssenceMaxSpeed = VALUES.relicsEssenceMaxSpeedValue.get();
+        morehitboxesSkipAbsentMultiPartFilter = masterEnabled && VALUES.morehitboxesSkipAbsentMultiPartFilterValue.get();
         goetyrevelationCacheHaloLookup = masterEnabled && VALUES.goetyrevelationCacheHaloLookupValue.get();
         revelationfixSkipMobFluidStandScan = masterEnabled && VALUES.revelationfixSkipMobFluidStandScanValue.get();
         revelationfixSkipNonSpiderHurtByTargetEvents = masterEnabled && VALUES.revelationfixSkipNonSpiderHurtByTargetEventsValue.get();

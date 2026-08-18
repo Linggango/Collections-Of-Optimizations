@@ -196,6 +196,8 @@ dependencies {
     compileOnly files('libs-compile/Quark-4.0-462.jar')
     compileOnly files('libs-compile/Perception-FORGE-0.1.4+1.20.1.jar')
     compileOnly files('libs-compile/pehkui-3.8.2-apionly.jar')
+    compileOnly files('libs-compile/relics-1.20.1-0.8.0.13.jar')
+    compileOnly files('libs-compile/morehitboxes-forge-1.20.1-1.9.2.jar')
     compileOnly files('libs-compile/moonlight-2.16.34-apionly.jar')
     compileOnly files('libs-compile/SubtleEffects-forge-1.20.1-1.14.3.jar')
     compileOnly files('libs-compile/fzzy_config-0.7.3+1.20.1+forge.jar')
