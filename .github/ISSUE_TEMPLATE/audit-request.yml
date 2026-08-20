@@ -1,0 +1,22 @@
+name: Mod Audit Request
+description: Request a mod to be audited for performance improvements/bug fixes.
+title: "[Audit]: "
+labels: ["audit-request"]
+body:
+  - type: dropdown
+    id: reason
+    attributes:
+      label: Reason for request
+      options:
+        - Profiler data shows lag
+        - Known inefficient code
+        - Other (explain below)
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Profiler results or code snippet, no "it feels laggy"
+    validations:
+      required: true
