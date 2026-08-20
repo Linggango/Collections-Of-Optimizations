@@ -125,6 +125,9 @@
     "mowziesmobs.MixinLivingEntityMowzieCaps",
     "mowziesmobs.MixinMowzieEntity",
     "mowziesmobs.MixinEntityUmvuthanaFollower",
+    "copycats.MixinBlockStateOccludeMemo",
+    "copycats.MixinMigrationManagerFastPath",
+    "copycats.MixinBlockEntityUtilsVirtualCheck",
     "vanilla.MixinBlockPredictableDrops",
     "vanilla.MixinBoatFallDamage",
     "vanilla.MixinChunkMapEntityTracker",
@@ -211,7 +214,8 @@
     "pickupnotifier.MixinTransparencyBuffer",
     "photon.MixinTileParticle",
     "photon.MixinTrailTailArray",
-    "photon.MixinBlockEffect"
+    "photon.MixinBlockEffect",
+    "copycats.MixinCopycatModelCorePrepare"
   ],
   "injectors": {
     "defaultRequire": 0

@@ -230,6 +230,11 @@ public final class CoOConfig {
 
     public static boolean amendmentsSkipIdleSwaySync = true;
 
+    public static boolean copycatsMemoStateOcclusion = true;
+    public static boolean copycatsFastMigrationChecks = true;
+    public static boolean copycatsCachedModelConfig = true;
+    public static boolean copycatsLeanVirtualWorldCheck = true;
+
     public static int itemEntityRenderCap = 1;
     public static boolean vanillaMemoGlyphFontSet = true;
     public static boolean vanillaFasterStructureLocation = true;
@@ -463,6 +468,11 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue supplementariesMemoMapTintLookupValue;
 
     private final ForgeConfigSpec.BooleanValue amendmentsSkipIdleSwaySyncValue;
+
+    private final ForgeConfigSpec.BooleanValue copycatsMemoStateOcclusionValue;
+    private final ForgeConfigSpec.BooleanValue copycatsFastMigrationChecksValue;
+    private final ForgeConfigSpec.BooleanValue copycatsCachedModelConfigValue;
+    private final ForgeConfigSpec.BooleanValue copycatsLeanVirtualWorldCheckValue;
 
     private final ForgeConfigSpec.IntValue itemEntityRenderCapValue;
     private final ForgeConfigSpec.BooleanValue vanillaMemoGlyphFontSetValue;
@@ -1231,6 +1241,21 @@ public final class CoOConfig {
                 .define("skipIdleSwaySync", true);
         builder.pop();
 
+        builder.comment("Create: Copycats+ patches.").push("copycats");
+        this.copycatsMemoStateOcclusionValue = builder
+                .comment("Remember each block state's occlusion answer instead of re-running Copycats+' holder and instanceof checks on every canOcclude call.")
+                .define("memoStateOcclusion", true);
+        this.copycatsFastMigrationChecksValue = builder
+                .comment("Skip the config lookup, registry lookup and string building Copycats+ runs for every block entity and structure block that is not a copycat.")
+                .define("fastMigrationChecks", true);
+        this.copycatsCachedModelConfigValue = builder
+                .comment("Read the two Copycats+ client model settings at most once per second instead of twice per copycat model query.")
+                .define("cachedModelConfig", true);
+        this.copycatsLeanVirtualWorldCheckValue = builder
+                .comment("Replace the lambda and platform lookups Copycats+ runs on every Create block entity update with one cached class check.")
+                .define("leanVirtualWorldCheck", true);
+        builder.pop();
+
         builder.comment("Vanilla patches. These are the only patches here that are not aimed at a specific mod.").push("vanilla");
         this.itemEntityRenderCapValue = builder
                 .comment("Maximum times a dropped item stack's model is drawn.")
@@ -1459,6 +1484,10 @@ public final class CoOConfig {
         supplementariesSkipNonSignCapSync = masterEnabled && VALUES.supplementariesSkipNonSignCapSyncValue.get();
         supplementariesMemoMapTintLookup = masterEnabled && VALUES.supplementariesMemoMapTintLookupValue.get();
         amendmentsSkipIdleSwaySync = masterEnabled && VALUES.amendmentsSkipIdleSwaySyncValue.get();
+        copycatsMemoStateOcclusion = masterEnabled && VALUES.copycatsMemoStateOcclusionValue.get();
+        copycatsFastMigrationChecks = masterEnabled && VALUES.copycatsFastMigrationChecksValue.get();
+        copycatsCachedModelConfig = masterEnabled && VALUES.copycatsCachedModelConfigValue.get();
+        copycatsLeanVirtualWorldCheck = masterEnabled && VALUES.copycatsLeanVirtualWorldCheckValue.get();
         itemEntityRenderCap = masterEnabled ? VALUES.itemEntityRenderCapValue.get() : 0;
         vanillaMemoGlyphFontSet = masterEnabled && VALUES.vanillaMemoGlyphFontSetValue.get();
         vanillaFasterStructureLocation = masterEnabled && VALUES.vanillaFasterStructureLocationValue.get();

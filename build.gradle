@@ -221,6 +221,7 @@ dependencies {
     compileOnly files('libs-compile/amendments-1.20-2.2.6.jar')
     compileOnly files('libs-compile/morerelics-1.7.6-1.20.1.jar')
     compileOnly files('libs-compile/cosmeticarmorreworked-1.20.1-v1a.jar')
+    compileOnly files('libs-compile/copycats-3.0.8+mc.1.20.1-forge.jar')
 
     implementation fg.deobf(fileTree(dir: 'libs', include: ['*.jar']))
 }

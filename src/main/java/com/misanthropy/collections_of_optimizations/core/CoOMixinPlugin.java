@@ -96,7 +96,8 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("legendarymonsters", "legendary_monsters"),
             Map.entry("xaeroworldmap", "xaeroworldmap"),
             Map.entry("supplementaries", "supplementaries"),
-            Map.entry("amendments", "amendments")
+            Map.entry("amendments", "amendments"),
+            Map.entry("copycats", "copycats")
     );
 
     private static final Map<String, Integer> GROUP_MIN_MAJOR = Map.of(
