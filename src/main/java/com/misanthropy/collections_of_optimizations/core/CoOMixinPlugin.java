@@ -3,16 +3,22 @@ package com.misanthropy.collections_of_optimizations.core;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
 import net.minecraftforge.fml.loading.LoadingModList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class CoOMixinPlugin implements IMixinConfigPlugin {
+
+    private static final Logger LOGGER = LogManager.getLogger("collections_of_optimizations");
+    private static final Set<String> WARNED_GROUPS = new HashSet<>();
 
     private static final String MIXIN_PACKAGE = "com.misanthropy.collections_of_optimizations.mixin.";
 
@@ -101,7 +107,9 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
     );
 
     private static final Map<String, Integer> GROUP_MIN_MAJOR = Map.of(
-            "structurify", 2
+            "structurify", 2,
+            "iceandfire", 2,
+            "iafdragonfix", 2
     );
 
     private static final Map<String, String[]> GROUP_CONFLICTS = Map.of(
@@ -178,6 +186,13 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             }
             Integer minMajor = GROUP_MIN_MAJOR.get(group);
             if (modId != null && minMajor != null && majorVersion(modId) < minMajor) {
+                if (WARNED_GROUPS.add(group)) {
+                    LOGGER.warn("Disabling '{}' optimizations: installed '{}' version is unsupported{}",
+                            group, modId,
+                            "iceandfire".equals(modId)
+                                    ? " (Ice and Fire: Community Edition is not supported - use the original Ice and Fire mod to enable these optimizations)"
+                                    : "");
+                }
                 return false;
             }
         }

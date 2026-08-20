@@ -70,7 +70,7 @@ public class IafDenPiece extends StructurePiece {
         try {
             IafDenGenFlag.enable();
             IafDenGen.generate(this.denType, this.boundingBox, level, chunkGenerator, random);
-        } catch (Exception exception) {
+        } catch (Exception | LinkageError exception) {
             IafDenRegistry.LOGGER.error("Failed to generate dragon den {}", this.denType, exception);
         } finally {
             IafDenGenFlag.disable();

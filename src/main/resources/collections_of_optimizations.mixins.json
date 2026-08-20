@@ -131,6 +131,7 @@
     "vanilla.MixinBlockPredictableDrops",
     "vanilla.MixinBoatFallDamage",
     "vanilla.MixinChunkMapEntityTracker",
+    "vanilla.ChunkMapAccessor",
     "vanilla.MixinContainerMenuBroadcast",
     "vanilla.MixinEntityInWallScan",
     "vanilla.MixinVecDeltaCodec",

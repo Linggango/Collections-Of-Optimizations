@@ -1,6 +1,8 @@
 package com.misanthropy.collections_of_optimizations;
 
 import com.misanthropy.collections_of_optimizations.core.ClientTickStamp;
+import com.misanthropy.collections_of_optimizations.core.GhostPlayerPurge;
+import com.misanthropy.collections_of_optimizations.core.LeakProbe;
 import com.misanthropy.collections_of_optimizations.core.CurioPresenceCache;
 import com.misanthropy.collections_of_optimizations.core.CuriosSlotCache;
 import com.misanthropy.collections_of_optimizations.core.IafDenRegistry;
@@ -35,6 +37,9 @@ public class Collections_of_optimizations {
         }
 
         ClientTickStamp.register();
+
+        GhostPlayerPurge.register();
+        LeakProbe.register();
 
         IafDenRegistry.register();
     }

@@ -42,6 +42,16 @@ public final class IafDenRegistry {
         }
         if (portInstalled == null) {
             portInstalled = ModList.get().isLoaded("iceandfire") && !ModList.get().isLoaded("iafdragonfix");
+            if (portInstalled) {
+                try {
+                    Class.forName("com.github.alexthe666.iceandfire.entity.EntityDragonBase",
+                            false, IafDenRegistry.class.getClassLoader());
+                } catch (Throwable throwable) {
+                    portInstalled = false;
+                    LOGGER.warn("Ice and Fire fork is being used (e.g. Community Edition) - "
+                            + "dragon den generation disabled. Use the original Ice and Fire mod (which is recommended) to enable it.");
+                }
+            }
         }
         return portInstalled;
     }

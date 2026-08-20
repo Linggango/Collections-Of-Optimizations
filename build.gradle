@@ -262,6 +262,10 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
+tasks.withType(net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace).configureEach {
+    useArgsFile()
+}
+
 tasks.matching { it.name == 'reobfJar' }.configureEach {
     doLast {
         def jarFile = tasks.named('jar', Jar).get().archiveFile.get().asFile

@@ -247,6 +247,7 @@ public final class CoOConfig {
     public static boolean vanillaCacheBiomeQuartLookups = true;
     public static boolean vanillaMemoCameraFluid = true;
     public static boolean vanillaMemoSkyColour = true;
+    public static boolean vanillaPurgeGhostPlayers = true;
     public static boolean gnetumMemoCacheSettings = true;
 
     private final ForgeConfigSpec.BooleanValue masterEnabledValue;
@@ -486,6 +487,7 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue vanillaCacheBiomeQuartLookupsValue;
     private final ForgeConfigSpec.BooleanValue vanillaMemoCameraFluidValue;
     private final ForgeConfigSpec.BooleanValue vanillaMemoSkyColourValue;
+    private final ForgeConfigSpec.BooleanValue vanillaPurgeGhostPlayersValue;
     private final ForgeConfigSpec.BooleanValue gnetumMemoCacheSettingsValue;
 
     static {
@@ -1293,6 +1295,9 @@ public final class CoOConfig {
         this.vanillaMemoSkyColourValue = builder
                 .comment("Work out the sky colour once per camera position per frame. Fog setup, the sky renderer and shader uniform packs each ask for it separately and every call samples 27 biomes.")
                 .define("memoSkyColour", true);
+        this.vanillaPurgeGhostPlayersValue = builder
+                .comment("Every five seconds, drop dead player copies that another mod left registered as chunk loaders. Such ghosts keep hundreds of chunks loaded and spawning mobs at wherever they died until restart.")
+                .define("purgeGhostPlayers", true);
         builder.pop();
 
         builder.push("gnetum");
@@ -1501,5 +1506,6 @@ public final class CoOConfig {
         vanillaMemoSkyColour = masterEnabled && VALUES.vanillaMemoSkyColourValue.get();
         gnetumMemoCacheSettings = masterEnabled && VALUES.gnetumMemoCacheSettingsValue.get();
         vanillaMemoCameraFluid = masterEnabled && VALUES.vanillaMemoCameraFluidValue.get();
+        vanillaPurgeGhostPlayers = masterEnabled && VALUES.vanillaPurgeGhostPlayersValue.get();
     }
 }
