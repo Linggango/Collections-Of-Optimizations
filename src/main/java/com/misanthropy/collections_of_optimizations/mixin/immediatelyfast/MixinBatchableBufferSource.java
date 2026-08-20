@@ -54,9 +54,13 @@ public abstract class MixinBatchableBufferSource {
         ReferenceLinkedOpenHashSet<RenderType> busy = this.coo$busyLayers;
         busy.clear();
         boolean checkFallback = !fallback.isEmpty();
+        int remaining = active.size() + fallback.size();
         for (RenderType layer : layers) {
             if (active.contains(layer) || (checkFallback && fallback.containsKey(layer))) {
                 busy.add(layer);
+                if (--remaining == 0) {
+                    break;
+                }
             }
         }
         return busy;

@@ -17,6 +17,7 @@ public final class CoOConfig {
     public static boolean curiosCacheEntitySlotLookup = true;
     public static boolean curiosFastEquippedItemMiss = true;
     public static boolean curiosFastFindFirstMiss = true;
+    public static boolean curiosReuseCurioMapView = true;
 
     public static boolean artifactsSkipClientTickOnNonPlayers = true;
     public static boolean artifactsFastPathKittySlippers = true;
@@ -196,8 +197,11 @@ public final class CoOConfig {
     public static boolean ambientsoundsMemoBiomeMatch = true;
     public static int arsnouveauSkyTextureInterval = 1;
     public static boolean pehkuiMemoInteractionBoxScales = true;
+    public static boolean pehkuiCacheClientScales = true;
 
     public static boolean relicsClampEssenceSpeed = true;
+    public static boolean morerelicsHoistEquippedCurios = true;
+    public static boolean cosmeticarmorPerPlayerRestoreQueue = true;
     public static double relicsEssenceMaxSpeed = 4.0D;
 
     public static boolean morehitboxesSkipAbsentMultiPartFilter = true;
@@ -248,6 +252,7 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue curiosCacheEntitySlotLookupValue;
     private final ForgeConfigSpec.BooleanValue curiosFastEquippedItemMissValue;
     private final ForgeConfigSpec.BooleanValue curiosFastFindFirstMissValue;
+    private final ForgeConfigSpec.BooleanValue curiosReuseCurioMapViewValue;
 
     private final ForgeConfigSpec.BooleanValue artifactsSkipClientTickOnNonPlayersValue;
     private final ForgeConfigSpec.BooleanValue artifactsFastPathKittySlippersValue;
@@ -426,8 +431,11 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue ambientsoundsMemoBiomeMatchValue;
     private final ForgeConfigSpec.IntValue arsnouveauSkyTextureIntervalValue;
     private final ForgeConfigSpec.BooleanValue pehkuiMemoInteractionBoxScalesValue;
+    private final ForgeConfigSpec.BooleanValue pehkuiCacheClientScalesValue;
 
     private final ForgeConfigSpec.BooleanValue relicsClampEssenceSpeedValue;
+    private final ForgeConfigSpec.BooleanValue morerelicsHoistEquippedCuriosValue;
+    private final ForgeConfigSpec.BooleanValue cosmeticarmorPerPlayerRestoreQueueValue;
     private final ForgeConfigSpec.DoubleValue relicsEssenceMaxSpeedValue;
 
     private final ForgeConfigSpec.BooleanValue morehitboxesSkipAbsentMultiPartFilterValue;
@@ -500,6 +508,9 @@ public final class CoOConfig {
         this.curiosFastFindFirstMissValue = builder
                 .comment("Answer ICuriosItemHandler#findFirstCurio(Item) from the same per-tick set instead of walking every slot handler.")
                 .define("fastFindFirstMiss", true);
+        this.curiosReuseCurioMapViewValue = builder
+                .comment("Hand out one reusable unmodifiable view of an entity's curio slot map instead of wrapping the map again on every single call.")
+                .define("reuseCurioMapView", true);
         builder.pop();
 
         builder.comment("Artifacts patches.").push("artifacts");
@@ -959,6 +970,9 @@ public final class CoOConfig {
         this.pehkuiMemoInteractionBoxScalesValue = builder
                 .comment("Work out an entity's interaction box scales once a tick instead of twice for every entity walked by every AABB query. A scale set part way through a tick is seen on the next one.")
                 .define("memoInteractionBoxScales", true);
+        this.pehkuiCacheClientScalesValue = builder
+                .comment("Let Pehkui keep its already existing per tick scale cache on the client too. Pehkui only fills that cache on the server, so every client side scale read walks the whole modifier chain again. WARNING: if a mod changes an entity's scale without going through Pehkui's own setters, the visual size can lag by one tick. Turn this off if you see entities stuck at the wrong size.")
+                .define("cacheClientScales", true);
         builder.pop();
 
         builder.comment("Relics patches.").push("relics");
@@ -968,6 +982,18 @@ public final class CoOConfig {
         this.relicsEssenceMaxSpeedValue = builder
                 .comment("Upper bound in blocks per tick for that cap. The step is also never allowed to exceed the remaining distance to the target, so the essence stops overshooting and converges instead.")
                 .defineInRange("essenceMaxSpeed", 4.0D, 0.5D, 64.0D);
+        builder.pop();
+
+        builder.comment("More Relics patches.").push("morerelics");
+        this.morerelicsHoistEquippedCuriosValue = builder
+                .comment("Build the combined curio inventory once per equipped relic scan instead of twice for every single slot. More Relics calls getEquippedCurios() inside both the loop condition and the loop body, so a thirty slot player allocates sixty throwaway inventory wrappers per relic overlay per frame.")
+                .define("hoistEquippedCurios", true);
+        builder.pop();
+
+        builder.comment("Cosmetic Armor Reworked patches.").push("cosmeticarmor");
+        this.cosmeticarmorPerPlayerRestoreQueueValue = builder
+                .comment("Keep each player's armour restore queue on the player instead of in a weak keyed Guava cache. The cache is looked up twice per rendered player per frame plus twice more for the held item and the arm, and every lookup pays a hash and a segment read.")
+                .define("perPlayerRestoreQueue", true);
         builder.pop();
 
         builder.comment("More Hitboxes patches.").push("morehitboxes");
@@ -1270,6 +1296,7 @@ public final class CoOConfig {
         curiosCacheEntitySlotLookup = masterEnabled && VALUES.curiosCacheEntitySlotLookupValue.get();
         curiosFastEquippedItemMiss = masterEnabled && VALUES.curiosFastEquippedItemMissValue.get();
         curiosFastFindFirstMiss = masterEnabled && VALUES.curiosFastFindFirstMissValue.get();
+        curiosReuseCurioMapView = masterEnabled && VALUES.curiosReuseCurioMapViewValue.get();
         artifactsSkipClientTickOnNonPlayers = masterEnabled && VALUES.artifactsSkipClientTickOnNonPlayersValue.get();
         artifactsFastPathKittySlippers = masterEnabled && VALUES.artifactsFastPathKittySlippersValue.get();
         artifactsFastPathUmbrella = masterEnabled && VALUES.artifactsFastPathUmbrellaValue.get();
@@ -1409,7 +1436,10 @@ public final class CoOConfig {
         ambientsoundsMemoBiomeMatch = masterEnabled && VALUES.ambientsoundsMemoBiomeMatchValue.get();
         arsnouveauSkyTextureInterval = masterEnabled ? VALUES.arsnouveauSkyTextureIntervalValue.get() : 0;
         pehkuiMemoInteractionBoxScales = masterEnabled && VALUES.pehkuiMemoInteractionBoxScalesValue.get();
+        pehkuiCacheClientScales = masterEnabled && VALUES.pehkuiCacheClientScalesValue.get();
         relicsClampEssenceSpeed = masterEnabled && VALUES.relicsClampEssenceSpeedValue.get();
+        morerelicsHoistEquippedCurios = masterEnabled && VALUES.morerelicsHoistEquippedCuriosValue.get();
+        cosmeticarmorPerPlayerRestoreQueue = masterEnabled && VALUES.cosmeticarmorPerPlayerRestoreQueueValue.get();
         relicsEssenceMaxSpeed = VALUES.relicsEssenceMaxSpeedValue.get();
         morehitboxesSkipAbsentMultiPartFilter = masterEnabled && VALUES.morehitboxesSkipAbsentMultiPartFilterValue.get();
         goetyrevelationCacheHaloLookup = masterEnabled && VALUES.goetyrevelationCacheHaloLookupValue.get();

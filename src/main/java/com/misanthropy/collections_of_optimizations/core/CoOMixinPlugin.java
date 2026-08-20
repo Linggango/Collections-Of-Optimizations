@@ -67,6 +67,8 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("perception", "perception"),
             Map.entry("pehkui", "pehkui"),
             Map.entry("relics", "relics"),
+            Map.entry("morerelics", "morerelics"),
+            Map.entry("cosmeticarmor", "cosmeticarmorreworked"),
             Map.entry("morehitboxes", "morehitboxes"),
             Map.entry("moonlight", "moonlight"),
             Map.entry("subtleeffects", "subtle_effects"),
@@ -124,7 +126,9 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
 
             "goety.MixinCuriosFinder", new String[]{"curios"},
 
-            "goety.MixinCuriosFinderFilter", new String[]{"curios"}
+            "goety.MixinCuriosFinderFilter", new String[]{"curios"},
+
+            "morerelics.MixinMoreRelicsUtil", new String[]{"curios", "relics"}
     );
 
     private static final Map<String, String[]> MIXIN_ANY_OF = Map.of(
