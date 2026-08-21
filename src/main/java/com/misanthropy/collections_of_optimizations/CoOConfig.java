@@ -249,6 +249,7 @@ public final class CoOConfig {
     public static boolean vanillaMemoSkyColour = true;
     public static boolean vanillaPurgeGhostPlayers = true;
     public static boolean gnetumMemoCacheSettings = true;
+    public static boolean mcreatorShareDefaultPlayerVariables = true;
 
     private final ForgeConfigSpec.BooleanValue masterEnabledValue;
 
@@ -489,6 +490,7 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue vanillaMemoSkyColourValue;
     private final ForgeConfigSpec.BooleanValue vanillaPurgeGhostPlayersValue;
     private final ForgeConfigSpec.BooleanValue gnetumMemoCacheSettingsValue;
+    private final ForgeConfigSpec.BooleanValue mcreatorShareDefaultPlayerVariablesValue;
 
     static {
         Pair<CoOConfig, ForgeConfigSpec> pair = new ForgeConfigSpec.Builder().configure(CoOConfig::new);
@@ -1305,6 +1307,12 @@ public final class CoOConfig {
                 .comment("Answer gnetum's per element caching question once per tick instead of once per element per frame. Each ask is a set lookup plus a guava cache lookup and there are dozens of elements.")
                 .define("memoCacheSettings", true);
         builder.pop();
+
+        builder.comment("MCreator mod patches.").push("mcreator");
+        this.mcreatorShareDefaultPlayerVariablesValue = builder
+                .comment("Hand MCreator mods one shared empty player variables object instead of allocating a throwaway on every single variable read. Procedures that read variables per tick or per frame can otherwise churn hundreds of megabytes of garbage. This rewrites the mods' classes as they load, so a change here only takes effect from the next launch.")
+                .define("shareDefaultPlayerVariables", true);
+        builder.pop();
     }
 
     public static void onLoad(ModConfigEvent.Loading event) {
@@ -1507,5 +1515,6 @@ public final class CoOConfig {
         gnetumMemoCacheSettings = masterEnabled && VALUES.gnetumMemoCacheSettingsValue.get();
         vanillaMemoCameraFluid = masterEnabled && VALUES.vanillaMemoCameraFluidValue.get();
         vanillaPurgeGhostPlayers = masterEnabled && VALUES.vanillaPurgeGhostPlayersValue.get();
+        mcreatorShareDefaultPlayerVariables = masterEnabled && VALUES.mcreatorShareDefaultPlayerVariablesValue.get();
     }
 }

@@ -149,6 +149,9 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void onLoad(String mixinPackage) {
+        if (!isModPresent("mcreator_mem_fix")) {
+            McreatorVariableTransformer.install();
+        }
     }
 
     @Override
