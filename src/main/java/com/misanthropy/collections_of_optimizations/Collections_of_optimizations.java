@@ -1,5 +1,6 @@
 package com.misanthropy.collections_of_optimizations;
 
+import com.misanthropy.collections_of_optimizations.core.CameraShakeScanCache;
 import com.misanthropy.collections_of_optimizations.core.ClientTickStamp;
 import com.misanthropy.collections_of_optimizations.core.GhostPlayerPurge;
 import com.misanthropy.collections_of_optimizations.core.LeakProbe;
@@ -37,6 +38,7 @@ public class Collections_of_optimizations {
         }
 
         ClientTickStamp.register();
+        CameraShakeScanCache.register();
 
         GhostPlayerPurge.register();
         LeakProbe.register();

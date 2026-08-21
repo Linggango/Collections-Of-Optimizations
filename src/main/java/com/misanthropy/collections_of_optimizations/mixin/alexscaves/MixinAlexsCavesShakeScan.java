@@ -4,25 +4,18 @@ import com.github.alexmodguy.alexscaves.client.event.ClientEvents;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.misanthropy.collections_of_optimizations.CoOConfig;
+import com.misanthropy.collections_of_optimizations.core.CameraShakeScanCache;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
 @Mixin(value = ClientEvents.class, remap = false)
 public abstract class MixinAlexsCavesShakeScan {
-
-    @Unique
-    private List<Mob> coo$shakers = Collections.emptyList();
-
-    @Unique
-    private long coo$shakerStamp = Long.MIN_VALUE;
 
     @WrapOperation(
             method = "computeCameraAngles",
@@ -41,11 +34,6 @@ public abstract class MixinAlexsCavesShakeScan {
         if (!CoOConfig.alexscavesCacheShakeScan) {
             return original.call(level, type, box, filter);
         }
-        long now = level.getGameTime();
-        if (this.coo$shakerStamp != now) {
-            this.coo$shakerStamp = now;
-            this.coo$shakers = original.call(level, type, box, filter);
-        }
-        return this.coo$shakers;
+        return CameraShakeScanCache.get("alexscaves", level, type, box, filter, original);
     }
 }
