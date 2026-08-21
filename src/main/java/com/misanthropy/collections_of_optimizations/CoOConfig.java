@@ -73,6 +73,8 @@ public final class CoOConfig {
 
     public static boolean terrablenderCacheNamespaceRule = true;
 
+    public static boolean biomeswevegoneSkipForeignChunkTerrain = true;
+
     public static boolean terramitySkipItemAnimationCopies = true;
     public static boolean terramitySkipForeignEntityAnimations = true;
     public static boolean terramityMemoizeProcedureRaycasts = true;
@@ -248,6 +250,7 @@ public final class CoOConfig {
     public static boolean vanillaMemoCameraFluid = true;
     public static boolean vanillaMemoSkyColour = true;
     public static boolean vanillaPurgeGhostPlayers = true;
+    public static boolean vanillaFastBiomeBlend = true;
     public static boolean gnetumMemoCacheSettings = true;
     public static boolean mcreatorShareDefaultPlayerVariables = true;
 
@@ -314,6 +317,8 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue w2w2DeferWaypointSaveValue;
 
     private final ForgeConfigSpec.BooleanValue terrablenderCacheNamespaceRuleValue;
+
+    private final ForgeConfigSpec.BooleanValue biomeswevegoneSkipForeignChunkTerrainValue;
 
     private final ForgeConfigSpec.BooleanValue terramitySkipItemAnimationCopiesValue;
     private final ForgeConfigSpec.BooleanValue terramitySkipForeignEntityAnimationsValue;
@@ -489,6 +494,7 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue vanillaMemoCameraFluidValue;
     private final ForgeConfigSpec.BooleanValue vanillaMemoSkyColourValue;
     private final ForgeConfigSpec.BooleanValue vanillaPurgeGhostPlayersValue;
+    private final ForgeConfigSpec.BooleanValue vanillaFastBiomeBlendValue;
     private final ForgeConfigSpec.BooleanValue gnetumMemoCacheSettingsValue;
     private final ForgeConfigSpec.BooleanValue mcreatorShareDefaultPlayerVariablesValue;
 
@@ -690,6 +696,12 @@ public final class CoOConfig {
         this.w2w2DeferWaypointSaveValue = builder
                 .comment("Collapse the waypoint file writes this mod does when waystone data arrives.")
                 .define("deferWaypointSave", true);
+        builder.pop();
+
+        builder.comment("Oh The Biomes We've Gone patches.").push("biomeswevegone");
+        this.biomeswevegoneSkipForeignChunkTerrainValue = builder
+                .comment("Skip the Crag Gardens and Basalt Barrera terrain passes in chunks that contain neither biome. Both passes run on every chunk generated in every dimension and build four noise generators, two weighted state providers and 512 biome lookups before they ever check whether the biome is present.")
+                .define("skipForeignChunkTerrain", true);
         builder.pop();
 
         builder.comment("TerraBlender patches.").push("terrablender");
@@ -1297,6 +1309,9 @@ public final class CoOConfig {
         this.vanillaMemoSkyColourValue = builder
                 .comment("Work out the sky colour once per camera position per frame. Fog setup, the sky renderer and shader uniform packs each ask for it separately and every call samples 27 biomes.")
                 .define("memoSkyColour", true);
+        this.vanillaFastBiomeBlendValue = builder
+                .comment("Blend biome colours from a cached, incrementally summed grid instead of resampling the biome under every block in the blend square. Vanilla resamples the full square for every block, which is up to 225 biome lookups per block at the default blend radius. Output is identical.")
+                .define("fastBiomeBlend", true);
         this.vanillaPurgeGhostPlayersValue = builder
                 .comment("Every five seconds, drop dead player copies that another mod left registered as chunk loaders. Such ghosts keep hundreds of chunks loaded and spawning mobs at wherever they died until restart.")
                 .define("purgeGhostPlayers", true);
@@ -1321,6 +1336,19 @@ public final class CoOConfig {
 
     public static void onReload(ModConfigEvent.Reloading event) {
         bake();
+    }
+
+    public static void setFastBiomeBlend(boolean value) {
+        vanillaFastBiomeBlend = masterEnabled && value;
+        if (SPEC.isLoaded()) {
+            VALUES.vanillaFastBiomeBlendValue.set(value);
+        }
+    }
+
+    public static void save() {
+        if (SPEC.isLoaded()) {
+            SPEC.save();
+        }
     }
 
     private static void bake() {
@@ -1370,6 +1398,7 @@ public final class CoOConfig {
         xaeroMinimapRenderFpsCap = masterEnabled ? VALUES.xaeroMinimapRenderFpsCapValue.get() : 0;
         w2w2DeferWaypointSave = masterEnabled && VALUES.w2w2DeferWaypointSaveValue.get();
         terrablenderCacheNamespaceRule = masterEnabled && VALUES.terrablenderCacheNamespaceRuleValue.get();
+        biomeswevegoneSkipForeignChunkTerrain = masterEnabled && VALUES.biomeswevegoneSkipForeignChunkTerrainValue.get();
         terramitySkipItemAnimationCopies = masterEnabled && VALUES.terramitySkipItemAnimationCopiesValue.get();
         terramitySkipForeignEntityAnimations = masterEnabled && VALUES.terramitySkipForeignEntityAnimationsValue.get();
         terramityMemoizeProcedureRaycasts = masterEnabled && VALUES.terramityMemoizeProcedureRaycastsValue.get();
@@ -1515,6 +1544,7 @@ public final class CoOConfig {
         gnetumMemoCacheSettings = masterEnabled && VALUES.gnetumMemoCacheSettingsValue.get();
         vanillaMemoCameraFluid = masterEnabled && VALUES.vanillaMemoCameraFluidValue.get();
         vanillaPurgeGhostPlayers = masterEnabled && VALUES.vanillaPurgeGhostPlayersValue.get();
+        vanillaFastBiomeBlend = masterEnabled && VALUES.vanillaFastBiomeBlendValue.get();
         mcreatorShareDefaultPlayerVariables = masterEnabled && VALUES.mcreatorShareDefaultPlayerVariablesValue.get();
     }
 }

@@ -1,6 +1,7 @@
 package com.misanthropy.collections_of_optimizations;
 
 import com.misanthropy.collections_of_optimizations.core.CameraShakeScanCache;
+import com.misanthropy.collections_of_optimizations.core.CoOEmbeddiumOptions;
 import com.misanthropy.collections_of_optimizations.core.ClientTickStamp;
 import com.misanthropy.collections_of_optimizations.core.GhostPlayerPurge;
 import com.misanthropy.collections_of_optimizations.core.LeakProbe;
@@ -9,11 +10,13 @@ import com.misanthropy.collections_of_optimizations.core.CuriosSlotCache;
 import com.misanthropy.collections_of_optimizations.core.IafDenRegistry;
 import com.misanthropy.collections_of_optimizations.core.MapTintCache;
 import com.misanthropy.collections_of_optimizations.core.RecipeCacheGeneration;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 @Mod(Collections_of_optimizations.MODID)
 public class Collections_of_optimizations {
@@ -35,6 +38,10 @@ public class Collections_of_optimizations {
         if (ModList.get().isLoaded("curios")) {
             CuriosSlotCache.register();
             CurioPresenceCache.register();
+        }
+
+        if (FMLEnvironment.dist == Dist.CLIENT && ModList.get().isLoaded("embeddium")) {
+            CoOEmbeddiumOptions.register();
         }
 
         ClientTickStamp.register();

@@ -1,0 +1,4 @@
+{
+  "collections_of_optimizations.options.fast_biome_blend.name": "Fast Biome Blend",
+  "collections_of_optimizations.options.fast_biome_blend.tooltip": "Blends biome colours from a cached, incrementally summed grid instead of resampling every biome under every block. Colours are unchanged. Only affects the paths Embeddium does not already handle, such as particles and map mods."
+}

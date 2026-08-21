@@ -103,7 +103,8 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("xaeroworldmap", "xaeroworldmap"),
             Map.entry("supplementaries", "supplementaries"),
             Map.entry("amendments", "amendments"),
-            Map.entry("copycats", "copycats")
+            Map.entry("copycats", "copycats"),
+            Map.entry("biomeswevegone", "biomeswevegone")
     );
 
     private static final Map<String, Integer> GROUP_MIN_MAJOR = Map.of(
@@ -125,7 +126,9 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
 
             "vanilla.MixinItemEntityRenderer", new String[]{"flerovium"},
 
-            "vanilla.MixinChunkMapEntityTracker", new String[]{"vmp", "hariplayer"}
+            "vanilla.MixinChunkMapEntityTracker", new String[]{"vmp", "hariplayer"},
+
+            "vanilla.MixinClientLevelBiomeBlend", new String[]{"betterbiomeblend", "betterbiomereblend"}
     );
 
     private static final Map<String, String[]> MIXIN_REQUIRES = Map.of(
