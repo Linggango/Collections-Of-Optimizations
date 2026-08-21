@@ -12,12 +12,15 @@ public final class AreaPreviewChunkCache {
 
     private static int stamp = Integer.MIN_VALUE;
 
+    private static boolean anyPresent;
+
     private AreaPreviewChunkCache() {
     }
 
     public static byte state(int tick, long chunkKey) {
         if (tick != stamp) {
             stamp = tick;
+            anyPresent = false;
             CHUNKS.clear();
             return UNKNOWN;
         }
@@ -25,6 +28,11 @@ public final class AreaPreviewChunkCache {
     }
 
     public static void record(long chunkKey, boolean present) {
+        anyPresent |= present;
         CHUNKS.put(chunkKey, present ? PRESENT : ABSENT);
+    }
+
+    public static boolean scannedAndEmpty(int tick) {
+        return tick == stamp && !anyPresent;
     }
 }

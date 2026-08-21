@@ -25,7 +25,7 @@ public final class CameraShakeScanCache {
 
     private static WeakReference<Level> scanned = new WeakReference<>(null);
 
-    private static long stamp = Long.MIN_VALUE;
+    private static int stamp = Integer.MIN_VALUE;
 
     private CameraShakeScanCache() {
     }
@@ -37,14 +37,14 @@ public final class CameraShakeScanCache {
     }
 
     private static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
-        stamp = Long.MIN_VALUE;
+        stamp = Integer.MIN_VALUE;
         scanned = new WeakReference<>(null);
         CACHE.clear();
         KEYED.clear();
     }
 
     private static void refresh(Level level) {
-        long now = level.getGameTime();
+        int now = ClientTickStamp.current();
         if (stamp != now || scanned.get() != level) {
             stamp = now;
             scanned = new WeakReference<>(level);

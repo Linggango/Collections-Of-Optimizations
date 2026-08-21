@@ -8,16 +8,33 @@ import com.misanthropy.collections_of_optimizations.CoOConfig;
 import com.misanthropy.collections_of_optimizations.core.AreaPreviewChunkCache;
 import com.misanthropy.collections_of_optimizations.core.ClientTickStamp;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 
 import java.util.Collections;
 import java.util.Map;
 
 @Mixin(value = RenderLevelLast.class, remap = false)
 public abstract class MixinRenderLevelLast {
+
+    @Inject(
+            method = "renderAreaPreviews(Lnet/minecraftforge/client/event/RenderLevelStageEvent;Lnet/minecraft/world/entity/player/Player;)V",
+            at = @At("HEAD"),
+            cancellable = true,
+            require = 0
+    )
+    private static void coo$skipIdleAreaPreviews(RenderLevelStageEvent evt, Player player, CallbackInfo ci) {
+        if (CoOConfig.justdirethingsLeanAreaPreviewScan
+                && AreaPreviewChunkCache.scannedAndEmpty(ClientTickStamp.current())) {
+            ci.cancel();
+        }
+    }
 
     @WrapOperation(
             method = "renderAreaPreviews(Lnet/minecraftforge/client/event/RenderLevelStageEvent;Lnet/minecraft/world/entity/player/Player;)V",

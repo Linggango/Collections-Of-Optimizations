@@ -41,6 +41,7 @@ public final class CoOConfig {
     public static boolean xaerolibCacheEnforcementCheck = true;
 
     public static int xaeroworldmapVramPollInterval = 500;
+    public static int xaeroworldmapRenderProcessInterval = 10;
 
     public static boolean geckolibReuseRenderVectors = true;
     public static boolean geckolibCacheBoneLookup = true;
@@ -53,6 +54,7 @@ public final class CoOConfig {
 
     public static int fancymenuSeamlessCaptureInterval = 30;
     public static boolean fancymenuSkipRedundantScaleWrites = true;
+    public static boolean fancymenuPinRenderStateToRenderThread = true;
 
     public static boolean emfDropZeroAngerEntries = true;
 
@@ -155,6 +157,7 @@ public final class CoOConfig {
     public static boolean moonlightSkipEmptyMapMarkerScan = true;
 
     public static boolean pehkuiLeanScaleTick = true;
+    public static boolean pehkuiMemoModifierType = true;
 
     public static boolean tonsofenchantsSkipAbsentAttributeRemoval = true;
     public static boolean tonsofenchantsFrostbiteSkipClient = true;
@@ -286,6 +289,7 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue xaerolibCacheEnforcementCheckValue;
 
     private final ForgeConfigSpec.IntValue xaeroworldmapVramPollIntervalValue;
+    private final ForgeConfigSpec.IntValue xaeroworldmapRenderProcessIntervalValue;
 
     private final ForgeConfigSpec.BooleanValue geckolibReuseRenderVectorsValue;
     private final ForgeConfigSpec.BooleanValue geckolibCacheBoneLookupValue;
@@ -298,6 +302,7 @@ public final class CoOConfig {
 
     private final ForgeConfigSpec.IntValue fancymenuSeamlessCaptureIntervalValue;
     private final ForgeConfigSpec.BooleanValue fancymenuSkipRedundantScaleWritesValue;
+    private final ForgeConfigSpec.BooleanValue fancymenuPinRenderStateToRenderThreadValue;
 
     private final ForgeConfigSpec.BooleanValue emfDropZeroAngerEntriesValue;
 
@@ -399,6 +404,7 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue moonlightSkipEmptyMapMarkerScanValue;
 
     private final ForgeConfigSpec.BooleanValue pehkuiLeanScaleTickValue;
+    private final ForgeConfigSpec.BooleanValue pehkuiMemoModifierTypeValue;
 
     private final ForgeConfigSpec.BooleanValue tonsofenchantsSkipAbsentAttributeRemovalValue;
     private final ForgeConfigSpec.BooleanValue tonsofenchantsFrostbiteSkipClientValue;
@@ -562,7 +568,7 @@ public final class CoOConfig {
                 .comment("Read the item entity's block state through getChunkNow instead of the loading getChunk.")
                 .define("avoidChunkTickets", true);
         this.justdirethingsLeanAreaPreviewScanValue = builder
-                .comment("Stop the area preview renderer copying every block entity of all 169 nearby chunks into a fresh list every frame.")
+                .comment("Stop the area preview renderer copying every block entity of all 169 nearby chunks into a fresh list every frame, and skip the whole 169 chunk sweep for the rest of a tick once that tick's first frame found no area affecting block at all. A preview switched on part way through a tick shows up on the next one.")
                 .define("leanAreaPreviewScan", true);
         builder.pop();
 
@@ -606,6 +612,9 @@ public final class CoOConfig {
         this.xaeroworldmapVramPollIntervalValue = builder
                 .comment("Milliseconds between the map limiter's free VRAM query, which stock fires a blocking glGetIntegerv for on every single frame. 0 restores the stock every frame behaviour. Client.")
                 .defineInRange("vramPollInterval", 500, 0, 60000);
+        this.xaeroworldmapRenderProcessIntervalValue = builder
+                .comment("Milliseconds between map processing passes. Stock runs the whole write, cache and texture upload sweep once per frame, so at 1000 fps it runs 1000 times a second to keep up with a player walking at 4 blocks a second. The default of 10 gives a machine above 100 fps exactly the amount of map work a 100 fps machine already gets. The map's own screens are never throttled. 0 restores the stock every frame behaviour. WARNING: raising this a lot makes the map fill in more slowly after a long teleport. Client.")
+                .defineInRange("renderProcessInterval", 10, 0, 1000);
         builder.pop();
 
         builder.comment("GeckoLib patches.").push("geckolib");
@@ -642,6 +651,9 @@ public final class CoOConfig {
         this.fancymenuSkipRedundantScaleWritesValue = builder
                 .comment("Skip FancyMenu's ThreadLocal render scale write when the value is unchanged. Stock writes it on every PoseStack push, pop and scale.")
                 .define("skipRedundantScaleWrites", true);
+        this.fancymenuPinRenderStateToRenderThreadValue = builder
+                .comment("Hold FancyMenu's render scale, translation and rotation in plain fields for the render thread instead of in ThreadLocals. Stock reads or writes three ThreadLocals on every PoseStack push, pop, scale, translate and mulPose, which the profiler puts at 2.6 percent of the client thread. Other threads keep the stock ThreadLocal. Client.")
+                .define("pinRenderStateToRenderThread", true);
         builder.pop();
 
         builder.comment("Entity Model Features patches.").push("emf");
@@ -993,6 +1005,9 @@ public final class CoOConfig {
         this.pehkuiLeanScaleTickValue = builder
                 .comment("Stop allocating two throwaway lambdas per scale type per entity per tick.")
                 .define("leanScaleTick", true);
+        this.pehkuiMemoModifierTypeValue = builder
+                .comment("Remember which scale type a typed scale modifier points at instead of calling its supplier again on every single scale read. WARNING: a mod that swaps the type a modifier resolves to at runtime will be pinned to the first answer.")
+                .define("memoModifierType", true);
         this.pehkuiMemoInteractionBoxScalesValue = builder
                 .comment("Work out an entity's interaction box scales once a tick instead of twice for every entity walked by every AABB query. A scale set part way through a tick is seen on the next one.")
                 .define("memoInteractionBoxScales", true);
@@ -1378,6 +1393,7 @@ public final class CoOConfig {
         xaerolibCacheConfigProfile = masterEnabled && VALUES.xaerolibCacheConfigProfileValue.get();
         xaerolibCacheEnforcementCheck = masterEnabled && VALUES.xaerolibCacheEnforcementCheckValue.get();
         xaeroworldmapVramPollInterval = masterEnabled ? VALUES.xaeroworldmapVramPollIntervalValue.get() : 0;
+        xaeroworldmapRenderProcessInterval = masterEnabled ? VALUES.xaeroworldmapRenderProcessIntervalValue.get() : 0;
         geckolibReuseRenderVectors = masterEnabled && VALUES.geckolibReuseRenderVectorsValue.get();
         geckolibCacheBoneLookup = masterEnabled && VALUES.geckolibCacheBoneLookupValue.get();
         saintsdragonsSkipRedundantBoneTracking = masterEnabled && VALUES.saintsdragonsSkipRedundantBoneTrackingValue.get();
@@ -1386,6 +1402,7 @@ public final class CoOConfig {
         immediatelyfastSkipIdleLayers = masterEnabled && VALUES.immediatelyfastSkipIdleLayersValue.get();
         fancymenuSeamlessCaptureInterval = masterEnabled ? VALUES.fancymenuSeamlessCaptureIntervalValue.get() : 1;
         fancymenuSkipRedundantScaleWrites = masterEnabled && VALUES.fancymenuSkipRedundantScaleWritesValue.get();
+        fancymenuPinRenderStateToRenderThread = masterEnabled && VALUES.fancymenuPinRenderStateToRenderThreadValue.get();
         emfDropZeroAngerEntries = masterEnabled && VALUES.emfDropZeroAngerEntriesValue.get();
         etfFastValidPath = masterEnabled && VALUES.etfFastValidPathValue.get();
         oculusSkipSignTextInShadowPass = masterEnabled && VALUES.oculusSkipSignTextInShadowPassValue.get();
@@ -1468,6 +1485,7 @@ public final class CoOConfig {
         dungeoncrawlSkipBlockEntityProbe = masterEnabled && VALUES.dungeoncrawlSkipBlockEntityProbeValue.get();
         moonlightSkipEmptyMapMarkerScan = masterEnabled && VALUES.moonlightSkipEmptyMapMarkerScanValue.get();
         pehkuiLeanScaleTick = masterEnabled && VALUES.pehkuiLeanScaleTickValue.get();
+        pehkuiMemoModifierType = masterEnabled && VALUES.pehkuiMemoModifierTypeValue.get();
         tonsofenchantsSkipAbsentAttributeRemoval = masterEnabled && VALUES.tonsofenchantsSkipAbsentAttributeRemovalValue.get();
         tonsofenchantsFrostbiteSkipClient = masterEnabled && VALUES.tonsofenchantsFrostbiteSkipClientValue.get();
         tonsofenchantsLeanAttributeLookup = masterEnabled && VALUES.tonsofenchantsLeanAttributeLookupValue.get();
