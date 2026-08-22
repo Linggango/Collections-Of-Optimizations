@@ -143,6 +143,7 @@
     "vanilla.MixinVecDeltaCodec",
     "vanilla.MixinServerLevelStructureState",
     "vanilla.MixinStructureCheck",
+    "vanilla.MixinMovementCheckSlack",
     "distanthorizons.MixinDhLodDataBuilder"
   ],
   "client": [

@@ -256,6 +256,8 @@ public final class CoOConfig {
     public static boolean vanillaMemoSkyColour = true;
     public static boolean vanillaPurgeGhostPlayers = true;
     public static boolean vanillaFastBiomeBlend = true;
+    public static double vanillaMovementCheckSlack = 100.0D;
+    public static boolean vanillaDisableFlyingKick = true;
     public static boolean gnetumMemoCacheSettings = true;
     public static boolean mcreatorShareDefaultPlayerVariables = true;
 
@@ -509,6 +511,8 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue vanillaMemoSkyColourValue;
     private final ForgeConfigSpec.BooleanValue vanillaPurgeGhostPlayersValue;
     private final ForgeConfigSpec.BooleanValue vanillaFastBiomeBlendValue;
+    private final ForgeConfigSpec.DoubleValue vanillaMovementCheckSlackValue;
+    private final ForgeConfigSpec.BooleanValue vanillaDisableFlyingKickValue;
     private final ForgeConfigSpec.BooleanValue gnetumMemoCacheSettingsValue;
     private final ForgeConfigSpec.BooleanValue mcreatorShareDefaultPlayerVariablesValue;
     private final ForgeConfigSpec.BooleanValue distanthorizonsClearBiomeCachesOnUnloadValue;
@@ -1347,6 +1351,12 @@ public final class CoOConfig {
         this.vanillaFastBiomeBlendValue = builder
                 .comment("Blend biome colours from a cached, incrementally summed grid instead of resampling the biome under every block in the blend square. Vanilla resamples the full square for every block, which is up to 225 biome lookups per block at the default blend radius. Output is identical.")
                 .define("fastBiomeBlend", true);
+        this.vanillaMovementCheckSlackValue = builder
+                .comment("Multiplier for the four thresholds the server uses to reject a movement packet: the 100 and 300 blocks per tick squared speed caps in handleMovePlayer, the 100 in handleMoveVehicle, and the 0.0625 desync tolerance in both. At the default of 100 a player may cover 100 blocks in a tick and land 2.5 blocks away from where the server simulated them before anything is rejected, which is what stops elytra, mounts, teleports and scaled entities getting rubberbanded on a loaded server. The block clipping checks are untouched, so a client still cannot walk into a wall. Set to 1 for vanilla behaviour.")
+                .defineInRange("movementCheckSlack", 100.0D, 1.0D, 1.0E9D);
+        this.vanillaDisableFlyingKickValue = builder
+                .comment("Stop the server kicking a player with \"Flying is not enabled on this server\" after 80 ticks of unsupported hovering. The check only ever arms when allow-flight is false in server.properties, which cannot be changed without a restart, and it fires on anything that keeps you off the ground without the fly ability: elytra stalls, jetpacks, grappling hooks, scaled entities, riding a laggy vehicle. Nothing else in the game reads that setting, so turning this on leaves no other behaviour changed, and it skips a block scan on every accepted movement packet.")
+                .define("disableFlyingKick", true);
         this.vanillaPurgeGhostPlayersValue = builder
                 .comment("Every five seconds, drop dead player copies that another mod left registered as chunk loaders. Such ghosts keep hundreds of chunks loaded and spawning mobs at wherever they died until restart.")
                 .define("purgeGhostPlayers", true);
@@ -1597,6 +1607,8 @@ public final class CoOConfig {
         vanillaMemoCameraFluid = masterEnabled && VALUES.vanillaMemoCameraFluidValue.get();
         vanillaPurgeGhostPlayers = masterEnabled && VALUES.vanillaPurgeGhostPlayersValue.get();
         vanillaFastBiomeBlend = masterEnabled && VALUES.vanillaFastBiomeBlendValue.get();
+        vanillaMovementCheckSlack = masterEnabled ? VALUES.vanillaMovementCheckSlackValue.get() : 1.0D;
+        vanillaDisableFlyingKick = masterEnabled && VALUES.vanillaDisableFlyingKickValue.get();
         mcreatorShareDefaultPlayerVariables = masterEnabled && VALUES.mcreatorShareDefaultPlayerVariablesValue.get();
         distanthorizonsClearBiomeCachesOnUnload = masterEnabled && VALUES.distanthorizonsClearBiomeCachesOnUnloadValue.get();
         distanthorizonsMemoBiomeBlendColors = masterEnabled && VALUES.distanthorizonsMemoBiomeBlendColorsValue.get();
