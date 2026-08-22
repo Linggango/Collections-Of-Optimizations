@@ -106,7 +106,8 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("amendments", "amendments"),
             Map.entry("copycats", "copycats"),
             Map.entry("biomeswevegone", "biomeswevegone"),
-            Map.entry("distanthorizons", "distanthorizons")
+            Map.entry("distanthorizons", "distanthorizons"),
+            Map.entry("skarriermobs", "skarrier_mobs")
     );
 
     private static final Map<String, Integer> GROUP_MIN_MAJOR = Map.of(

@@ -7,6 +7,7 @@ public final class ModEntityFilter {
     public static final ModEntityFilter BORN_IN_CHAOS = new ModEntityFilter("net.mcreator.borninchaosv.entity.");
     public static final ModEntityFilter BOSSES_RISE = new ModEntityFilter("net.unusual.blockfactorysbosses.entity.");
     public static final ModEntityFilter MACABRE = new ModEntityFilter("com.curseforge.macabre.entity.");
+    public static final ModEntityFilter SKARRIER_MOBS = new ModEntityFilter("net.mcreator.skarriermobs.entity.");
 
     private final ClassValue<Boolean> cache;
 

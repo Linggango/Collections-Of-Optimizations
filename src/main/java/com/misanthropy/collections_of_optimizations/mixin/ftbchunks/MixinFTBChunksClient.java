@@ -29,6 +29,10 @@ public abstract class MixinFTBChunksClient {
         }
 
         Minecraft mc = Minecraft.getInstance();
+        if (mc.screen != null) {
+            return;
+        }
+
         if (mc.options.renderDebug
                 || !FTBChunksClientConfig.MINIMAP_ENABLED.get()
                 || FTBChunksClientConfig.MINIMAP_VISIBILITY.get() == 0

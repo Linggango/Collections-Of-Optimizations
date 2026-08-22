@@ -91,6 +91,13 @@ public final class CoOConfig {
     public static boolean borninchaosSkipForeignEntityAnimations = true;
     public static boolean borninchaosSkipRedundantDimensionRefresh = true;
     public static boolean borninchaosNarrowMinionScans = true;
+    public static boolean skarriermobsSkipForeignEntityAnimations = true;
+    public static boolean skarriermobsLeanDaylightBurnScan = true;
+    public static boolean skarriermobsLeanResisteelToolScan = true;
+    public static boolean skarriermobsLeanResisteelSwordScan = true;
+    public static boolean skarriermobsLeanResisteelSetTracking = true;
+    public static boolean skarriermobsLeanTargetProximityScans = true;
+    public static boolean skarriermobsNarrowRegionScans = true;
 
     public static boolean bloodmagicCacheArcRecipeList = true;
     public static boolean bloodmagicCacheArcFurnaceRecipe = true;
@@ -347,6 +354,13 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue borninchaosSkipForeignEntityAnimationsValue;
     private final ForgeConfigSpec.BooleanValue borninchaosSkipRedundantDimensionRefreshValue;
     private final ForgeConfigSpec.BooleanValue borninchaosNarrowMinionScansValue;
+    private final ForgeConfigSpec.BooleanValue skarriermobsSkipForeignEntityAnimationsValue;
+    private final ForgeConfigSpec.BooleanValue skarriermobsLeanDaylightBurnScanValue;
+    private final ForgeConfigSpec.BooleanValue skarriermobsLeanResisteelToolScanValue;
+    private final ForgeConfigSpec.BooleanValue skarriermobsLeanResisteelSwordScanValue;
+    private final ForgeConfigSpec.BooleanValue skarriermobsLeanResisteelSetTrackingValue;
+    private final ForgeConfigSpec.BooleanValue skarriermobsLeanTargetProximityScansValue;
+    private final ForgeConfigSpec.BooleanValue skarriermobsNarrowRegionScansValue;
 
     private final ForgeConfigSpec.BooleanValue bloodmagicCacheArcRecipeListValue;
     private final ForgeConfigSpec.BooleanValue bloodmagicCacheArcFurnaceRecipeValue;
@@ -780,6 +794,30 @@ public final class CoOConfig {
         this.borninchaosNarrowMinionScansValue = builder
                 .comment("Narrow the four Born in Chaos minion claim scans to the mod's own entities.")
                 .define("narrowMinionScans", true);
+        builder.pop();
+
+        builder.comment("Skarrier Mobs patches.").push("skarriermobs");
+        this.skarriermobsSkipForeignEntityAnimationsValue = builder
+                .comment("Skip Skarrier Mobs' 17 way instanceof chain for entities that are not its own.")
+                .define("skipForeignEntityAnimations", true);
+        this.skarriermobsLeanDaylightBurnScanValue = builder
+                .comment("Stop the daylight burn handler from rebuilding its entity tag key for every living entity every tick.")
+                .define("leanDaylightBurnScan", true);
+        this.skarriermobsLeanResisteelToolScanValue = builder
+                .comment("Stop the Resisteel tool handler from rebuilding its item tag key for every living entity every tick.")
+                .define("leanResisteelToolScan", true);
+        this.skarriermobsLeanResisteelSwordScanValue = builder
+                .comment("Stop the Resisteel sword handler from firing a MobEffectEvent.Remove at every living entity every tick.")
+                .define("leanResisteelSwordScan", true);
+        this.skarriermobsLeanResisteelSetTrackingValue = builder
+                .comment("Stop the Resisteel set handler from writing five NBT values into every living entity every tick.")
+                .define("leanResisteelSetTracking", true);
+        this.skarriermobsLeanTargetProximityScansValue = builder
+                .comment("Replace fourteen sorted region scans that only ask whether a mob's own target is close by with one box test.")
+                .define("leanTargetProximityScans", true);
+        this.skarriermobsNarrowRegionScansValue = builder
+                .comment("Narrow the rest of the mob region scans to the players, owners, monsters or flore heads their loop bodies actually use.")
+                .define("narrowRegionScans", true);
         builder.pop();
 
         builder.comment("Blood Magic patches.").push("bloodmagic");
@@ -1470,6 +1508,13 @@ public final class CoOConfig {
         borninchaosSkipForeignEntityAnimations = masterEnabled && VALUES.borninchaosSkipForeignEntityAnimationsValue.get();
         borninchaosSkipRedundantDimensionRefresh = masterEnabled && VALUES.borninchaosSkipRedundantDimensionRefreshValue.get();
         borninchaosNarrowMinionScans = masterEnabled && VALUES.borninchaosNarrowMinionScansValue.get();
+        skarriermobsSkipForeignEntityAnimations = masterEnabled && VALUES.skarriermobsSkipForeignEntityAnimationsValue.get();
+        skarriermobsLeanDaylightBurnScan = masterEnabled && VALUES.skarriermobsLeanDaylightBurnScanValue.get();
+        skarriermobsLeanResisteelToolScan = masterEnabled && VALUES.skarriermobsLeanResisteelToolScanValue.get();
+        skarriermobsLeanResisteelSwordScan = masterEnabled && VALUES.skarriermobsLeanResisteelSwordScanValue.get();
+        skarriermobsLeanResisteelSetTracking = masterEnabled && VALUES.skarriermobsLeanResisteelSetTrackingValue.get();
+        skarriermobsLeanTargetProximityScans = masterEnabled && VALUES.skarriermobsLeanTargetProximityScansValue.get();
+        skarriermobsNarrowRegionScans = masterEnabled && VALUES.skarriermobsNarrowRegionScansValue.get();
         bloodmagicCacheArcRecipeList = masterEnabled && VALUES.bloodmagicCacheArcRecipeListValue.get();
         bloodmagicCacheArcFurnaceRecipe = masterEnabled && VALUES.bloodmagicCacheArcFurnaceRecipeValue.get();
         bloodmagicFastRoutingConnectivity = masterEnabled && VALUES.bloodmagicFastRoutingConnectivityValue.get();

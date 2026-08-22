@@ -227,6 +227,7 @@ dependencies {
     compileOnly files('libs-compile/Corgilib-Forge-1.20.1-4.0.3.5.jar')
     compileOnly files('libs-compile/TerraCurio-0.1.13-all.jar')
     compileOnly files('libs-compile/DistantHorizons-3.2.0-b-1.20.1-fabric-forge.jar')
+    compileOnly files('libs-compile/skarrier_mobs-1.0.6-forge-1.20.1.jar')
 
     implementation fg.deobf(fileTree(dir: 'libs', include: ['*.jar']))
 }
