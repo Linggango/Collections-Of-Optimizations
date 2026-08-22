@@ -70,6 +70,9 @@
     "placebo.MixinPlaceboEventFactory",
     "relics.MixinEssenceArcSpeed",
     "morerelics.MixinMoreRelicsUtil",
+    "terracurio.MixinTerraCurioUtils",
+    "terracurio.MixinTerraCurioForgeEvents",
+    "terracurio.MixinTerraCurioAttributes",
     "morehitboxes.MixinMultiPartEntityQuery",
     "pehkui.MixinScaleUtils",
     "pehkui.MixinScaleDataClientCache",
@@ -139,9 +142,14 @@
     "vanilla.MixinEntityInWallScan",
     "vanilla.MixinVecDeltaCodec",
     "vanilla.MixinServerLevelStructureState",
-    "vanilla.MixinStructureCheck"
+    "vanilla.MixinStructureCheck",
+    "distanthorizons.MixinDhLodDataBuilder"
   ],
   "client": [
+    "distanthorizons.DhTintGetterBiomeHolderAccessor",
+    "distanthorizons.DhBlockBiomePairAccessor",
+    "distanthorizons.MixinDhSharedApi",
+    "distanthorizons.MixinDhTintGetterBlend",
     "vanilla.MixinStringRenderOutputFontSet",
     "vanilla.MixinBiomeManagerQuartCache",
     "vanilla.MixinClientLevelSkyColour",

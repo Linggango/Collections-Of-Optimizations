@@ -206,6 +206,8 @@ public final class CoOConfig {
 
     public static boolean relicsClampEssenceSpeed = true;
     public static boolean morerelicsHoistEquippedCurios = true;
+    public static boolean terracurioCachedCurioLookup = true;
+    public static boolean terracurioLeanAttributeMap = true;
     public static boolean cosmeticarmorPerPlayerRestoreQueue = true;
     public static double relicsEssenceMaxSpeed = 4.0D;
 
@@ -256,6 +258,10 @@ public final class CoOConfig {
     public static boolean vanillaFastBiomeBlend = true;
     public static boolean gnetumMemoCacheSettings = true;
     public static boolean mcreatorShareDefaultPlayerVariables = true;
+
+    public static boolean distanthorizonsClearBiomeCachesOnUnload = true;
+    public static boolean distanthorizonsMemoBiomeBlendColors = true;
+    public static boolean distanthorizonsCacheChunkBiomeLookup = true;
 
     private final ForgeConfigSpec.BooleanValue masterEnabledValue;
 
@@ -453,6 +459,8 @@ public final class CoOConfig {
 
     private final ForgeConfigSpec.BooleanValue relicsClampEssenceSpeedValue;
     private final ForgeConfigSpec.BooleanValue morerelicsHoistEquippedCuriosValue;
+    private final ForgeConfigSpec.BooleanValue terracurioCachedCurioLookupValue;
+    private final ForgeConfigSpec.BooleanValue terracurioLeanAttributeMapValue;
     private final ForgeConfigSpec.BooleanValue cosmeticarmorPerPlayerRestoreQueueValue;
     private final ForgeConfigSpec.DoubleValue relicsEssenceMaxSpeedValue;
 
@@ -503,6 +511,9 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue vanillaFastBiomeBlendValue;
     private final ForgeConfigSpec.BooleanValue gnetumMemoCacheSettingsValue;
     private final ForgeConfigSpec.BooleanValue mcreatorShareDefaultPlayerVariablesValue;
+    private final ForgeConfigSpec.BooleanValue distanthorizonsClearBiomeCachesOnUnloadValue;
+    private final ForgeConfigSpec.BooleanValue distanthorizonsMemoBiomeBlendColorsValue;
+    private final ForgeConfigSpec.BooleanValue distanthorizonsCacheChunkBiomeLookupValue;
 
     static {
         Pair<CoOConfig, ForgeConfigSpec> pair = new ForgeConfigSpec.Builder().configure(CoOConfig::new);
@@ -1031,6 +1042,15 @@ public final class CoOConfig {
                 .define("hoistEquippedCurios", true);
         builder.pop();
 
+        builder.comment("Terra Curio patches.").push("terracurio");
+        this.terracurioCachedCurioLookupValue = builder
+                .comment("Answer Terra Curio's 'is this accessory equipped' questions from the shared per-tick curio presence set instead of walking every curio slot handler again. CuriosUtils#noSameCurio runs once per living entity per tick out of LivingEntity#getFrictionInfluencedSpeed, and about ten more times per damage event, and almost every one of those is a miss.")
+                .define("cachedCurioLookup", true);
+        this.terracurioLeanAttributeMapValue = builder
+                .comment("Read Terra Curio's custom attribute remap table from a plain map instead of the synchronised Hashtable it lives in. The table is filled once during setup and never written again, but ModAttributes#hasCustomAttribute is called for every living entity every tick on both the client and the server thread, so every one of those calls takes a monitor on the same shared object.")
+                .define("leanAttributeMap", true);
+        builder.pop();
+
         builder.comment("Cosmetic Armor Reworked patches.").push("cosmeticarmor");
         this.cosmeticarmorPerPlayerRestoreQueueValue = builder
                 .comment("Keep each player's armour restore queue on the player instead of in a weak keyed Guava cache. The cache is looked up twice per rendered player per frame plus twice more for the held item and the arm, and every lookup pays a hash and a segment read.")
@@ -1343,6 +1363,18 @@ public final class CoOConfig {
                 .comment("Hand MCreator mods one shared empty player variables object instead of allocating a throwaway on every single variable read. Procedures that read variables per tick or per frame can otherwise churn hundreds of megabytes of garbage. This rewrites the mods' classes as they load, so a change here only takes effect from the next launch.")
                 .define("shareDefaultPlayerVariables", true);
         builder.pop();
+
+        builder.comment("Distant Horizons patches.").push("distanthorizons");
+        this.distanthorizonsClearBiomeCachesOnUnloadValue = builder
+                .comment("Drop Distant Horizons' biome wrapper caches when it unloads its world. Those caches are static, are never cleared, and are keyed on the biome registry objects the server hands out on join, so every world you leave keeps its whole biome registry alive for the rest of the session. It also means the LOD tint colours after a world change are still resolved against the previous world's biomes.")
+                .define("clearBiomeCachesOnUnload", true);
+        this.distanthorizonsMemoBiomeBlendColorsValue = builder
+                .comment("Remember the last biome colour while Distant Horizons blends the biome tint of an LOD block. At the default blend radius of three the blend samples forty nine neighbours per tinted block and looks each one's colour up through three concurrent hash maps, and neighbouring blocks are almost always in the same biome. Result is identical.")
+                .define("memoBiomeBlendColors", true);
+        this.distanthorizonsCacheChunkBiomeLookupValue = builder
+                .comment("Remember the last biome while Distant Horizons converts a chunk column into an LOD. Biomes are stored per four blocks but the converter asks for one per block going down the whole column, so three out of four lookups repeat the previous answer. Result is identical.")
+                .define("cacheChunkBiomeLookup", true);
+        builder.pop();
     }
 
     public static void onLoad(ModConfigEvent.Loading event) {
@@ -1524,6 +1556,8 @@ public final class CoOConfig {
         pehkuiCacheClientScales = masterEnabled && VALUES.pehkuiCacheClientScalesValue.get();
         relicsClampEssenceSpeed = masterEnabled && VALUES.relicsClampEssenceSpeedValue.get();
         morerelicsHoistEquippedCurios = masterEnabled && VALUES.morerelicsHoistEquippedCuriosValue.get();
+        terracurioCachedCurioLookup = masterEnabled && VALUES.terracurioCachedCurioLookupValue.get();
+        terracurioLeanAttributeMap = masterEnabled && VALUES.terracurioLeanAttributeMapValue.get();
         cosmeticarmorPerPlayerRestoreQueue = masterEnabled && VALUES.cosmeticarmorPerPlayerRestoreQueueValue.get();
         relicsEssenceMaxSpeed = VALUES.relicsEssenceMaxSpeedValue.get();
         morehitboxesSkipAbsentMultiPartFilter = masterEnabled && VALUES.morehitboxesSkipAbsentMultiPartFilterValue.get();
@@ -1564,5 +1598,8 @@ public final class CoOConfig {
         vanillaPurgeGhostPlayers = masterEnabled && VALUES.vanillaPurgeGhostPlayersValue.get();
         vanillaFastBiomeBlend = masterEnabled && VALUES.vanillaFastBiomeBlendValue.get();
         mcreatorShareDefaultPlayerVariables = masterEnabled && VALUES.mcreatorShareDefaultPlayerVariablesValue.get();
+        distanthorizonsClearBiomeCachesOnUnload = masterEnabled && VALUES.distanthorizonsClearBiomeCachesOnUnloadValue.get();
+        distanthorizonsMemoBiomeBlendColors = masterEnabled && VALUES.distanthorizonsMemoBiomeBlendColorsValue.get();
+        distanthorizonsCacheChunkBiomeLookup = masterEnabled && VALUES.distanthorizonsCacheChunkBiomeLookupValue.get();
     }
 }

@@ -7,10 +7,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
+import top.theillusivec4.curios.api.event.CurioEquipEvent;
+import top.theillusivec4.curios.api.event.CurioUnequipEvent;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
+import java.util.Collections;
 import java.util.Set;
 
 public final class CurioPresenceCache {
@@ -20,10 +23,23 @@ public final class CurioPresenceCache {
 
     public static void register() {
         MinecraftForge.EVENT_BUS.addListener(CurioPresenceCache::onCurioChanged);
+        MinecraftForge.EVENT_BUS.addListener(CurioPresenceCache::onCurioEquip);
+        MinecraftForge.EVENT_BUS.addListener(CurioPresenceCache::onCurioUnequip);
     }
 
     private static void onCurioChanged(CurioChangeEvent event) {
-        LivingEntity entity = event.getEntity();
+        invalidate(event.getEntity());
+    }
+
+    private static void onCurioEquip(CurioEquipEvent event) {
+        invalidate(event.getEntity());
+    }
+
+    private static void onCurioUnequip(CurioUnequipEvent event) {
+        invalidate(event.getEntity());
+    }
+
+    private static void invalidate(LivingEntity entity) {
         if (entity instanceof CurioPresenceHolder holder) {
             holder.coo$invalidateCurioPresence();
         }
@@ -80,7 +96,7 @@ public final class CurioPresenceCache {
             return null;
         }
 
-        Set<Item> items = new ReferenceOpenHashSet<>(8);
+        Set<Item> items = null;
         try {
 
             for (ICurioStacksHandler stacksHandler : handler.getCurios().values()) {
@@ -88,6 +104,9 @@ public final class CurioPresenceCache {
                 for (int i = 0; i < stackHandler.getSlots(); i++) {
                     ItemStack stack = stackHandler.getStackInSlot(i);
                     if (!stack.isEmpty()) {
+                        if (items == null) {
+                            items = new ReferenceOpenHashSet<>(8);
+                        }
                         items.add(stack.getItem());
                     }
                 }
@@ -95,6 +114,6 @@ public final class CurioPresenceCache {
         } catch (RuntimeException exception) {
             return null;
         }
-        return items;
+        return items == null ? Collections.emptySet() : items;
     }
 }
