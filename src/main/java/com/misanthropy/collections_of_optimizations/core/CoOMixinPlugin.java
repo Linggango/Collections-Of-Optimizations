@@ -107,6 +107,13 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("copycats", "copycats"),
             Map.entry("biomeswevegone", "biomeswevegone"),
             Map.entry("distanthorizons", "distanthorizons"),
+            Map.entry("industrialforegoing", "industrialforegoing"),
+            Map.entry("enigmaticaddons", "enigmaticaddons"),
+            Map.entry("enigmaticdelicacy", "enigmaticdelicacy"),
+            Map.entry("traveloptics", "traveloptics"),
+            Map.entry("celestialenchantments", "celestial_enchantments"),
+            Map.entry("uniqueaccessories", "uniqueaccessories"),
+            Map.entry("biolith", "biolith"),
             Map.entry("skarriermobs", "skarrier_mobs")
     );
 

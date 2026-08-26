@@ -41,7 +41,6 @@ public final class CoOConfig {
     public static boolean xaerolibCacheEnforcementCheck = true;
 
     public static int xaeroworldmapVramPollInterval = 500;
-    public static int xaeroworldmapRenderProcessInterval = 10;
 
     public static boolean geckolibReuseRenderVectors = true;
     public static boolean geckolibCacheBoneLookup = true;
@@ -77,6 +76,10 @@ public final class CoOConfig {
 
     public static boolean biomeswevegoneSkipForeignChunkTerrain = true;
 
+    public static boolean biolithRestampSwappedBiomeSource = true;
+    public static boolean biolithEarlyRegistryCapture = true;
+    public static boolean biolithReuseBiomeEntries = true;
+
     public static boolean terramitySkipItemAnimationCopies = true;
     public static boolean terramitySkipForeignEntityAnimations = true;
     public static boolean terramityMemoizeProcedureRaycasts = true;
@@ -98,6 +101,15 @@ public final class CoOConfig {
     public static boolean skarriermobsLeanResisteelSetTracking = true;
     public static boolean skarriermobsLeanTargetProximityScans = true;
     public static boolean skarriermobsNarrowRegionScans = true;
+    public static boolean industrialforegoingSkipStasisTagChurn = true;
+    public static boolean enigmaticaddonsSkipUnsetPersistentData = true;
+    public static boolean enigmaticdelicacySkipUnsetPersistentData = true;
+    public static boolean travelopticsLeanClimbCurioScan = true;
+    public static boolean travelopticsLeanCastEffectChecks = true;
+    public static boolean celestialenchantmentsSkipUnenchantedTick = true;
+    public static boolean celestialenchantmentsLeanSlotEnchScan = true;
+    public static boolean uniqueaccessoriesLeanWaistWarmerScan = true;
+    public static boolean uniqueaccessoriesSkipUnsetPersistentData = true;
 
     public static boolean bloodmagicCacheArcRecipeList = true;
     public static boolean bloodmagicCacheArcFurnaceRecipe = true;
@@ -304,7 +316,6 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue xaerolibCacheEnforcementCheckValue;
 
     private final ForgeConfigSpec.IntValue xaeroworldmapVramPollIntervalValue;
-    private final ForgeConfigSpec.IntValue xaeroworldmapRenderProcessIntervalValue;
 
     private final ForgeConfigSpec.BooleanValue geckolibReuseRenderVectorsValue;
     private final ForgeConfigSpec.BooleanValue geckolibCacheBoneLookupValue;
@@ -340,6 +351,10 @@ public final class CoOConfig {
 
     private final ForgeConfigSpec.BooleanValue biomeswevegoneSkipForeignChunkTerrainValue;
 
+    private final ForgeConfigSpec.BooleanValue biolithRestampSwappedBiomeSourceValue;
+    private final ForgeConfigSpec.BooleanValue biolithEarlyRegistryCaptureValue;
+    private final ForgeConfigSpec.BooleanValue biolithReuseBiomeEntriesValue;
+
     private final ForgeConfigSpec.BooleanValue terramitySkipItemAnimationCopiesValue;
     private final ForgeConfigSpec.BooleanValue terramitySkipForeignEntityAnimationsValue;
     private final ForgeConfigSpec.BooleanValue terramityMemoizeProcedureRaycastsValue;
@@ -361,6 +376,15 @@ public final class CoOConfig {
     private final ForgeConfigSpec.BooleanValue skarriermobsLeanResisteelSetTrackingValue;
     private final ForgeConfigSpec.BooleanValue skarriermobsLeanTargetProximityScansValue;
     private final ForgeConfigSpec.BooleanValue skarriermobsNarrowRegionScansValue;
+    private final ForgeConfigSpec.BooleanValue industrialforegoingSkipStasisTagChurnValue;
+    private final ForgeConfigSpec.BooleanValue enigmaticaddonsSkipUnsetPersistentDataValue;
+    private final ForgeConfigSpec.BooleanValue enigmaticdelicacySkipUnsetPersistentDataValue;
+    private final ForgeConfigSpec.BooleanValue travelopticsLeanClimbCurioScanValue;
+    private final ForgeConfigSpec.BooleanValue travelopticsLeanCastEffectChecksValue;
+    private final ForgeConfigSpec.BooleanValue celestialenchantmentsSkipUnenchantedTickValue;
+    private final ForgeConfigSpec.BooleanValue celestialenchantmentsLeanSlotEnchScanValue;
+    private final ForgeConfigSpec.BooleanValue uniqueaccessoriesLeanWaistWarmerScanValue;
+    private final ForgeConfigSpec.BooleanValue uniqueaccessoriesSkipUnsetPersistentDataValue;
 
     private final ForgeConfigSpec.BooleanValue bloodmagicCacheArcRecipeListValue;
     private final ForgeConfigSpec.BooleanValue bloodmagicCacheArcFurnaceRecipeValue;
@@ -641,9 +665,6 @@ public final class CoOConfig {
         this.xaeroworldmapVramPollIntervalValue = builder
                 .comment("Milliseconds between the map limiter's free VRAM query, which stock fires a blocking glGetIntegerv for on every single frame. 0 restores the stock every frame behaviour. Client.")
                 .defineInRange("vramPollInterval", 500, 0, 60000);
-        this.xaeroworldmapRenderProcessIntervalValue = builder
-                .comment("Milliseconds between map processing passes. Stock runs the whole write, cache and texture upload sweep once per frame, so at 1000 fps it runs 1000 times a second to keep up with a player walking at 4 blocks a second. The default of 10 gives a machine above 100 fps exactly the amount of map work a 100 fps machine already gets. The map's own screens are never throttled. 0 restores the stock every frame behaviour. WARNING: raising this a lot makes the map fill in more slowly after a long teleport. Client.")
-                .defineInRange("renderProcessInterval", 10, 0, 1000);
         builder.pop();
 
         builder.comment("GeckoLib patches.").push("geckolib");
@@ -729,8 +750,8 @@ public final class CoOConfig {
 
         builder.comment("Xaero's Minimap patches.").push("xaerominimap");
         this.xaeroMinimapRenderFpsCapValue = builder
-                .comment("Maximum times per second the minimap redraws its map contents.")
-                .defineInRange("renderFpsCap", 30, 0, 260);
+                .comment("Maximum times per second the minimap redraws its map contents. Anything below the client frame rate leaves a visibly stale minimap, so this is off by default. 0 restores the stock every frame behaviour. Client.")
+                .defineInRange("renderFpsCap", 0, 0, 260);
         builder.pop();
 
         builder.comment("Xaero's + Waystones compatibility patches.").push("w2w2");
@@ -743,6 +764,18 @@ public final class CoOConfig {
         this.biomeswevegoneSkipForeignChunkTerrainValue = builder
                 .comment("Skip the Crag Gardens and Basalt Barrera terrain passes in chunks that contain neither biome. Both passes run on every chunk generated in every dimension and build four noise generators, two weighted state providers and 512 biome lookups before they ever check whether the biome is present.")
                 .define("skipForeignChunkTerrain", true);
+        builder.pop();
+
+        builder.comment("Biolith patches.").push("biolith");
+        this.biolithRestampSwappedBiomeSourceValue = builder
+                .comment("Re-tag the biome source with its dimension after another mod swaps it. MCreator biome mods replace the overworld MultiNoiseBiomeSource on ServerAboutToStart, and the replacement never passes through LevelStem, so Biolith loses track of which dimension it is and silently stops applying every biome replacement and sub-biome it was asked for.")
+                .define("restampSwappedBiomeSource", true);
+        this.biolithEarlyRegistryCaptureValue = builder
+                .comment("Hand Biolith the registries at the start of WorldStem instead of the end. BCLib asks every vanilla biome source for its biome list from inside that constructor, which is before Biolith has a registry to look biomes up in, and Biolith throws.")
+                .define("earlyRegistryCapture", true);
+        this.biolithReuseBiomeEntriesValue = builder
+                .comment("Return Biolith's cached biome list without entering its lock. Biolith synchronizes on the biome source on every single biome lookup, and world generation runs those lookups on several threads at once.")
+                .define("reuseBiomeEntries", true);
         builder.pop();
 
         builder.comment("TerraBlender patches.").push("terrablender");
@@ -818,6 +851,51 @@ public final class CoOConfig {
         this.skarriermobsNarrowRegionScansValue = builder
                 .comment("Narrow the rest of the mob region scans to the players, owners, monsters or flore heads their loop bodies actually use.")
                 .define("narrowRegionScans", true);
+        builder.pop();
+
+        builder.comment("Industrial Foregoing patches.").push("industrialforegoing");
+        this.industrialforegoingSkipStasisTagChurnValue = builder
+                .comment("Stop the Stasis Chamber tick filter from reading, and thereby creating, a ForgeData compound on every mob in the world.")
+                .define("skipStasisTagChurn", true);
+        builder.pop();
+
+        builder.comment("Enigmatic Addons patches.").push("enigmaticaddons");
+        this.enigmaticaddonsSkipUnsetPersistentDataValue = builder
+                .comment("Stop the Annihilating Sword, Violence Scroll and Extradimensional Scepter tick handlers from reading, and thereby creating, a ForgeData compound on every entity in the world. Also removes the UUID parse and ImmutableMultimap build the sword did for every living entity every tick.")
+                .define("skipUnsetPersistentData", true);
+        builder.pop();
+
+        builder.comment("Enigmatic Delicacy patches.").push("enigmaticdelicacy");
+        this.enigmaticdelicacySkipUnsetPersistentDataValue = builder
+                .comment("Stop the Slicing enchantment tick handler from reading, and thereby creating, a ForgeData compound on every entity on both sides every tick.")
+                .define("skipUnsetPersistentData", true);
+        builder.pop();
+
+        builder.comment("Traveloptics patches.").push("traveloptics");
+        this.travelopticsLeanClimbCurioScanValue = builder
+                .comment("Check for the Spider Aspect effect before walking every living entity's curios inventory every tick.")
+                .define("leanClimbCurioScan", true);
+        this.travelopticsLeanCastEffectChecksValue = builder
+                .comment("Check that the entity is a spell casting mob before reading its effect map in the Blackout and Casting handlers.")
+                .define("leanCastEffectChecks", true);
+        builder.pop();
+
+        builder.comment("Celestial Enchantments patches.").push("celestialenchantments");
+        this.celestialenchantmentsSkipUnenchantedTickValue = builder
+                .comment("Skip the seven map, two array clone enchantment scan for living entities that have nothing enchanted equipped.")
+                .define("skipUnenchantedTick", true);
+        this.celestialenchantmentsLeanSlotEnchScanValue = builder
+                .comment("Skip the per slot enchantment map allocation for equipment slots that hold nothing enchanted.")
+                .define("leanSlotEnchScan", true);
+        builder.pop();
+
+        builder.comment("Unique Accessories patches.").push("uniqueaccessories");
+        this.uniqueaccessoriesLeanWaistWarmerScanValue = builder
+                .comment("Answer the Waist Warmer curios lookup from the shared per tick curio presence cache instead of walking the inventory for every living entity every tick.")
+                .define("leanWaistWarmerScan", true);
+        this.uniqueaccessoriesSkipUnsetPersistentDataValue = builder
+                .comment("Stop the Suspicious Mushroom and Rose of Temptation handlers from attaching an empty ForgeData tag to every entity in the world.")
+                .define("skipUnsetPersistentData", true);
         builder.pop();
 
         builder.comment("Blood Magic patches.").push("bloodmagic");
@@ -1473,7 +1551,6 @@ public final class CoOConfig {
         xaerolibCacheConfigProfile = masterEnabled && VALUES.xaerolibCacheConfigProfileValue.get();
         xaerolibCacheEnforcementCheck = masterEnabled && VALUES.xaerolibCacheEnforcementCheckValue.get();
         xaeroworldmapVramPollInterval = masterEnabled ? VALUES.xaeroworldmapVramPollIntervalValue.get() : 0;
-        xaeroworldmapRenderProcessInterval = masterEnabled ? VALUES.xaeroworldmapRenderProcessIntervalValue.get() : 0;
         geckolibReuseRenderVectors = masterEnabled && VALUES.geckolibReuseRenderVectorsValue.get();
         geckolibCacheBoneLookup = masterEnabled && VALUES.geckolibCacheBoneLookupValue.get();
         saintsdragonsSkipRedundantBoneTracking = masterEnabled && VALUES.saintsdragonsSkipRedundantBoneTrackingValue.get();
@@ -1494,6 +1571,9 @@ public final class CoOConfig {
         naturesauraFastAuraChunkSweep = masterEnabled && VALUES.naturesauraFastAuraChunkSweepValue.get();
         xaeroMinimapRenderFpsCap = masterEnabled ? VALUES.xaeroMinimapRenderFpsCapValue.get() : 0;
         w2w2DeferWaypointSave = masterEnabled && VALUES.w2w2DeferWaypointSaveValue.get();
+        biolithRestampSwappedBiomeSource = masterEnabled && VALUES.biolithRestampSwappedBiomeSourceValue.get();
+        biolithEarlyRegistryCapture = masterEnabled && VALUES.biolithEarlyRegistryCaptureValue.get();
+        biolithReuseBiomeEntries = masterEnabled && VALUES.biolithReuseBiomeEntriesValue.get();
         terrablenderCacheNamespaceRule = masterEnabled && VALUES.terrablenderCacheNamespaceRuleValue.get();
         biomeswevegoneSkipForeignChunkTerrain = masterEnabled && VALUES.biomeswevegoneSkipForeignChunkTerrainValue.get();
         terramitySkipItemAnimationCopies = masterEnabled && VALUES.terramitySkipItemAnimationCopiesValue.get();
@@ -1515,6 +1595,15 @@ public final class CoOConfig {
         skarriermobsLeanResisteelSetTracking = masterEnabled && VALUES.skarriermobsLeanResisteelSetTrackingValue.get();
         skarriermobsLeanTargetProximityScans = masterEnabled && VALUES.skarriermobsLeanTargetProximityScansValue.get();
         skarriermobsNarrowRegionScans = masterEnabled && VALUES.skarriermobsNarrowRegionScansValue.get();
+        industrialforegoingSkipStasisTagChurn = masterEnabled && VALUES.industrialforegoingSkipStasisTagChurnValue.get();
+        enigmaticaddonsSkipUnsetPersistentData = masterEnabled && VALUES.enigmaticaddonsSkipUnsetPersistentDataValue.get();
+        enigmaticdelicacySkipUnsetPersistentData = masterEnabled && VALUES.enigmaticdelicacySkipUnsetPersistentDataValue.get();
+        travelopticsLeanClimbCurioScan = masterEnabled && VALUES.travelopticsLeanClimbCurioScanValue.get();
+        travelopticsLeanCastEffectChecks = masterEnabled && VALUES.travelopticsLeanCastEffectChecksValue.get();
+        celestialenchantmentsSkipUnenchantedTick = masterEnabled && VALUES.celestialenchantmentsSkipUnenchantedTickValue.get();
+        celestialenchantmentsLeanSlotEnchScan = masterEnabled && VALUES.celestialenchantmentsLeanSlotEnchScanValue.get();
+        uniqueaccessoriesLeanWaistWarmerScan = masterEnabled && VALUES.uniqueaccessoriesLeanWaistWarmerScanValue.get();
+        uniqueaccessoriesSkipUnsetPersistentData = masterEnabled && VALUES.uniqueaccessoriesSkipUnsetPersistentDataValue.get();
         bloodmagicCacheArcRecipeList = masterEnabled && VALUES.bloodmagicCacheArcRecipeListValue.get();
         bloodmagicCacheArcFurnaceRecipe = masterEnabled && VALUES.bloodmagicCacheArcFurnaceRecipeValue.get();
         bloodmagicFastRoutingConnectivity = masterEnabled && VALUES.bloodmagicFastRoutingConnectivityValue.get();
