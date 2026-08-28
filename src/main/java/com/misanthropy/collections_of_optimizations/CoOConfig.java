@@ -243,6 +243,8 @@ public final class CoOConfig {
     public static boolean morerelicsHoistEquippedCurios = true;
     public static boolean terracurioCachedCurioLookup = true;
     public static boolean terracurioLeanAttributeMap = true;
+    public static boolean terracurioSkipIdleAggroScan = true;
+    public static boolean terracurioSkipUnchangedIceFlag = true;
     public static boolean cosmeticarmorPerPlayerRestoreQueue = true;
     public static double relicsEssenceMaxSpeed = 4.0D;
 
@@ -980,6 +982,12 @@ public final class CoOConfig {
         gate(builder
                 .comment("Read Terra Curio's custom attribute remap table from a plain map instead of the synchronised Hashtable it lives in. The table is filled once during setup and never written again, but ModAttributes#hasCustomAttribute is called for every living entity every tick on both the client and the server thread, so every one of those calls takes a monitor on the same shared object.")
                 .define("leanAttributeMap", true), v -> terracurioLeanAttributeMap = v);
+        gate(builder
+                .comment("Skip Terra Curio's aggro retarget pass while no online player carries a non zero aggro value. The handler runs on every LivingChangeTargetEvent, and each run streams every player in the dimension with a distance and canAttack check, even though the result can only differ from vanilla when some player has actually modified aggro. The player scan is cached once per dimension per tick.")
+                .define("skipIdleAggroScan", true), v -> terracurioSkipIdleAggroScan = v);
+        gate(builder
+                .comment("Only write Terra Curio's onPosIsIce flag when it actually changes. Ice Skates, Frostspark Boots and Terraspark Boots rewrite the flag onto the stack every single tick, which marks the stack dirty, so Curios resyncs the accessory to the client and reapplies its attribute modifiers every tick for as long as the boots are worn.")
+                .define("skipUnchangedIceFlag", true), v -> terracurioSkipUnchangedIceFlag = v);
         builder.pop();
 
         builder.comment("Cosmetic Armor Reworked patches.").push("cosmeticarmor");

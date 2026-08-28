@@ -109,6 +109,7 @@
     "terracurio.MixinTerraCurioUtils",
     "terracurio.MixinTerraCurioForgeEvents",
     "terracurio.MixinTerraCurioAttributes",
+    "terracurio.MixinTerraCurioIceSkates",
     "morehitboxes.MixinMultiPartEntityQuery",
     "pehkui.MixinScaleUtils",
     "pehkui.MixinScaleDataClientCache",
