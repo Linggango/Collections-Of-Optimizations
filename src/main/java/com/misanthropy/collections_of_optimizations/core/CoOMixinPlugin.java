@@ -35,6 +35,8 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("ambientsounds", "ambientsounds"),
             Map.entry("arsnouveau", "ars_nouveau"),
             Map.entry("goetydelight", "goetydelight"),
+            Map.entry("regionsunexplored", "regions_unexplored"),
+            Map.entry("endinglibrary", "ending_library"),
             Map.entry("goetyrevelation", "goety_revelation"),
             Map.entry("revelationfix", "revelationfix"),
             Map.entry("geckolib", "geckolib"),
@@ -114,7 +116,8 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("celestialenchantments", "celestial_enchantments"),
             Map.entry("uniqueaccessories", "uniqueaccessories"),
             Map.entry("biolith", "biolith"),
-            Map.entry("skarriermobs", "skarrier_mobs")
+            Map.entry("skarriermobs", "skarrier_mobs"),
+            Map.entry("createsolar", "createsolar")
     );
 
     private static final Map<String, Integer> GROUP_MIN_MAJOR = Map.of(

@@ -9,7 +9,11 @@ public final class TierAttributeUuidCache {
 
     private static final int LIMIT = 4096;
 
+    private static final byte[] EMPTY = new byte[0];
+
     private static final Map<Key, UUID> CACHE = new ConcurrentHashMap<>();
+
+    private static final ThreadLocal<Key> PROBE = ThreadLocal.withInitial(() -> new Key(EMPTY));
 
     private TierAttributeUuidCache() {
     }
@@ -18,7 +22,7 @@ public final class TierAttributeUuidCache {
         if (name == null) {
             return null;
         }
-        return CACHE.get(new Key(name));
+        return CACHE.get(PROBE.get().set(name));
     }
 
     public static void store(byte[] name, UUID value) {
@@ -33,12 +37,17 @@ public final class TierAttributeUuidCache {
 
     private static final class Key {
 
-        private final byte[] bytes;
-        private final int hash;
+        private byte[] bytes;
+        private int hash;
 
         private Key(byte[] bytes) {
-            this.bytes = bytes;
-            this.hash = Arrays.hashCode(bytes);
+            set(bytes);
+        }
+
+        private Key set(byte[] value) {
+            this.bytes = value;
+            this.hash = Arrays.hashCode(value);
+            return this;
         }
 
         @Override

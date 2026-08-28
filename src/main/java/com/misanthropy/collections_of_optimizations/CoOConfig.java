@@ -2,12 +2,19 @@ package com.misanthropy.collections_of_optimizations;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.DoubleConsumer;
+import java.util.function.IntConsumer;
 
 public final class CoOConfig {
 
     public static final ForgeConfigSpec SPEC;
-    private static final CoOConfig VALUES;
+
+    private static final List<Runnable> BAKERS = new ArrayList<>();
+
+    private static ForgeConfigSpec.BooleanValue fastBiomeBlendValue;
 
     public static boolean masterEnabled = true;
 
@@ -30,6 +37,14 @@ public final class CoOConfig {
     public static boolean justdirethingsLeanAreaPreviewScan = true;
     public static int goetydelightCakeScanInterval = 4;
     public static boolean goetydelightSkipIdleVisualEffects = true;
+    public static boolean goetydelightLeanLogScan = true;
+    public static boolean goetydelightCacheLogItems = true;
+
+    public static boolean regionsunexploredCacheFurnaceBurnTimes = true;
+
+    public static boolean gnetumSingleModIdLookup = true;
+
+    public static boolean endinglibraryLeanCameraCapLookup = true;
 
     public static boolean bettercombatCacheWeaponAttributes = true;
 
@@ -133,6 +148,7 @@ public final class CoOConfig {
     public static boolean immersiveaircraftBatchOverlay = true;
     public static boolean ftbchunksSkipHiddenMinimapWork = true;
     public static boolean ftbchunksFastRegionWrite = true;
+    public static boolean ftbchunksMemoMinimapRegions = true;
     public static boolean punchyCacheResourceStackMisses = true;
     public static boolean l2hostilitySkipTraitlessCapLookup = true;
     public static boolean iceandfireFastEntityDataLookup = true;
@@ -277,6 +293,11 @@ public final class CoOConfig {
     public static boolean vanillaFastBiomeBlend = true;
     public static double vanillaMovementCheckSlack = 100.0D;
     public static boolean vanillaDisableFlyingKick = true;
+    public static boolean vanillaCacheModelPartLookups = true;
+    public static boolean vanillaLeanKeyframeAnimation = true;
+    public static boolean createsolarMemoGogglesLookup = true;
+    public static boolean xaeroworldmapIdleMapFrameWait = true;
+    public static int xaeroworldmapMapFrameSpinTail = 200;
     public static boolean gnetumMemoCacheSettings = true;
     public static boolean mcreatorShareDefaultPlayerVariables = true;
 
@@ -284,1222 +305,1024 @@ public final class CoOConfig {
     public static boolean distanthorizonsMemoBiomeBlendColors = true;
     public static boolean distanthorizonsCacheChunkBiomeLookup = true;
 
-    private final ForgeConfigSpec.BooleanValue masterEnabledValue;
-
-    private final ForgeConfigSpec.BooleanValue curiosSkipSlotlessEntitiesValue;
-    private final ForgeConfigSpec.BooleanValue curiosSkipClientTickOnNonPlayersValue;
-    private final ForgeConfigSpec.BooleanValue curiosSkipNonPlayerRenderLayerValue;
-    private final ForgeConfigSpec.BooleanValue curiosCacheEntitySlotLookupValue;
-    private final ForgeConfigSpec.BooleanValue curiosFastEquippedItemMissValue;
-    private final ForgeConfigSpec.BooleanValue curiosFastFindFirstMissValue;
-    private final ForgeConfigSpec.BooleanValue curiosReuseCurioMapViewValue;
-
-    private final ForgeConfigSpec.BooleanValue artifactsSkipClientTickOnNonPlayersValue;
-    private final ForgeConfigSpec.BooleanValue artifactsFastPathKittySlippersValue;
-    private final ForgeConfigSpec.BooleanValue artifactsFastPathUmbrellaValue;
-
-    private final ForgeConfigSpec.BooleanValue caelusSkipGroundedNonPlayersValue;
-
-    private final ForgeConfigSpec.BooleanValue blockswapPaletteFilteredRetroGenValue;
-    private final ForgeConfigSpec.BooleanValue justdirethingsAvoidChunkTicketsValue;
-    private final ForgeConfigSpec.BooleanValue justdirethingsLeanAreaPreviewScanValue;
-    private final ForgeConfigSpec.IntValue goetydelightCakeScanIntervalValue;
-    private final ForgeConfigSpec.BooleanValue goetydelightSkipIdleVisualEffectsValue;
-
-    private final ForgeConfigSpec.BooleanValue bettercombatCacheWeaponAttributesValue;
-
-    private final ForgeConfigSpec.BooleanValue cofhCacheTranslucentRenderersValue;
-
-    private final ForgeConfigSpec.BooleanValue createDedupeBigOutlineProbesValue;
-
-    private final ForgeConfigSpec.BooleanValue xaerolibCacheConfigProfileValue;
-    private final ForgeConfigSpec.BooleanValue xaerolibCacheEnforcementCheckValue;
-
-    private final ForgeConfigSpec.IntValue xaeroworldmapVramPollIntervalValue;
-
-    private final ForgeConfigSpec.BooleanValue geckolibReuseRenderVectorsValue;
-    private final ForgeConfigSpec.BooleanValue geckolibCacheBoneLookupValue;
-
-    private final ForgeConfigSpec.BooleanValue saintsdragonsSkipRedundantBoneTrackingValue;
-    private final ForgeConfigSpec.BooleanValue saintsdragonsCacheShakeScanValue;
-
-    private final ForgeConfigSpec.BooleanValue immediatelyfastSingleBufferLookupValue;
-    private final ForgeConfigSpec.BooleanValue immediatelyfastSkipIdleLayersValue;
-
-    private final ForgeConfigSpec.IntValue fancymenuSeamlessCaptureIntervalValue;
-    private final ForgeConfigSpec.BooleanValue fancymenuSkipRedundantScaleWritesValue;
-    private final ForgeConfigSpec.BooleanValue fancymenuPinRenderStateToRenderThreadValue;
-
-    private final ForgeConfigSpec.BooleanValue emfDropZeroAngerEntriesValue;
-
-    private final ForgeConfigSpec.BooleanValue etfFastValidPathValue;
-
-    private final ForgeConfigSpec.BooleanValue oculusSkipSignTextInShadowPassValue;
-    private final ForgeConfigSpec.BooleanValue oculusSkipGlintInShadowPassValue;
-    private final ForgeConfigSpec.BooleanValue oculusSkipNameTagsInShadowPassValue;
-    private final ForgeConfigSpec.BooleanValue oculusSkipBannerPatternsInShadowPassValue;
-
-    private final ForgeConfigSpec.BooleanValue lootrSkipIdleTileTickerValue;
-    private final ForgeConfigSpec.IntValue lootrTileTickerBudgetValue;
-
-    private final ForgeConfigSpec.BooleanValue naturesauraFastAuraChunkSweepValue;
-
-    private final ForgeConfigSpec.IntValue xaeroMinimapRenderFpsCapValue;
-    private final ForgeConfigSpec.BooleanValue w2w2DeferWaypointSaveValue;
-
-    private final ForgeConfigSpec.BooleanValue terrablenderCacheNamespaceRuleValue;
-
-    private final ForgeConfigSpec.BooleanValue biomeswevegoneSkipForeignChunkTerrainValue;
-
-    private final ForgeConfigSpec.BooleanValue biolithRestampSwappedBiomeSourceValue;
-    private final ForgeConfigSpec.BooleanValue biolithEarlyRegistryCaptureValue;
-    private final ForgeConfigSpec.BooleanValue biolithReuseBiomeEntriesValue;
-
-    private final ForgeConfigSpec.BooleanValue terramitySkipItemAnimationCopiesValue;
-    private final ForgeConfigSpec.BooleanValue terramitySkipForeignEntityAnimationsValue;
-    private final ForgeConfigSpec.BooleanValue terramityMemoizeProcedureRaycastsValue;
-    private final ForgeConfigSpec.BooleanValue terramitySkipClientCurioScansValue;
-    private final ForgeConfigSpec.BooleanValue terramitySkipArmorAnimationScanValue;
-    private final ForgeConfigSpec.BooleanValue terramityFixPhasingShaderStompValue;
-
-    private final ForgeConfigSpec.BooleanValue armageddonSkipForeignEntityAnimationsValue;
-    private final ForgeConfigSpec.BooleanValue armageddonCacheProgressionIdsValue;
-
-    private final ForgeConfigSpec.BooleanValue borninchaosSkipItemAnimationCopiesValue;
-    private final ForgeConfigSpec.BooleanValue borninchaosSkipForeignEntityAnimationsValue;
-    private final ForgeConfigSpec.BooleanValue borninchaosSkipRedundantDimensionRefreshValue;
-    private final ForgeConfigSpec.BooleanValue borninchaosNarrowMinionScansValue;
-    private final ForgeConfigSpec.BooleanValue skarriermobsSkipForeignEntityAnimationsValue;
-    private final ForgeConfigSpec.BooleanValue skarriermobsLeanDaylightBurnScanValue;
-    private final ForgeConfigSpec.BooleanValue skarriermobsLeanResisteelToolScanValue;
-    private final ForgeConfigSpec.BooleanValue skarriermobsLeanResisteelSwordScanValue;
-    private final ForgeConfigSpec.BooleanValue skarriermobsLeanResisteelSetTrackingValue;
-    private final ForgeConfigSpec.BooleanValue skarriermobsLeanTargetProximityScansValue;
-    private final ForgeConfigSpec.BooleanValue skarriermobsNarrowRegionScansValue;
-    private final ForgeConfigSpec.BooleanValue industrialforegoingSkipStasisTagChurnValue;
-    private final ForgeConfigSpec.BooleanValue enigmaticaddonsSkipUnsetPersistentDataValue;
-    private final ForgeConfigSpec.BooleanValue enigmaticdelicacySkipUnsetPersistentDataValue;
-    private final ForgeConfigSpec.BooleanValue travelopticsLeanClimbCurioScanValue;
-    private final ForgeConfigSpec.BooleanValue travelopticsLeanCastEffectChecksValue;
-    private final ForgeConfigSpec.BooleanValue celestialenchantmentsSkipUnenchantedTickValue;
-    private final ForgeConfigSpec.BooleanValue celestialenchantmentsLeanSlotEnchScanValue;
-    private final ForgeConfigSpec.BooleanValue uniqueaccessoriesLeanWaistWarmerScanValue;
-    private final ForgeConfigSpec.BooleanValue uniqueaccessoriesSkipUnsetPersistentDataValue;
-
-    private final ForgeConfigSpec.BooleanValue bloodmagicCacheArcRecipeListValue;
-    private final ForgeConfigSpec.BooleanValue bloodmagicCacheArcFurnaceRecipeValue;
-    private final ForgeConfigSpec.BooleanValue bloodmagicFastRoutingConnectivityValue;
-
-    private final ForgeConfigSpec.BooleanValue animusCacheEquivalencyPreviewValue;
-
-    private final ForgeConfigSpec.BooleanValue patchouliCacheBookItemLookupValue;
-
-    private final ForgeConfigSpec.BooleanValue structurifyFastStructureSetLookupValue;
-    private final ForgeConfigSpec.BooleanValue structurifySkipDisabledStructureChecksValue;
-    private final ForgeConfigSpec.BooleanValue structurifyLeanHeightCacheValue;
-    private final ForgeConfigSpec.BooleanValue structurifyLeanOverlapSectionsValue;
-    private final ForgeConfigSpec.BooleanValue structurifyCacheStructureSetEntriesValue;
-    private final ForgeConfigSpec.BooleanValue structurifySkipStartCheckWrapValue;
-
-    private final ForgeConfigSpec.BooleanValue bossesriseNarrowCinematicScanValue;
-    private final ForgeConfigSpec.BooleanValue bossesriseLeanVfxScanValue;
-    private final ForgeConfigSpec.BooleanValue soulsweaponsLeanDespawnTimerValue;
-    private final ForgeConfigSpec.BooleanValue konweaponSkipItemAnimationCopiesValue;
-    private final ForgeConfigSpec.BooleanValue immersiveaircraftBatchOverlayValue;
-    private final ForgeConfigSpec.BooleanValue ftbchunksSkipHiddenMinimapWorkValue;
-    private final ForgeConfigSpec.BooleanValue ftbchunksFastRegionWriteValue;
-    private final ForgeConfigSpec.BooleanValue punchyCacheResourceStackMissesValue;
-    private final ForgeConfigSpec.BooleanValue l2hostilitySkipTraitlessCapLookupValue;
-    private final ForgeConfigSpec.BooleanValue iceandfireFastEntityDataLookupValue;
-    private final ForgeConfigSpec.BooleanValue iceandfireSkipPathDebugRenderValue;
-    private final ForgeConfigSpec.BooleanValue iceandfireSkipEmptyArmorLayerValue;
-    private final ForgeConfigSpec.BooleanValue iceandfireCacheDragonTextureValue;
-    private final ForgeConfigSpec.BooleanValue iceandfireSkipEmptyDragonLayersValue;
-    private final ForgeConfigSpec.BooleanValue iceandfireLeanMultipartTickValue;
-    private final ForgeConfigSpec.IntValue iceandfireDragonTargetSearchHeightValue;
-    private final ForgeConfigSpec.BooleanValue iafdragonfixStructureDensValue;
-    private final ForgeConfigSpec.IntValue iafdragonfixRoostSpawnDistanceValue;
-    private final ForgeConfigSpec.IntValue iafdragonfixCaveSpawnDistanceValue;
-    private final ForgeConfigSpec.BooleanValue mowziesmobsFastCapabilityLookupValue;
-    private final ForgeConfigSpec.BooleanValue mowziesmobsDedupeCapabilityAttachValue;
-    private final ForgeConfigSpec.BooleanValue mowziesmobsCacheCameraShakeScanValue;
-    private final ForgeConfigSpec.IntValue mowziesmobsBossMusicPacketIntervalValue;
-    private final ForgeConfigSpec.BooleanValue mowziesmobsLeanBoneLookupValue;
-    private final ForgeConfigSpec.BooleanValue mowziesmobsHoistChainRenderMatrixValue;
-    private final ForgeConfigSpec.IntValue mowziesmobsDynamicChainSubstepCapValue;
-    private final ForgeConfigSpec.BooleanValue mowziesmobsCacheUmvuthanaLeaderValue;
-    private final ForgeConfigSpec.BooleanValue mowziesmobsLeanModelBoxVectorsValue;
-    private final ForgeConfigSpec.BooleanValue mowziesmobsSkipBlankElokosaTransformValue;
-    private final ForgeConfigSpec.BooleanValue mowziesmobsLeanLayerBoneScanValue;
-    private final ForgeConfigSpec.BooleanValue mowziesmobsCacheEffectRenderTypesValue;
-    private final ForgeConfigSpec.BooleanValue pickupnotifierSkipOpaqueSpriteBufferValue;
-    private final ForgeConfigSpec.BooleanValue placeboSkipEmptyEnchantmentEventValue;
-    private final ForgeConfigSpec.BooleanValue photonLeanParticleQuadsValue;
-    private final ForgeConfigSpec.BooleanValue photonLeanParticleLightValue;
-    private final ForgeConfigSpec.BooleanValue photonLeanTrailVerticesValue;
-    private final ForgeConfigSpec.BooleanValue photonDropEmptyEffectCacheEntriesValue;
-    private final ForgeConfigSpec.BooleanValue integratedapiSkipEmptyBeardifierValue;
-    private final ForgeConfigSpec.BooleanValue echelonCacheTierAttributeUuidsValue;
-    private final ForgeConfigSpec.BooleanValue elysiumapiMemoClimateSampleValue;
-    private final ForgeConfigSpec.BooleanValue elysiumapiSkipUnusedBiomeReplacerLookupValue;
-    private final ForgeConfigSpec.BooleanValue enigmaticdiceFastCurioMissValue;
-    private final ForgeConfigSpec.BooleanValue balmMemoDynamicModelKeysValue;
-
-    private final ForgeConfigSpec.BooleanValue dungeoncrawlSkipBlockEntityProbeValue;
-
-    private final ForgeConfigSpec.BooleanValue moonlightSkipEmptyMapMarkerScanValue;
-
-    private final ForgeConfigSpec.BooleanValue pehkuiLeanScaleTickValue;
-    private final ForgeConfigSpec.BooleanValue pehkuiMemoModifierTypeValue;
-
-    private final ForgeConfigSpec.BooleanValue tonsofenchantsSkipAbsentAttributeRemovalValue;
-    private final ForgeConfigSpec.BooleanValue tonsofenchantsFrostbiteSkipClientValue;
-    private final ForgeConfigSpec.BooleanValue tonsofenchantsLeanAttributeLookupValue;
-    private final ForgeConfigSpec.BooleanValue tonsofenchantsSinglePhasePlayerTickValue;
-
-    private final ForgeConfigSpec.BooleanValue subtleeffectsFireflyDarknessGateValue;
-    private final ForgeConfigSpec.BooleanValue subtleeffectsCapBiomeParticleScanValue;
-    private final ForgeConfigSpec.BooleanValue subtleeffectsLeanTickerRemovalValue;
-    private final ForgeConfigSpec.BooleanValue subtleeffectsGeyserBlockPreFilterValue;
-
-    private final ForgeConfigSpec.BooleanValue arsengSkipDeadRelayListenersValue;
-    private final ForgeConfigSpec.BooleanValue arsengGateGenericInvWrapperValue;
-
-    private final ForgeConfigSpec.BooleanValue perceptionShareDefaultTrailDataValue;
-
-    private final ForgeConfigSpec.BooleanValue quarkSkipPigLitterTagChurnValue;
-
-    private final ForgeConfigSpec.BooleanValue zetaLeanStructureReplacementValue;
-    private final ForgeConfigSpec.BooleanValue zetaShareEventWrappersValue;
-
-    private final ForgeConfigSpec.BooleanValue goetyCacheCapabilityOptionalValue;
-    private final ForgeConfigSpec.BooleanValue goetySkipCapabilityFallbackValue;
-    private final ForgeConfigSpec.BooleanValue goetyMemoAttributeModifiersValue;
-    private final ForgeConfigSpec.BooleanValue goetyFastEmptyAllyCheckValue;
-    private final ForgeConfigSpec.BooleanValue goetyFastCurioItemMissValue;
-    private final ForgeConfigSpec.BooleanValue goetyMemoCurioFilterValue;
-    private final ForgeConfigSpec.BooleanValue goetySkipBossMusicTargetLookupValue;
-    private final ForgeConfigSpec.BooleanValue goetyCacheFogWightScanValue;
-    private final ForgeConfigSpec.BooleanValue goetyCacheShakeScanValue;
-
-    private final ForgeConfigSpec.BooleanValue cataclysmCacheShakeScanValue;
-    private final ForgeConfigSpec.BooleanValue dodosmobsCacheShakeScanValue;
-    private final ForgeConfigSpec.BooleanValue eeeabsmobsCacheShakeScanValue;
-    private final ForgeConfigSpec.BooleanValue fromtheshadowsCacheShakeScanValue;
-    private final ForgeConfigSpec.BooleanValue gtbcsCacheShakeScanValue;
-    private final ForgeConfigSpec.BooleanValue legendarymonstersCacheShakeScanValue;
-
-    private final ForgeConfigSpec.BooleanValue mythsandlegendsCacheFogBossScanValue;
-    private final ForgeConfigSpec.BooleanValue mythsandlegendsCacheShakeScanValue;
-
-    private final ForgeConfigSpec.BooleanValue ambientsoundsMemoBiomeMatchValue;
-    private final ForgeConfigSpec.IntValue arsnouveauSkyTextureIntervalValue;
-    private final ForgeConfigSpec.BooleanValue pehkuiMemoInteractionBoxScalesValue;
-    private final ForgeConfigSpec.BooleanValue pehkuiCacheClientScalesValue;
-
-    private final ForgeConfigSpec.BooleanValue relicsClampEssenceSpeedValue;
-    private final ForgeConfigSpec.BooleanValue morerelicsHoistEquippedCuriosValue;
-    private final ForgeConfigSpec.BooleanValue terracurioCachedCurioLookupValue;
-    private final ForgeConfigSpec.BooleanValue terracurioLeanAttributeMapValue;
-    private final ForgeConfigSpec.BooleanValue cosmeticarmorPerPlayerRestoreQueueValue;
-    private final ForgeConfigSpec.DoubleValue relicsEssenceMaxSpeedValue;
-
-    private final ForgeConfigSpec.BooleanValue morehitboxesSkipAbsentMultiPartFilterValue;
-
-    private final ForgeConfigSpec.BooleanValue goetyrevelationCacheHaloLookupValue;
-    private final ForgeConfigSpec.BooleanValue revelationfixSkipMobFluidStandScanValue;
-    private final ForgeConfigSpec.BooleanValue revelationfixSkipNonSpiderHurtByTargetEventsValue;
-
-    private final ForgeConfigSpec.BooleanValue macabreSkipForeignEntityAnimationsValue;
-    private final ForgeConfigSpec.BooleanValue macabreSkipItemAnimationCopiesValue;
-    private final ForgeConfigSpec.BooleanValue macabreCoalesceVariableSyncValue;
-
-    private final ForgeConfigSpec.BooleanValue alexsmobsSkipCreeperAvoidGoalsValue;
-    private final ForgeConfigSpec.IntValue alexsmobsSpiderFlyScanIntervalValue;
-    private final ForgeConfigSpec.BooleanValue alexsmobsReleaseLevelMapsValue;
-
-    private final ForgeConfigSpec.BooleanValue alexscavesMemoRareBiomeQuadsValue;
-    private final ForgeConfigSpec.BooleanValue alexscavesMemoClimateSampleValue;
-    private final ForgeConfigSpec.BooleanValue alexscavesCacheShakeScanValue;
-
-    private final ForgeConfigSpec.BooleanValue adastraMemoPlanetDefaultsValue;
-
-    private final ForgeConfigSpec.BooleanValue supplementariesLeanEndermanSkullWatchValue;
-    private final ForgeConfigSpec.BooleanValue supplementariesSkipNonSignCapSyncValue;
-    private final ForgeConfigSpec.BooleanValue supplementariesMemoMapTintLookupValue;
-
-    private final ForgeConfigSpec.BooleanValue amendmentsSkipIdleSwaySyncValue;
-
-    private final ForgeConfigSpec.BooleanValue copycatsMemoStateOcclusionValue;
-    private final ForgeConfigSpec.BooleanValue copycatsFastMigrationChecksValue;
-    private final ForgeConfigSpec.BooleanValue copycatsCachedModelConfigValue;
-    private final ForgeConfigSpec.BooleanValue copycatsLeanVirtualWorldCheckValue;
-
-    private final ForgeConfigSpec.IntValue itemEntityRenderCapValue;
-    private final ForgeConfigSpec.BooleanValue vanillaMemoGlyphFontSetValue;
-    private final ForgeConfigSpec.BooleanValue vanillaFasterStructureLocationValue;
-    private final ForgeConfigSpec.BooleanValue vanillaFixBoatFallDamageValue;
-    private final ForgeConfigSpec.BooleanValue vanillaPredictableItemDropsValue;
-    private final ForgeConfigSpec.BooleanValue vanillaLeanTrackerSectionPosValue;
-    private final ForgeConfigSpec.BooleanValue vanillaLeanSuffocationScanValue;
-    private final ForgeConfigSpec.BooleanValue vanillaLeanMenuBroadcastValue;
-    private final ForgeConfigSpec.BooleanValue vanillaLeanTrackerDeltaValue;
-    private final ForgeConfigSpec.BooleanValue vanillaCacheBiomeQuartLookupsValue;
-    private final ForgeConfigSpec.BooleanValue vanillaMemoCameraFluidValue;
-    private final ForgeConfigSpec.BooleanValue vanillaMemoSkyColourValue;
-    private final ForgeConfigSpec.BooleanValue vanillaPurgeGhostPlayersValue;
-    private final ForgeConfigSpec.BooleanValue vanillaFastBiomeBlendValue;
-    private final ForgeConfigSpec.DoubleValue vanillaMovementCheckSlackValue;
-    private final ForgeConfigSpec.BooleanValue vanillaDisableFlyingKickValue;
-    private final ForgeConfigSpec.BooleanValue gnetumMemoCacheSettingsValue;
-    private final ForgeConfigSpec.BooleanValue mcreatorShareDefaultPlayerVariablesValue;
-    private final ForgeConfigSpec.BooleanValue distanthorizonsClearBiomeCachesOnUnloadValue;
-    private final ForgeConfigSpec.BooleanValue distanthorizonsMemoBiomeBlendColorsValue;
-    private final ForgeConfigSpec.BooleanValue distanthorizonsCacheChunkBiomeLookupValue;
-
     static {
-        Pair<CoOConfig, ForgeConfigSpec> pair = new ForgeConfigSpec.Builder().configure(CoOConfig::new);
-        VALUES = pair.getLeft();
-        SPEC = pair.getRight();
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        define(builder);
+        SPEC = builder.build();
     }
 
-    private CoOConfig(ForgeConfigSpec.Builder builder) {
+    private CoOConfig() {
+    }
+
+    @FunctionalInterface
+    private interface BoolSink {
+        void accept(boolean value);
+    }
+
+    private static ForgeConfigSpec.BooleanValue gate(ForgeConfigSpec.BooleanValue value, BoolSink sink) {
+        BAKERS.add(() -> sink.accept(masterEnabled && value.get()));
+        return value;
+    }
+
+    private static void gate(ForgeConfigSpec.IntValue value, int disabled, IntConsumer sink) {
+        BAKERS.add(() -> sink.accept(masterEnabled ? value.get() : disabled));
+    }
+
+    private static void gate(ForgeConfigSpec.DoubleValue value, double disabled, DoubleConsumer sink) {
+        BAKERS.add(() -> sink.accept(masterEnabled ? value.get() : disabled));
+    }
+
+    private static void plain(ForgeConfigSpec.IntValue value, IntConsumer sink) {
+        BAKERS.add(() -> sink.accept(value.get()));
+    }
+
+    private static void plain(ForgeConfigSpec.DoubleValue value, DoubleConsumer sink) {
+        BAKERS.add(() -> sink.accept(value.get()));
+    }
+
+    private static void define(ForgeConfigSpec.Builder builder) {
         builder.comment("Master switch for every patch in this mod. Useful for A/B testing.").push("general");
-        this.masterEnabledValue = builder.define("enabled", true);
+        ForgeConfigSpec.BooleanValue master = builder.define("enabled", true);
+        BAKERS.add(() -> masterEnabled = master.get());
         builder.pop();
 
         builder.comment("Curios API patches.").push("curios");
-        this.curiosSkipSlotlessEntitiesValue = builder
+        gate(builder
                 .comment("Skip the per-tick curios handler for entity types that have no curio slots at all.")
-                .define("skipSlotlessEntities", true);
-        this.curiosSkipClientTickOnNonPlayersValue = builder
+                .define("skipSlotlessEntities", true), v -> curiosSkipSlotlessEntities = v);
+        gate(builder
                 .comment("Skip the client-side curios tick for non-player entities.")
-                .define("skipClientTickOnNonPlayers", true);
-        this.curiosSkipNonPlayerRenderLayerValue = builder
+                .define("skipClientTickOnNonPlayers", true), v -> curiosSkipClientTickOnNonPlayers = v);
+        gate(builder
                 .comment("Never attach the Curios render layer to non-player entity renderers.")
-                .define("skipNonPlayerRenderLayer", true);
-        this.curiosCacheEntitySlotLookupValue = builder
+                .define("skipNonPlayerRenderLayer", true), v -> curiosSkipNonPlayerRenderLayer = v);
+        gate(builder
                 .comment("Cache the per-entity curio slot lookup on the entity itself.")
-                .define("cacheEntitySlotLookup", true);
-        this.curiosFastEquippedItemMissValue = builder
+                .define("cacheEntitySlotLookup", true), v -> curiosCacheEntitySlotLookup = v);
+        gate(builder
                 .comment("Answer 'this entity is not wearing that item' from a per-tick set instead of a full curios inventory walk.")
-                .define("fastEquippedItemMiss", true);
-        this.curiosFastFindFirstMissValue = builder
+                .define("fastEquippedItemMiss", true), v -> curiosFastEquippedItemMiss = v);
+        gate(builder
                 .comment("Answer ICuriosItemHandler#findFirstCurio(Item) from the same per-tick set instead of walking every slot handler.")
-                .define("fastFindFirstMiss", true);
-        this.curiosReuseCurioMapViewValue = builder
+                .define("fastFindFirstMiss", true), v -> curiosFastFindFirstMiss = v);
+        gate(builder
                 .comment("Hand out one reusable unmodifiable view of an entity's curio slot map instead of wrapping the map again on every single call.")
-                .define("reuseCurioMapView", true);
+                .define("reuseCurioMapView", true), v -> curiosReuseCurioMapView = v);
         builder.pop();
 
         builder.comment("Artifacts patches.").push("artifacts");
-        this.artifactsSkipClientTickOnNonPlayersValue = builder
+        gate(builder
                 .comment("Skip the client-side Artifacts living tick for non-player entities.")
-                .define("skipClientTickOnNonPlayers", true);
-        this.artifactsFastPathKittySlippersValue = builder
+                .define("skipClientTickOnNonPlayers", true), v -> artifactsSkipClientTickOnNonPlayers = v);
+        gate(builder
                 .comment("Skip the kitty slippers curios scan when the entity has no last-hurt-by mob.")
-                .define("fastPathKittySlippers", true);
-        this.artifactsFastPathUmbrellaValue = builder
+                .define("fastPathKittySlippers", true), v -> artifactsFastPathKittySlippers = v);
+        gate(builder
                 .comment("Skip the charm of sinking curios scan when the umbrella glide check cannot pass anyway.")
-                .define("fastPathUmbrella", true);
+                .define("fastPathUmbrella", true), v -> artifactsFastPathUmbrella = v);
         builder.pop();
 
         builder.comment("Caelus patches.").push("caelus");
-        this.caelusSkipGroundedNonPlayersValue = builder
+        gate(builder
                 .comment("Skip the flight attribute lookup for non-player entities that are not already fall-flying.")
-                .define("skipGroundedNonPlayers", true);
+                .define("skipGroundedNonPlayers", true), v -> caelusSkipGroundedNonPlayers = v);
         builder.pop();
 
         builder.comment("Block Swap patches.").push("blockswap");
-        this.blockswapPaletteFilteredRetroGenValue = builder
+        gate(builder
                 .comment("Filter the retro-gen chunk sweep through each section's block state palette.")
-                .define("paletteFilteredRetroGen", true);
+                .define("paletteFilteredRetroGen", true), v -> blockswapPaletteFilteredRetroGen = v);
         builder.pop();
 
         builder.comment("Just Dire Things patches.").push("justdirethings");
-        this.justdirethingsAvoidChunkTicketsValue = builder
+        gate(builder
                 .comment("Read the item entity's block state through getChunkNow instead of the loading getChunk.")
-                .define("avoidChunkTickets", true);
-        this.justdirethingsLeanAreaPreviewScanValue = builder
+                .define("avoidChunkTickets", true), v -> justdirethingsAvoidChunkTickets = v);
+        gate(builder
                 .comment("Stop the area preview renderer copying every block entity of all 169 nearby chunks into a fresh list every frame, and skip the whole 169 chunk sweep for the rest of a tick once that tick's first frame found no area affecting block at all. A preview switched on part way through a tick shows up on the next one.")
-                .define("leanAreaPreviewScan", true);
+                .define("leanAreaPreviewScan", true), v -> justdirethingsLeanAreaPreviewScan = v);
         builder.pop();
 
         builder.comment("Goety's Delight patches.").push("goetydelight");
-        this.goetydelightCakeScanIntervalValue = builder
+        gate(builder
                 .comment("Run the cherry blossom cake entity sweep once every N server ticks instead of every tick.")
-                .defineInRange("cakeScanInterval", 4, 1, 100);
-        this.goetydelightSkipIdleVisualEffectsValue = builder
+                .defineInRange("cakeScanInterval", 4, 1, 100), 1, v -> goetydelightCakeScanInterval = v);
+        gate(builder
                 .comment("Skip the per-frame walk over every entity in the level while no entity carries a visual effect. The walk re-arms as soon as one is added or synced.")
-                .define("skipIdleVisualEffects", true);
+                .define("skipIdleVisualEffects", true), v -> goetydelightSkipIdleVisualEffects = v);
+        gate(builder
+                .comment("Test the log tag against the item itself instead of building a throwaway ItemStack for every item in the registry on every boat plate result lookup.")
+                .define("leanLogScan", true), v -> goetydelightLeanLogScan = v);
+        gate(builder
+                .comment("Keep the boat plate log list instead of rescanning the whole item registry on every result lookup. Rebuilt whenever tags reload.")
+                .define("cacheLogItems", true), v -> goetydelightCacheLogItems = v);
         builder.pop();
 
         builder.comment("Better Combat patches.").push("bettercombat");
-        this.bettercombatCacheWeaponAttributesValue = builder
+        gate(builder
                 .comment("Cache WeaponRegistry#getAttributes per item. Stock does a registry reverse lookup plus a map get on every Player#getItemBySlot call, twice.")
-                .define("cacheWeaponAttributes", true);
+                .define("cacheWeaponAttributes", true), v -> bettercombatCacheWeaponAttributes = v);
         builder.pop();
 
         builder.comment("CoFH Core patches.").push("cofh");
-        this.cofhCacheTranslucentRenderersValue = builder
+        gate(builder
                 .comment("Remember which entity classes have a translucent renderer so the per-frame entity walk skips the renderer lookup for the rest.")
-                .define("cacheTranslucentRenderers", true);
+                .define("cacheTranslucentRenderers", true), v -> cofhCacheTranslucentRenderers = v);
         builder.pop();
 
         builder.comment("Create patches.").push("create");
-        this.createDedupeBigOutlineProbesValue = builder
+        gate(builder
                 .comment("Read each block position at most once per big outline pick. Stock tests a 3x3x3 neighbourhood at every raycast step, so neighbouring steps re-read the same positions.")
-                .define("dedupeBigOutlineProbes", true);
+                .define("dedupeBigOutlineProbes", true), v -> createDedupeBigOutlineProbes = v);
         builder.pop();
 
         builder.comment("XaeroLib patches.").push("xaerolib");
-        this.xaerolibCacheConfigProfileValue = builder
+        gate(builder
                 .comment("Resolve the active config profile once per client tick instead of on every single config read.")
-                .define("cacheConfigProfile", true);
-        this.xaerolibCacheEnforcementCheckValue = builder
+                .define("cacheConfigProfile", true), v -> xaerolibCacheConfigProfile = v);
+        gate(builder
                 .comment("Answer the server-enforcement check once per client tick. Stock runs a second full config read inside every config read.")
-                .define("cacheEnforcementCheck", true);
+                .define("cacheEnforcementCheck", true), v -> xaerolibCacheEnforcementCheck = v);
         builder.pop();
 
         builder.comment("Xaero's World Map patches.").push("xaeroworldmap");
-        this.xaeroworldmapVramPollIntervalValue = builder
+        gate(builder
                 .comment("Milliseconds between the map limiter's free VRAM query, which stock fires a blocking glGetIntegerv for on every single frame. 0 restores the stock every frame behaviour. Client.")
-                .defineInRange("vramPollInterval", 500, 0, 60000);
+                .defineInRange("vramPollInterval", 500, 0, 60000), 0, v -> xaeroworldmapVramPollInterval = v);
+        gate(builder
+                .comment("Wait out the world map screen's frame budget by parking instead of spinning. While the map screen is open Xaero busy loops on System.nanoTime until 1.6ms of the frame has passed, which burns a whole core for most of every map frame. Pacing is unchanged, the thread just idles instead.")
+                .define("idleMapFrameWait", true), v -> xaeroworldmapIdleMapFrameWait = v);
+        gate(builder
+                .comment("Microseconds of the world map frame budget still spent spinning, so the wait ends on time even though the operating system wakes a parked thread late. Raise it if the map screen feels choppier than before, lower it to give the core back sooner.")
+                .defineInRange("mapFrameSpinTail", 200, 0, 1600), 1600, v -> xaeroworldmapMapFrameSpinTail = v);
         builder.pop();
 
         builder.comment("GeckoLib patches.").push("geckolib");
-        this.geckolibReuseRenderVectorsValue = builder
+        gate(builder
                 .comment("Reuse the scratch vectors GeckoLib allocates while writing model geometry.")
-                .define("reuseRenderVectors", true);
-        this.geckolibCacheBoneLookupValue = builder
+                .define("reuseRenderVectors", true), v -> geckolibReuseRenderVectors = v);
+        gate(builder
                 .comment("Memoise BakedGeoModel#getBone(String) per baked model.")
-                .define("cacheBoneLookup", true);
+                .define("cacheBoneLookup", true), v -> geckolibCacheBoneLookup = v);
         builder.pop();
 
         builder.comment("Saint's Dragons patches.").push("saintsdragons");
-        this.saintsdragonsSkipRedundantBoneTrackingValue = builder
+        gate(builder
                 .comment("Enable matrix tracking on a dragon's bones once per model instead of every pass.")
-                .define("skipRedundantBoneTracking", true);
-        this.saintsdragonsCacheShakeScanValue = builder
+                .define("skipRedundantBoneTracking", true), v -> saintsdragonsSkipRedundantBoneTracking = v);
+        gate(builder
                 .comment("Look for screen shaking dragons once per tick instead of once per frame.")
-                .define("cacheShakeScan", true);
+                .define("cacheShakeScan", true), v -> saintsdragonsCacheShakeScan = v);
         builder.pop();
 
         builder.comment("ImmediatelyFast patches.").push("immediatelyfast");
-        this.immediatelyfastSingleBufferLookupValue = builder
+        gate(builder
                 .comment("Find a render layer's buffer with one map lookup instead of a contains check plus a get.")
-                .define("singleBufferLookup", true);
-        this.immediatelyfastSkipIdleLayersValue = builder
+                .define("singleBufferLookup", true), v -> immediatelyfastSingleBufferLookup = v);
+        gate(builder
                 .comment("End only the render layers that were actually drawn into instead of walking every fixed buffer on each flush.")
-                .define("skipIdleLayers", true);
+                .define("skipIdleLayers", true), v -> immediatelyfastSkipIdleLayers = v);
         builder.pop();
 
         builder.comment("FancyMenu patches.").push("fancymenu");
-        this.fancymenuSeamlessCaptureIntervalValue = builder
+        gate(builder
                 .comment("Seconds between seamless world loading screenshots. FancyMenu reads back the whole framebuffer each time, which stalls the render thread. Stock behaviour is 1.")
-                .defineInRange("seamlessCaptureInterval", 30, 1, 600);
-        this.fancymenuSkipRedundantScaleWritesValue = builder
+                .defineInRange("seamlessCaptureInterval", 30, 1, 600), 1, v -> fancymenuSeamlessCaptureInterval = v);
+        gate(builder
                 .comment("Skip FancyMenu's ThreadLocal render scale write when the value is unchanged. Stock writes it on every PoseStack push, pop and scale.")
-                .define("skipRedundantScaleWrites", true);
-        this.fancymenuPinRenderStateToRenderThreadValue = builder
+                .define("skipRedundantScaleWrites", true), v -> fancymenuSkipRedundantScaleWrites = v);
+        gate(builder
                 .comment("Hold FancyMenu's render scale, translation and rotation in plain fields for the render thread instead of in ThreadLocals. Stock reads or writes three ThreadLocals on every PoseStack push, pop, scale, translate and mulPose, which the profiler puts at 2.6 percent of the client thread. Other threads keep the stock ThreadLocal. Client.")
-                .define("pinRenderStateToRenderThread", true);
+                .define("pinRenderStateToRenderThread", true), v -> fancymenuPinRenderStateToRenderThread = v);
         builder.pop();
 
         builder.comment("Entity Model Features patches.").push("emf");
-        this.emfDropZeroAngerEntriesValue = builder
+        gate(builder
                 .comment("Stop the anger time map growing one entry per neutral mob ever rendered.")
-                .define("dropZeroAngerEntries", true);
+                .define("dropZeroAngerEntries", true), v -> emfDropZeroAngerEntries = v);
         builder.pop();
 
         builder.comment("Entity Texture Features patches.").push("etf");
-        this.etfFastValidPathValue = builder
+        gate(builder
                 .comment("Answer ResourceLocation#isValidPath at HEAD when the path is valid.")
-                .define("fastValidPath", true);
+                .define("fastValidPath", true), v -> etfFastValidPath = v);
         builder.pop();
 
         builder.comment("Oculus / Iris shadow pass patches.").push("oculus");
-        this.oculusSkipSignTextInShadowPassValue = builder
+        gate(builder
                 .comment("Skip sign text while rendering the shadow map.")
-                .define("skipSignTextInShadowPass", true);
-        this.oculusSkipGlintInShadowPassValue = builder
+                .define("skipSignTextInShadowPass", true), v -> oculusSkipSignTextInShadowPass = v);
+        gate(builder
                 .comment("Report items as having no enchantment glint while rendering the shadow map.")
-                .define("skipGlintInShadowPass", true);
-        this.oculusSkipNameTagsInShadowPassValue = builder
+                .define("skipGlintInShadowPass", true), v -> oculusSkipGlintInShadowPass = v);
+        gate(builder
                 .comment("Skip entity name tags while rendering the shadow map.")
-                .define("skipNameTagsInShadowPass", true);
-        this.oculusSkipBannerPatternsInShadowPassValue = builder
+                .define("skipNameTagsInShadowPass", true), v -> oculusSkipNameTagsInShadowPass = v);
+        gate(builder
                 .comment("Skip banner pattern layers while rendering the shadow map, keeping the base cloth.")
-                .define("skipBannerPatternsInShadowPass", true);
+                .define("skipBannerPatternsInShadowPass", true), v -> oculusSkipBannerPatternsInShadowPass = v);
         builder.pop();
 
         builder.comment("Lootr patches.").push("lootr");
-        this.lootrSkipIdleTileTickerValue = builder
+        gate(builder
                 .comment("Skip Lootr's per-server-tick container conversion pass while its queues are empty.")
-                .define("skipIdleTileTicker", true);
-        this.lootrTileTickerBudgetValue = builder
+                .define("skipIdleTileTicker", true), v -> lootrSkipIdleTileTicker = v);
+        gate(builder
                 .comment("Maximum container conversion candidates Lootr may examine per server tick.")
-                .defineInRange("tileTickerBudget", 512, 0, 65536);
+                .defineInRange("tileTickerBudget", 512, 0, 65536), 0, v -> lootrTileTickerBudget = v);
         builder.pop();
 
         builder.comment("Nature's Aura patches.").push("naturesaura");
-        this.naturesauraFastAuraChunkSweepValue = builder
+        gate(builder
                 .comment("Keep each chunk's Nature's Aura capability handle instead of walking the capability dispatcher once per loaded chunk per second.")
-                .define("fastAuraChunkSweep", true);
+                .define("fastAuraChunkSweep", true), v -> naturesauraFastAuraChunkSweep = v);
         builder.pop();
 
         builder.comment("Xaero's Minimap patches.").push("xaerominimap");
-        this.xaeroMinimapRenderFpsCapValue = builder
+        gate(builder
                 .comment("Maximum times per second the minimap redraws its map contents. Anything below the client frame rate leaves a visibly stale minimap, so this is off by default. 0 restores the stock every frame behaviour. Client.")
-                .defineInRange("renderFpsCap", 0, 0, 260);
+                .defineInRange("renderFpsCap", 0, 0, 260), 0, v -> xaeroMinimapRenderFpsCap = v);
         builder.pop();
 
         builder.comment("Xaero's + Waystones compatibility patches.").push("w2w2");
-        this.w2w2DeferWaypointSaveValue = builder
+        gate(builder
                 .comment("Collapse the waypoint file writes this mod does when waystone data arrives.")
-                .define("deferWaypointSave", true);
+                .define("deferWaypointSave", true), v -> w2w2DeferWaypointSave = v);
         builder.pop();
 
         builder.comment("Oh The Biomes We've Gone patches.").push("biomeswevegone");
-        this.biomeswevegoneSkipForeignChunkTerrainValue = builder
+        gate(builder
                 .comment("Skip the Crag Gardens and Basalt Barrera terrain passes in chunks that contain neither biome. Both passes run on every chunk generated in every dimension and build four noise generators, two weighted state providers and 512 biome lookups before they ever check whether the biome is present.")
-                .define("skipForeignChunkTerrain", true);
+                .define("skipForeignChunkTerrain", true), v -> biomeswevegoneSkipForeignChunkTerrain = v);
         builder.pop();
 
         builder.comment("Biolith patches.").push("biolith");
-        this.biolithRestampSwappedBiomeSourceValue = builder
+        gate(builder
                 .comment("Re-tag the biome source with its dimension after another mod swaps it. MCreator biome mods replace the overworld MultiNoiseBiomeSource on ServerAboutToStart, and the replacement never passes through LevelStem, so Biolith loses track of which dimension it is and silently stops applying every biome replacement and sub-biome it was asked for.")
-                .define("restampSwappedBiomeSource", true);
-        this.biolithEarlyRegistryCaptureValue = builder
+                .define("restampSwappedBiomeSource", true), v -> biolithRestampSwappedBiomeSource = v);
+        gate(builder
                 .comment("Hand Biolith the registries at the start of WorldStem instead of the end. BCLib asks every vanilla biome source for its biome list from inside that constructor, which is before Biolith has a registry to look biomes up in, and Biolith throws.")
-                .define("earlyRegistryCapture", true);
-        this.biolithReuseBiomeEntriesValue = builder
+                .define("earlyRegistryCapture", true), v -> biolithEarlyRegistryCapture = v);
+        gate(builder
                 .comment("Return Biolith's cached biome list without entering its lock. Biolith synchronizes on the biome source on every single biome lookup, and world generation runs those lookups on several threads at once.")
-                .define("reuseBiomeEntries", true);
+                .define("reuseBiomeEntries", true), v -> biolithReuseBiomeEntries = v);
         builder.pop();
 
         builder.comment("TerraBlender patches.").push("terrablender");
-        this.terrablenderCacheNamespaceRuleValue = builder
+        gate(builder
                 .comment("Cache TerraBlender's per-block namespace lookup for the duration of a biome.")
-                .define("cacheNamespaceRule", true);
+                .define("cacheNamespaceRule", true), v -> terrablenderCacheNamespaceRule = v);
         builder.pop();
 
         builder.comment("Terramity patches.").push("terramity");
-        this.terramitySkipItemAnimationCopiesValue = builder
+        gate(builder
                 .comment("Bail out of Terramity's held item animation handler before it copies your hands.")
-                .define("skipItemAnimationCopies", true);
-        this.terramitySkipForeignEntityAnimationsValue = builder
+                .define("skipItemAnimationCopies", true), v -> terramitySkipItemAnimationCopies = v);
+        gate(builder
                 .comment("Skip Terramity's entity animation handler for entities that are not Terramity's.")
-                .define("skipForeignEntityAnimations", true);
-        this.terramityMemoizeProcedureRaycastsValue = builder
+                .define("skipForeignEntityAnimations", true), v -> terramitySkipForeignEntityAnimations = v);
+        gate(builder
                 .comment("Reuse the answer when a Terramity procedure raytraces the same ray twice in a row.")
-                .define("memoizeProcedureRaycasts", true);
-        this.terramitySkipClientCurioScansValue = builder
+                .define("memoizeProcedureRaycasts", true), v -> terramityMemoizeProcedureRaycasts = v);
+        gate(builder
                 .comment("Skip the four Terramity accessory tick procedures on the client, where they do nothing.")
-                .define("skipClientCurioScans", true);
-        this.terramitySkipArmorAnimationScanValue = builder
+                .define("skipClientCurioScans", true), v -> terramitySkipClientCurioScans = v);
+        gate(builder
                 .comment("Bail out of Terramity's armour animation handler before it re-reads your equipment.")
-                .define("skipArmorAnimationScan", true);
-        this.terramityFixPhasingShaderStompValue = builder
+                .define("skipArmorAnimationScan", true), v -> terramitySkipArmorAnimationScan = v);
+        gate(builder
                 .comment("Keep Terramity's screen shaders to your own player and to shaders Terramity loaded.")
-                .define("fixPhasingShaderStomp", true);
+                .define("fixPhasingShaderStomp", true), v -> terramityFixPhasingShaderStomp = v);
         builder.pop();
 
         builder.comment("Armageddon patches.").push("armageddon");
-        this.armageddonSkipForeignEntityAnimationsValue = builder
+        gate(builder
                 .comment("Skip Armageddon's entity animation handler for entities that are not Armageddon's.")
-                .define("skipForeignEntityAnimations", true);
-        this.armageddonCacheProgressionIdsValue = builder
+                .define("skipForeignEntityAnimations", true), v -> armageddonSkipForeignEntityAnimations = v);
+        gate(builder
                 .comment("Stop Armageddon's progression gate from re-parsing the same identifiers every tick.")
-                .define("cacheProgressionIds", true);
+                .define("cacheProgressionIds", true), v -> armageddonCacheProgressionIds = v);
         builder.pop();
 
         builder.comment("Born in Chaos patches.").push("borninchaos");
-        this.borninchaosSkipItemAnimationCopiesValue = builder
+        gate(builder
                 .comment("Bail out of Born in Chaos' held item animation handler before it copies your hands.")
-                .define("skipItemAnimationCopies", true);
-        this.borninchaosSkipForeignEntityAnimationsValue = builder
+                .define("skipItemAnimationCopies", true), v -> borninchaosSkipItemAnimationCopies = v);
+        gate(builder
                 .comment("Skip Born in Chaos' entity animation handler for entities that are not its own.")
-                .define("skipForeignEntityAnimations", true);
-        this.borninchaosSkipRedundantDimensionRefreshValue = builder
+                .define("skipForeignEntityAnimations", true), v -> borninchaosSkipForeignEntityAnimations = v);
+        gate(builder
                 .comment("Stop 83 Born in Chaos mobs from resizing themselves once per tick for no reason.")
-                .define("skipRedundantDimensionRefresh", true);
-        this.borninchaosNarrowMinionScansValue = builder
+                .define("skipRedundantDimensionRefresh", true), v -> borninchaosSkipRedundantDimensionRefresh = v);
+        gate(builder
                 .comment("Narrow the four Born in Chaos minion claim scans to the mod's own entities.")
-                .define("narrowMinionScans", true);
+                .define("narrowMinionScans", true), v -> borninchaosNarrowMinionScans = v);
         builder.pop();
 
         builder.comment("Skarrier Mobs patches.").push("skarriermobs");
-        this.skarriermobsSkipForeignEntityAnimationsValue = builder
+        gate(builder
                 .comment("Skip Skarrier Mobs' 17 way instanceof chain for entities that are not its own.")
-                .define("skipForeignEntityAnimations", true);
-        this.skarriermobsLeanDaylightBurnScanValue = builder
+                .define("skipForeignEntityAnimations", true), v -> skarriermobsSkipForeignEntityAnimations = v);
+        gate(builder
                 .comment("Stop the daylight burn handler from rebuilding its entity tag key for every living entity every tick.")
-                .define("leanDaylightBurnScan", true);
-        this.skarriermobsLeanResisteelToolScanValue = builder
+                .define("leanDaylightBurnScan", true), v -> skarriermobsLeanDaylightBurnScan = v);
+        gate(builder
                 .comment("Stop the Resisteel tool handler from rebuilding its item tag key for every living entity every tick.")
-                .define("leanResisteelToolScan", true);
-        this.skarriermobsLeanResisteelSwordScanValue = builder
+                .define("leanResisteelToolScan", true), v -> skarriermobsLeanResisteelToolScan = v);
+        gate(builder
                 .comment("Stop the Resisteel sword handler from firing a MobEffectEvent.Remove at every living entity every tick.")
-                .define("leanResisteelSwordScan", true);
-        this.skarriermobsLeanResisteelSetTrackingValue = builder
+                .define("leanResisteelSwordScan", true), v -> skarriermobsLeanResisteelSwordScan = v);
+        gate(builder
                 .comment("Stop the Resisteel set handler from writing five NBT values into every living entity every tick.")
-                .define("leanResisteelSetTracking", true);
-        this.skarriermobsLeanTargetProximityScansValue = builder
+                .define("leanResisteelSetTracking", true), v -> skarriermobsLeanResisteelSetTracking = v);
+        gate(builder
                 .comment("Replace fourteen sorted region scans that only ask whether a mob's own target is close by with one box test.")
-                .define("leanTargetProximityScans", true);
-        this.skarriermobsNarrowRegionScansValue = builder
+                .define("leanTargetProximityScans", true), v -> skarriermobsLeanTargetProximityScans = v);
+        gate(builder
                 .comment("Narrow the rest of the mob region scans to the players, owners, monsters or flore heads their loop bodies actually use.")
-                .define("narrowRegionScans", true);
+                .define("narrowRegionScans", true), v -> skarriermobsNarrowRegionScans = v);
         builder.pop();
 
         builder.comment("Industrial Foregoing patches.").push("industrialforegoing");
-        this.industrialforegoingSkipStasisTagChurnValue = builder
+        gate(builder
                 .comment("Stop the Stasis Chamber tick filter from reading, and thereby creating, a ForgeData compound on every mob in the world.")
-                .define("skipStasisTagChurn", true);
+                .define("skipStasisTagChurn", true), v -> industrialforegoingSkipStasisTagChurn = v);
         builder.pop();
 
         builder.comment("Enigmatic Addons patches.").push("enigmaticaddons");
-        this.enigmaticaddonsSkipUnsetPersistentDataValue = builder
+        gate(builder
                 .comment("Stop the Annihilating Sword, Violence Scroll and Extradimensional Scepter tick handlers from reading, and thereby creating, a ForgeData compound on every entity in the world. Also removes the UUID parse and ImmutableMultimap build the sword did for every living entity every tick.")
-                .define("skipUnsetPersistentData", true);
+                .define("skipUnsetPersistentData", true), v -> enigmaticaddonsSkipUnsetPersistentData = v);
         builder.pop();
 
         builder.comment("Enigmatic Delicacy patches.").push("enigmaticdelicacy");
-        this.enigmaticdelicacySkipUnsetPersistentDataValue = builder
+        gate(builder
                 .comment("Stop the Slicing enchantment tick handler from reading, and thereby creating, a ForgeData compound on every entity on both sides every tick.")
-                .define("skipUnsetPersistentData", true);
+                .define("skipUnsetPersistentData", true), v -> enigmaticdelicacySkipUnsetPersistentData = v);
         builder.pop();
 
         builder.comment("Traveloptics patches.").push("traveloptics");
-        this.travelopticsLeanClimbCurioScanValue = builder
+        gate(builder
                 .comment("Check for the Spider Aspect effect before walking every living entity's curios inventory every tick.")
-                .define("leanClimbCurioScan", true);
-        this.travelopticsLeanCastEffectChecksValue = builder
+                .define("leanClimbCurioScan", true), v -> travelopticsLeanClimbCurioScan = v);
+        gate(builder
                 .comment("Check that the entity is a spell casting mob before reading its effect map in the Blackout and Casting handlers.")
-                .define("leanCastEffectChecks", true);
+                .define("leanCastEffectChecks", true), v -> travelopticsLeanCastEffectChecks = v);
         builder.pop();
 
         builder.comment("Celestial Enchantments patches.").push("celestialenchantments");
-        this.celestialenchantmentsSkipUnenchantedTickValue = builder
+        gate(builder
                 .comment("Skip the seven map, two array clone enchantment scan for living entities that have nothing enchanted equipped.")
-                .define("skipUnenchantedTick", true);
-        this.celestialenchantmentsLeanSlotEnchScanValue = builder
+                .define("skipUnenchantedTick", true), v -> celestialenchantmentsSkipUnenchantedTick = v);
+        gate(builder
                 .comment("Skip the per slot enchantment map allocation for equipment slots that hold nothing enchanted.")
-                .define("leanSlotEnchScan", true);
+                .define("leanSlotEnchScan", true), v -> celestialenchantmentsLeanSlotEnchScan = v);
         builder.pop();
 
         builder.comment("Unique Accessories patches.").push("uniqueaccessories");
-        this.uniqueaccessoriesLeanWaistWarmerScanValue = builder
+        gate(builder
                 .comment("Answer the Waist Warmer curios lookup from the shared per tick curio presence cache instead of walking the inventory for every living entity every tick.")
-                .define("leanWaistWarmerScan", true);
-        this.uniqueaccessoriesSkipUnsetPersistentDataValue = builder
+                .define("leanWaistWarmerScan", true), v -> uniqueaccessoriesLeanWaistWarmerScan = v);
+        gate(builder
                 .comment("Stop the Suspicious Mushroom and Rose of Temptation handlers from attaching an empty ForgeData tag to every entity in the world.")
-                .define("skipUnsetPersistentData", true);
+                .define("skipUnsetPersistentData", true), v -> uniqueaccessoriesSkipUnsetPersistentData = v);
         builder.pop();
 
         builder.comment("Blood Magic patches.").push("bloodmagic");
-        this.bloodmagicCacheArcRecipeListValue = builder
+        gate(builder
                 .comment("Stop rebuilding the whole ARC recipe list on every tick of every ARC.")
-                .define("cacheArcRecipeList", true);
-        this.bloodmagicCacheArcFurnaceRecipeValue = builder
+                .define("cacheArcRecipeList", true), v -> bloodmagicCacheArcRecipeList = v);
+        gate(builder
                 .comment("Give the ARC's furnace mode the recipe cache vanilla furnaces already have.")
-                .define("cacheArcFurnaceRecipe", true);
-        this.bloodmagicFastRoutingConnectivityValue = builder
+                .define("cacheArcFurnaceRecipe", true), v -> bloodmagicCacheArcFurnaceRecipe = v);
+        gate(builder
                 .comment("Give the item routing network's connectivity search a visited set that is actually a set.")
-                .define("fastRoutingConnectivity", true);
+                .define("fastRoutingConnectivity", true), v -> bloodmagicFastRoutingConnectivity = v);
         builder.pop();
 
         builder.comment("Animus patches.").push("animus");
-        this.animusCacheEquivalencyPreviewValue = builder
+        gate(builder
                 .comment("Stop rebuilding the equivalency sigil's block outline every single frame.")
-                .define("cacheEquivalencyPreview", true);
+                .define("cacheEquivalencyPreview", true), v -> animusCacheEquivalencyPreview = v);
         builder.pop();
 
         builder.comment("Patchouli patches.").push("patchouli");
-        this.patchouliCacheBookItemLookupValue = builder
+        gate(builder
                 .comment("Answer 'is this item one of the guide books' from a per item cache.")
-                .define("cacheBookItemLookup", true);
+                .define("cacheBookItemLookup", true), v -> patchouliCacheBookItemLookup = v);
         builder.pop();
 
         builder.comment("Structurify patches.").push("structurify");
-        this.structurifyFastStructureSetLookupValue = builder
+        gate(builder
                 .comment("Resolve Structurify's per structure set config lookup in one hash lookup.")
-                .define("fastStructureSetLookup", true);
-        this.structurifySkipDisabledStructureChecksValue = builder
+                .define("fastStructureSetLookup", true), v -> structurifyFastStructureSetLookup = v);
+        gate(builder
                 .comment("Skip Structurify's structure check bookkeeping when none of its checks are enabled.")
-                .define("skipDisabledStructureChecks", true);
-        this.structurifyLeanHeightCacheValue = builder
+                .define("skipDisabledStructureChecks", true), v -> structurifySkipDisabledStructureChecks = v);
+        gate(builder
                 .comment("Replace Structurify's terrain height cache with a primitive keyed one.")
-                .define("leanHeightCache", true);
-        this.structurifyLeanOverlapSectionsValue = builder
+                .define("leanHeightCache", true), v -> structurifyLeanHeightCache = v);
+        gate(builder
                 .comment("Collect overlap check section keys without boxing them.")
-                .define("leanOverlapSections", true);
-        this.structurifyCacheStructureSetEntriesValue = builder
+                .define("leanOverlapSections", true), v -> structurifyLeanOverlapSections = v);
+        gate(builder
                 .comment("Stop rebuilding a structure set's entry list on every read.")
-                .define("cacheStructureSetEntries", true);
-        this.structurifySkipStartCheckWrapValue = builder
+                .define("cacheStructureSetEntries", true), v -> structurifyCacheStructureSetEntries = v);
+        gate(builder
                 .comment("Restore vanilla's plain getStartForStructure while Structurify's checks are idle.")
-                .define("skipStartCheckWrap", true);
+                .define("skipStartCheckWrap", true), v -> structurifySkipStartCheckWrap = v);
         builder.pop();
 
         builder.comment("Bosses' Rises patches.").push("bossesrise");
-        this.bossesriseNarrowCinematicScanValue = builder
+        gate(builder
                 .comment("Only collect Bosses' Rises entities in its per player cinematic scan.")
-                .define("narrowCinematicScan", true);
-        this.bossesriseLeanVfxScanValue = builder
+                .define("narrowCinematicScan", true), v -> bossesriseNarrowCinematicScan = v);
+        gate(builder
                 .comment("Walk only Bosses' Rises entities in the per frame boss VFX pass instead of every entity in the level.")
-                .define("leanVfxScan", true);
+                .define("leanVfxScan", true), v -> bossesriseLeanVfxScan = v);
         builder.pop();
 
         builder.comment("Marium's Soulslike Weaponry patches.").push("soulsweapons");
-        this.soulsweaponsLeanDespawnTimerValue = builder
+        gate(builder
                 .comment("Read the mod's despawn timer without writing to every entity that does not have one.")
-                .define("leanDespawnTimer", true);
+                .define("leanDespawnTimer", true), v -> soulsweaponsLeanDespawnTimer = v);
         builder.pop();
 
         builder.comment("Kind of Nice Weapon patches.").push("konweapon");
-        this.konweaponSkipItemAnimationCopiesValue = builder
+        gate(builder
                 .comment("Bail out of the held item animation handler before it copies your hands.")
-                .define("skipItemAnimationCopies", true);
+                .define("skipItemAnimationCopies", true), v -> konweaponSkipItemAnimationCopies = v);
         builder.pop();
 
         builder.comment("Immersive Aircraft patches.").push("immersiveaircraft");
-        this.immersiveaircraftBatchOverlayValue = builder
+        gate(builder
                 .comment("Batch the aircraft HUD instead of flushing the GUI buffer after every primitive.")
-                .define("batchOverlay", true);
+                .define("batchOverlay", true), v -> immersiveaircraftBatchOverlay = v);
         builder.pop();
 
         builder.comment("FTB Chunks patches.").push("ftbchunks");
-        this.ftbchunksSkipHiddenMinimapWorkValue = builder
+        gate(builder
                 .comment("Stop building the minimap texture when the minimap is not being shown.")
-                .define("skipHiddenMinimapWork", true);
-        this.ftbchunksFastRegionWriteValue = builder
+                .define("skipHiddenMinimapWork", true), v -> ftbchunksSkipHiddenMinimapWork = v);
+        gate(builder
                 .comment("Copy a map region's five images straight into their pixel arrays instead of making 1.3 million per pixel setRGB calls on the calling thread.")
-                .define("fastRegionWrite", true);
+                .define("fastRegionWrite", true), v -> ftbchunksFastRegionWrite = v);
+        gate(builder
+                .comment("Reuse the region and its image across the 225 chunk tiles of one minimap rebuild instead of taking the shared map lock for every tile.")
+                .define("memoMinimapRegions", true), v -> ftbchunksMemoMinimapRegions = v);
+        builder.pop();
+
+        builder.comment("Regions Unexplored patches.").push("regionsunexplored");
+        gate(builder
+                .comment("Remember what the furnace fuel handler decided for an item instead of walking its 1100 branch block comparison chain again.")
+                .define("cacheFurnaceBurnTimes", true), v -> regionsunexploredCacheFurnaceBurnTimes = v);
+        builder.pop();
+
+        builder.comment("Gnetum patches.").push("gnetum");
+        gate(builder
+                .comment("Resolve an event handler's mod id with one map lookup instead of a containsKey followed by a get.")
+                .define("singleModIdLookup", true), v -> gnetumSingleModIdLookup = v);
+        builder.pop();
+
+        builder.comment("Ending Library patches.").push("endinglibrary");
+        gate(builder
+                .comment("Skip building the capability name fallback on every camera capability lookup when the registered capability is already resolved.")
+                .define("leanCameraCapLookup", true), v -> endinglibraryLeanCameraCapLookup = v);
         builder.pop();
 
         builder.comment("Punchy patches.").push("punchy");
-        this.punchyCacheResourceStackMissesValue = builder
+        gate(builder
                 .comment("Remember which resource paths no pack contains, so a repeated miss stops rescanning every loaded pack.")
-                .define("cacheResourceStackMisses", true);
+                .define("cacheResourceStackMisses", true), v -> punchyCacheResourceStackMisses = v);
         builder.pop();
 
         builder.comment("L2 Hostility patches.").push("l2hostility");
-        this.l2hostilitySkipTraitlessCapLookupValue = builder
+        gate(builder
                 .comment("Stop re-asking entities that cannot have traits for their trait capability.")
-                .define("skipTraitlessCapLookup", true);
+                .define("skipTraitlessCapLookup", true), v -> l2hostilitySkipTraitlessCapLookup = v);
         builder.pop();
 
         builder.comment("Ice and Fire patches.").push("iceandfire");
-        this.iceandfireFastEntityDataLookupValue = builder
+        gate(builder
                 .comment("Keep Ice and Fire's EntityData capability handle on the entity instead of in a boxed map.")
-                .define("fastEntityDataLookup", true);
-        this.iceandfireSkipPathDebugRenderValue = builder
+                .define("fastEntityDataLookup", true), v -> iceandfireFastEntityDataLookup = v);
+        gate(builder
                 .comment("Stop rebuilding the pathfinding debug render context on every render stage.")
-                .define("skipPathDebugRender", true);
-        this.iceandfireSkipEmptyArmorLayerValue = builder
+                .define("skipPathDebugRender", true), v -> iceandfireSkipPathDebugRender = v);
+        gate(builder
                 .comment("Test dragon armour with the four slot ordinals instead of two built strings.")
-                .define("skipEmptyArmorLayer", true);
-        this.iceandfireCacheDragonTextureValue = builder
+                .define("skipEmptyArmorLayer", true), v -> iceandfireSkipEmptyArmorLayer = v);
+        gate(builder
                 .comment("Key the dragon layered-texture cache on a packed int instead of a built string.")
-                .define("cacheDragonTexture", true);
-        this.iceandfireSkipEmptyDragonLayersValue = builder
+                .define("cacheDragonTexture", true), v -> iceandfireCacheDragonTexture = v);
+        gate(builder
                 .comment("Return early from the dragon banner and rider layers when they would draw nothing.")
-                .define("skipEmptyDragonLayers", true);
-        this.iceandfireLeanMultipartTickValue = builder
+                .define("skipEmptyDragonLayers", true), v -> iceandfireSkipEmptyDragonLayers = v);
+        gate(builder
                 .comment("Trim the per-tick work of dragon, sea serpent and death worm body parts.")
-                .define("leanMultipartTick", true);
-        this.iceandfireDragonTargetSearchHeightValue = builder
+                .define("leanMultipartTick", true), v -> iceandfireLeanMultipartTick = v);
+        gate(builder
                 .comment("Vertical half-extent, in blocks, of the dragon target search box. -1 keeps stock.")
-                .defineInRange("dragonTargetSearchHeight", 32, -1, 2048);
+                .defineInRange("dragonTargetSearchHeight", 32, -1, 2048), -1, v -> iceandfireDragonTargetSearchHeight = v);
         builder.pop();
 
         builder.comment("Ice and Fire dragon dens as structures. Ported from IAF Dragon Fix (MIT).").push("iafdragonfix");
-        this.iafdragonfixStructureDensValue = builder
+        gate(builder
                 .comment("Generate dragon roosts and caves as structures instead of as decoration features.")
-                .define("structureDens", true);
-        this.iafdragonfixRoostSpawnDistanceValue = builder
+                .define("structureDens", true), v -> iafdragonfixStructureDens = v);
+        plain(builder
                 .comment("Minimum distance in blocks from world spawn before a dragon roost will generate.")
-                .defineInRange("roostSpawnDistance", 800, 0, 100000);
-        this.iafdragonfixCaveSpawnDistanceValue = builder
+                .defineInRange("roostSpawnDistance", 800, 0, 100000), v -> iafdragonfixRoostSpawnDistance = v);
+        plain(builder
                 .comment("Minimum distance in blocks from world spawn before a dragon cave will generate.")
-                .defineInRange("caveSpawnDistance", 800, 0, 100000);
+                .defineInRange("caveSpawnDistance", 800, 0, 100000), v -> iafdragonfixCaveSpawnDistance = v);
         builder.pop();
 
         builder.comment("Mowzie's Mobs patches.").push("mowziesmobs");
-        this.mowziesmobsFastCapabilityLookupValue = builder
+        gate(builder
                 .comment("Keep Mowzie's Mobs' four capability handles on the entity instead of re-resolving them.")
-                .define("fastCapabilityLookup", true);
-        this.mowziesmobsDedupeCapabilityAttachValue = builder
+                .define("fastCapabilityLookup", true), v -> mowziesmobsFastCapabilityLookup = v);
+        gate(builder
                 .comment("Stop Mowzie's Mobs attaching its capabilities to every entity twice.")
-                .define("dedupeCapabilityAttach", true);
-        this.mowziesmobsCacheCameraShakeScanValue = builder
+                .define("dedupeCapabilityAttach", true), v -> mowziesmobsDedupeCapabilityAttach = v);
+        gate(builder
                 .comment("Reuse the camera shake entity scan within a client tick instead of once per frame.")
-                .define("cacheCameraShakeScan", true);
-        this.mowziesmobsBossMusicPacketIntervalValue = builder
+                .define("cacheCameraShakeScan", true), v -> mowziesmobsCacheCameraShakeScan = v);
+        gate(builder
                 .comment("Ticks between boss music state packets. 1 keeps stock behaviour.")
-                .defineInRange("bossMusicPacketInterval", 5, 1, 100);
-        this.mowziesmobsLeanBoneLookupValue = builder
+                .defineInRange("bossMusicPacketInterval", 5, 1, 100), 1, v -> mowziesmobsBossMusicPacketInterval = v);
+        gate(builder
                 .comment("Drop the throwaway Optional from Mowzie's per-frame bone lookups.")
-                .define("leanBoneLookup", true);
-        this.mowziesmobsHoistChainRenderMatrixValue = builder
+                .define("leanBoneLookup", true), v -> mowziesmobsLeanBoneLookup = v);
+        gate(builder
                 .comment("Compute the dynamic chain's render matrix once per chain instead of once per bone.")
-                .define("hoistChainRenderMatrix", true);
-        this.mowziesmobsDynamicChainSubstepCapValue = builder
+                .define("hoistChainRenderMatrix", true), v -> mowziesmobsHoistChainRenderMatrix = v);
+        gate(builder
                 .comment("Maximum physics substeps per frame for dynamic chains. 0 disables the clamp.")
-                .defineInRange("dynamicChainSubstepCap", 4, 0, 64);
-        this.mowziesmobsCacheUmvuthanaLeaderValue = builder
+                .defineInRange("dynamicChainSubstepCap", 4, 0, 64), 0, v -> mowziesmobsDynamicChainSubstepCap = v);
+        gate(builder
                 .comment("Stop every Umvuthana follower re-scanning a 64x64x64 region for its leader every tick.")
-                .define("cacheUmvuthanaLeader", true);
-        this.mowziesmobsLeanModelBoxVectorsValue = builder
+                .define("cacheUmvuthanaLeader", true), v -> mowziesmobsCacheUmvuthanaLeader = v);
+        gate(builder
                 .comment("Reuse one vector pair per cube in Mowzie's llibrary model renderer instead of allocating 30 per cube per frame.")
-                .define("leanModelBoxVectors", true);
-        this.mowziesmobsSkipBlankElokosaTransformValue = builder
+                .define("leanModelBoxVectors", true), v -> mowziesmobsLeanModelBoxVectors = v);
+        gate(builder
                 .comment("Skip the Elokosa transformation layer's full model re-render while it is fully transparent.")
-                .define("skipBlankElokosaTransform", true);
-        this.mowziesmobsLeanLayerBoneScanValue = builder
+                .define("skipBlankElokosaTransform", true), v -> mowziesmobsSkipBlankElokosaTransform = v);
+        gate(builder
                 .comment("Test the bone name before pushing a matrix in the Umvuthana and Umvuthi render layers.")
-                .define("leanLayerBoneScan", true);
-        this.mowziesmobsCacheEffectRenderTypesValue = builder
+                .define("leanLayerBoneScan", true), v -> mowziesmobsLeanLayerBoneScan = v);
+        gate(builder
                 .comment("Build the sunstrike, solar beam and solar flare render types once instead of once per entity per frame.")
-                .define("cacheEffectRenderTypes", true);
+                .define("cacheEffectRenderTypes", true), v -> mowziesmobsCacheEffectRenderTypes = v);
         builder.pop();
 
         builder.comment("Pick Up Notifier patches.").push("pickupnotifier");
-        this.pickupnotifierSkipOpaqueSpriteBufferValue = builder
+        gate(builder
                 .comment("Draw fully opaque pick-up sprites straight to the screen instead of routing every one through a window sized off-screen render target and a full screen blit.")
-                .define("skipOpaqueSpriteBuffer", true);
+                .define("skipOpaqueSpriteBuffer", true), v -> pickupnotifierSkipOpaqueSpriteBuffer = v);
         builder.pop();
 
         builder.comment("Placebo patches.").push("placebo");
-        this.placeboSkipEmptyEnchantmentEventValue = builder
+        gate(builder
                 .comment("Skip the HashMap, event object and event bus dispatch Placebo builds on every single ItemStack enchantment level lookup while nothing is listening to GetEnchantmentLevelEvent.")
-                .define("skipEmptyEnchantmentEvent", true);
+                .define("skipEmptyEnchantmentEvent", true), v -> placeboSkipEmptyEnchantmentEvent = v);
         builder.pop();
 
         builder.comment("Photon patches.").push("photon");
-        this.photonLeanParticleQuadsValue = builder
+        gate(builder
                 .comment("Emit billboard particle vertices from reusable scratch vectors instead of allocating around ten JOML objects per particle per frame.")
-                .define("leanParticleQuads", true);
-        this.photonLeanParticleLightValue = builder
+                .define("leanParticleQuads", true), v -> photonLeanParticleQuads = v);
+        gate(builder
                 .comment("Reuse the particle's block position for the per tick light lookup while it stays inside the same block.")
-                .define("leanParticleLight", true);
-        this.photonLeanTrailVerticesValue = builder
+                .define("leanParticleLight", true), v -> photonLeanParticleLight = v);
+        gate(builder
                 .comment("Build trail ribbons from float locals instead of allocating about ten vectors per trail segment per frame.")
-                .define("leanTrailVertices", true);
-        this.photonDropEmptyEffectCacheEntriesValue = builder
+                .define("leanTrailVertices", true), v -> photonLeanTrailVertices = v);
+        gate(builder
                 .comment("Drop the emptied block effect cache entry instead of leaving one map entry and one empty list per block position for the rest of the session.")
-                .define("dropEmptyEffectCacheEntries", true);
+                .define("dropEmptyEffectCacheEntries", true), v -> photonDropEmptyEffectCacheEntries = v);
         builder.pop();
 
         builder.comment("Integrated API patches.").push("integratedapi");
-        this.integratedapiSkipEmptyBeardifierValue = builder
+        gate(builder
                 .comment("Return early from the enhanced terrain adaptation pass when there is none in range.")
-                .define("skipEmptyBeardifier", true);
+                .define("skipEmptyBeardifier", true), v -> integratedapiSkipEmptyBeardifier = v);
         builder.pop();
 
         builder.comment("Echelon patches.").push("echelon");
-        this.echelonCacheTierAttributeUuidsValue = builder
+        gate(builder
                 .comment("Stop recomputing an MD5 for every tier attribute modifier.")
-                .define("cacheTierAttributeUuids", true);
+                .define("cacheTierAttributeUuids", true), v -> echelonCacheTierAttributeUuids = v);
         builder.pop();
 
         builder.comment("Elysium API patches.").push("elysiumapi");
-        this.elysiumapiMemoClimateSampleValue = builder
+        gate(builder
                 .comment("Answer a repeated climate sample for the same position from a one entry cache.")
-                .define("memoClimateSample", true);
-        this.elysiumapiSkipUnusedBiomeReplacerLookupValue = builder
+                .define("memoClimateSample", true), v -> elysiumapiMemoClimateSample = v);
+        gate(builder
                 .comment("Skip Elysium API's duplicate biome resolution entirely when no biome replacer exists.")
-                .define("skipUnusedBiomeReplacerLookup", true);
+                .define("skipUnusedBiomeReplacerLookup", true), v -> elysiumapiSkipUnusedBiomeReplacerLookup = v);
         builder.pop();
 
         builder.comment("Enigmatic Dice patches.").push("enigmaticdice");
-        this.enigmaticdiceFastCurioMissValue = builder
+        gate(builder
                 .comment("Answer the isWearing checks for the Moai Charm, Ring of Agility and Divine Shield from the per-tick curio set.")
-                .define("fastCurioMiss", true);
+                .define("fastCurioMiss", true), v -> enigmaticdiceFastCurioMiss = v);
         builder.pop();
 
         builder.comment("Balm patches.").push("balm");
-        this.balmMemoDynamicModelKeysValue = builder
+        gate(builder
                 .comment("Stop rebuilding a block state's toString on every quad request.")
-                .define("memoDynamicModelKeys", true);
+                .define("memoDynamicModelKeys", true), v -> balmMemoDynamicModelKeys = v);
         builder.pop();
 
         builder.comment("Moonlight Lib patches.").push("moonlight");
-        this.moonlightSkipEmptyMapMarkerScanValue = builder
+        gate(builder
                 .comment("Skip Moonlight's custom map marker refresh on maps that have no markers.")
-                .define("skipEmptyMapMarkerScan", true);
+                .define("skipEmptyMapMarkerScan", true), v -> moonlightSkipEmptyMapMarkerScan = v);
         builder.pop();
 
         builder.comment("Pehkui patches.").push("pehkui");
-        this.pehkuiLeanScaleTickValue = builder
+        gate(builder
                 .comment("Stop allocating two throwaway lambdas per scale type per entity per tick.")
-                .define("leanScaleTick", true);
-        this.pehkuiMemoModifierTypeValue = builder
+                .define("leanScaleTick", true), v -> pehkuiLeanScaleTick = v);
+        gate(builder
                 .comment("Remember which scale type a typed scale modifier points at instead of calling its supplier again on every single scale read. WARNING: a mod that swaps the type a modifier resolves to at runtime will be pinned to the first answer.")
-                .define("memoModifierType", true);
-        this.pehkuiMemoInteractionBoxScalesValue = builder
+                .define("memoModifierType", true), v -> pehkuiMemoModifierType = v);
+        gate(builder
                 .comment("Work out an entity's interaction box scales once a tick instead of twice for every entity walked by every AABB query. A scale set part way through a tick is seen on the next one.")
-                .define("memoInteractionBoxScales", true);
-        this.pehkuiCacheClientScalesValue = builder
+                .define("memoInteractionBoxScales", true), v -> pehkuiMemoInteractionBoxScales = v);
+        gate(builder
                 .comment("Let Pehkui keep its already existing per tick scale cache on the client too. Pehkui only fills that cache on the server, so every client side scale read walks the whole modifier chain again. WARNING: if a mod changes an entity's scale without going through Pehkui's own setters, the visual size can lag by one tick. Turn this off if you see entities stuck at the wrong size.")
-                .define("cacheClientScales", true);
+                .define("cacheClientScales", true), v -> pehkuiCacheClientScales = v);
         builder.pop();
 
         builder.comment("Relics patches.").push("relics");
-        this.relicsClampEssenceSpeedValue = builder
+        gate(builder
                 .comment("Cap the homing speed of the Holy Locket death and life essences. Their arc step scales with both the distance to the target and their own age, so an essence that misses for long enough accelerates without bound until its query box overflows the entity section index and crashes the game.")
-                .define("clampEssenceSpeed", true);
-        this.relicsEssenceMaxSpeedValue = builder
+                .define("clampEssenceSpeed", true), v -> relicsClampEssenceSpeed = v);
+        plain(builder
                 .comment("Upper bound in blocks per tick for that cap. The step is also never allowed to exceed the remaining distance to the target, so the essence stops overshooting and converges instead.")
-                .defineInRange("essenceMaxSpeed", 4.0D, 0.5D, 64.0D);
+                .defineInRange("essenceMaxSpeed", 4.0D, 0.5D, 64.0D), v -> relicsEssenceMaxSpeed = v);
         builder.pop();
 
         builder.comment("More Relics patches.").push("morerelics");
-        this.morerelicsHoistEquippedCuriosValue = builder
+        gate(builder
                 .comment("Build the combined curio inventory once per equipped relic scan instead of twice for every single slot. More Relics calls getEquippedCurios() inside both the loop condition and the loop body, so a thirty slot player allocates sixty throwaway inventory wrappers per relic overlay per frame.")
-                .define("hoistEquippedCurios", true);
+                .define("hoistEquippedCurios", true), v -> morerelicsHoistEquippedCurios = v);
         builder.pop();
 
         builder.comment("Terra Curio patches.").push("terracurio");
-        this.terracurioCachedCurioLookupValue = builder
+        gate(builder
                 .comment("Answer Terra Curio's 'is this accessory equipped' questions from the shared per-tick curio presence set instead of walking every curio slot handler again. CuriosUtils#noSameCurio runs once per living entity per tick out of LivingEntity#getFrictionInfluencedSpeed, and about ten more times per damage event, and almost every one of those is a miss.")
-                .define("cachedCurioLookup", true);
-        this.terracurioLeanAttributeMapValue = builder
+                .define("cachedCurioLookup", true), v -> terracurioCachedCurioLookup = v);
+        gate(builder
                 .comment("Read Terra Curio's custom attribute remap table from a plain map instead of the synchronised Hashtable it lives in. The table is filled once during setup and never written again, but ModAttributes#hasCustomAttribute is called for every living entity every tick on both the client and the server thread, so every one of those calls takes a monitor on the same shared object.")
-                .define("leanAttributeMap", true);
+                .define("leanAttributeMap", true), v -> terracurioLeanAttributeMap = v);
         builder.pop();
 
         builder.comment("Cosmetic Armor Reworked patches.").push("cosmeticarmor");
-        this.cosmeticarmorPerPlayerRestoreQueueValue = builder
+        gate(builder
                 .comment("Keep each player's armour restore queue on the player instead of in a weak keyed Guava cache. The cache is looked up twice per rendered player per frame plus twice more for the held item and the arm, and every lookup pays a hash and a segment read.")
-                .define("perPlayerRestoreQueue", true);
+                .define("perPlayerRestoreQueue", true), v -> cosmeticarmorPerPlayerRestoreQueue = v);
         builder.pop();
 
         builder.comment("More Hitboxes patches.").push("morehitboxes");
-        this.morehitboxesSkipAbsentMultiPartFilterValue = builder
+        gate(builder
                 .comment("Skip More Hitboxes' multipart pass over the result of every entity box query when the result holds no multipart. The pass allocates a hash set and re-tests the predicate for each hit, and almost every query returns none.")
-                .define("skipAbsentMultiPartFilter", true);
+                .define("skipAbsentMultiPartFilter", true), v -> morehitboxesSkipAbsentMultiPartFilter = v);
         builder.pop();
 
         builder.comment("Tons Of Enchants patches.").push("tonsofenchants");
-        this.tonsofenchantsSkipAbsentAttributeRemovalValue = builder
+        gate(builder
                 .comment("Stop every player broadcasting a pointless attribute sync packet every tick.")
-                .define("skipAbsentAttributeRemoval", true);
-        this.tonsofenchantsFrostbiteSkipClientValue = builder
+                .define("skipAbsentAttributeRemoval", true), v -> tonsofenchantsSkipAbsentAttributeRemoval = v);
+        gate(builder
                 .comment("Skip the Frostbite entity scan on the client, where it cannot do anything.")
-                .define("frostbiteSkipClient", true);
-        this.tonsofenchantsLeanAttributeLookupValue = builder
+                .define("frostbiteSkipClient", true), v -> tonsofenchantsFrostbiteSkipClient = v);
+        gate(builder
                 .comment("Look the attribute up once instead of three times.")
-                .define("leanAttributeLookup", true);
-        this.tonsofenchantsSinglePhasePlayerTickValue = builder
+                .define("leanAttributeLookup", true), v -> tonsofenchantsLeanAttributeLookup = v);
+        gate(builder
                 .comment("Run each of the seventeen PlayerTickEvent listeners once a tick instead of twice.")
-                .define("singlePhasePlayerTick", true);
+                .define("singlePhasePlayerTick", true), v -> tonsofenchantsSinglePhasePlayerTick = v);
         builder.pop();
 
         builder.comment("Subtle Effects patches.").push("subtleeffects");
-        this.subtleeffectsFireflyDarknessGateValue = builder
+        gate(builder
                 .comment("Test the firefly light condition before the biome lookup instead of after it.")
-                .define("fireflyDarknessGate", true);
-        this.subtleeffectsCapBiomeParticleScanValue = builder
+                .define("fireflyDarknessGate", true), v -> subtleeffectsFireflyDarknessGate = v);
+        gate(builder
                 .comment("Stop scanning biome particle positions that no setting can spawn at.")
-                .define("capBiomeParticleScan", true);
-        this.subtleeffectsLeanTickerRemovalValue = builder
+                .define("capBiomeParticleScan", true), v -> subtleeffectsCapBiomeParticleScan = v);
+        gate(builder
                 .comment("Drain the ticker removal queue in one pass instead of one ArrayList#remove each.")
-                .define("leanTickerRemoval", true);
-        this.subtleeffectsGeyserBlockPreFilterValue = builder
+                .define("leanTickerRemoval", true), v -> subtleeffectsLeanTickerRemoval = v);
+        gate(builder
                 .comment("Skip the geyser scan on blocks no geyser type can spawn on.")
-                .define("geyserBlockPreFilter", true);
+                .define("geyserBlockPreFilter", true), v -> subtleeffectsGeyserBlockPreFilter = v);
         builder.pop();
 
         builder.comment("Ars Energistique patches.").push("arseng");
-        this.arsengSkipDeadRelayListenersValue = builder
+        gate(builder
                 .comment("Stop registering a capability listener that can never be observed.")
-                .define("skipDeadRelayListeners", true);
-        this.arsengGateGenericInvWrapperValue = builder
+                .define("skipDeadRelayListeners", true), v -> arsengSkipDeadRelayListeners = v);
+        gate(builder
                 .comment("Stop attaching the SOURCE_TILE wrapper to block entities that cannot back it.")
-                .define("gateGenericInvWrapper", true);
+                .define("gateGenericInvWrapper", true), v -> arsengGateGenericInvWrapper = v);
         builder.pop();
 
         builder.comment("Perception patches.").push("perception");
-        this.perceptionShareDefaultTrailDataValue = builder
+        gate(builder
                 .comment("Stop allocating a throwaway trail config for every entity and every particle.")
-                .define("shareDefaultTrailData", true);
+                .define("shareDefaultTrailData", true), v -> perceptionShareDefaultTrailData = v);
         builder.pop();
 
         builder.comment("Quark patches.").push("quark");
-        this.quarkSkipPigLitterTagChurnValue = builder
+        gate(builder
                 .comment("Stop attaching a persistent data compound to every animal in the world.")
-                .define("skipPigLitterTagChurn", true);
+                .define("skipPigLitterTagChurn", true), v -> quarkSkipPigLitterTagChurn = v);
         builder.pop();
 
         builder.comment("Zeta patches. Zeta is Quark's module and event framework.").push("zeta");
-        this.zetaLeanStructureReplacementValue = builder
+        gate(builder
                 .comment("Stop allocating an iterator for every block every structure places.")
-                .define("leanStructureReplacement", true);
-        this.zetaShareEventWrappersValue = builder
+                .define("leanStructureReplacement", true), v -> zetaLeanStructureReplacement = v);
+        gate(builder
                 .comment("Build one Zeta event wrapper per dispatch instead of one per listener.")
-                .define("shareEventWrappers", true);
+                .define("shareEventWrappers", true), v -> zetaShareEventWrappers = v);
         builder.pop();
 
         builder.comment("Dungeon Crawl patches.").push("dungeoncrawl");
-        this.dungeoncrawlSkipBlockEntityProbeValue = builder
+        gate(builder
                 .comment("Stop asking for a block entity after placing a block that cannot have one.")
-                .define("skipBlockEntityProbe", true);
+                .define("skipBlockEntityProbe", true), v -> dungeoncrawlSkipBlockEntityProbe = v);
         builder.pop();
 
         builder.comment("Goety patches.").push("goety");
-        this.goetyCacheCapabilityOptionalValue = builder
+        gate(builder
                 .comment("Reuse the LazyOptional Goety's capability providers build.")
-                .define("cacheCapabilityOptional", true);
-        this.goetySkipCapabilityFallbackValue = builder
+                .define("cacheCapabilityOptional", true), v -> goetyCacheCapabilityOptional = v);
+        gate(builder
                 .comment("Stop building the throwaway capability fallback on every query.")
-                .define("skipCapabilityFallback", true);
-        this.goetyMemoAttributeModifiersValue = builder
+                .define("skipCapabilityFallback", true), v -> goetySkipCapabilityFallback = v);
+        gate(builder
                 .comment("Memoise the constant attribute modifiers Goety rebuilds every tick.")
-                .define("memoAttributeModifiers", true);
-        this.goetyFastEmptyAllyCheckValue = builder
+                .define("memoAttributeModifiers", true), v -> goetyMemoAttributeModifiers = v);
+        gate(builder
                 .comment("Answer SEHelper#isAlly without resolving anything when the player has no allies.")
-                .define("fastEmptyAllyCheck", true);
-        this.goetyFastCurioItemMissValue = builder
+                .define("fastEmptyAllyCheck", true), v -> goetyFastEmptyAllyCheck = v);
+        gate(builder
                 .comment("Answer CuriosFinder#findCurio(LivingEntity, Item) misses from the per-tick curio set.")
-                .define("fastCurioItemMiss", true);
-        this.goetySkipBossMusicTargetLookupValue = builder
+                .define("fastCurioItemMiss", true), v -> goetyFastCurioItemMiss = v);
+        gate(builder
                 .comment("Skip the boss music target lookup for entities that have no boss music. Client.")
-                .define("skipBossMusicTargetLookup", true);
-        this.goetyCacheFogWightScanValue = builder
+                .define("skipBossMusicTargetLookup", true), v -> goetySkipBossMusicTargetLookup = v);
+        gate(builder
                 .comment("Run the fog listener's Wight#findWight scan once per tick instead of once per posted RenderFog event. Client.")
-                .define("cacheFogWightScan", true);
-        this.goetyMemoCurioFilterValue = builder
+                .define("cacheFogWightScan", true), v -> goetyCacheFogWightScan = v);
+        gate(builder
                 .comment("Answer repeated CuriosFinder#findCurio(LivingEntity, Predicate) lookups from a per-tick per-entity memo.")
-                .define("memoCurioFilter", true);
-        this.goetyCacheShakeScanValue = builder
+                .define("memoCurioFilter", true), v -> goetyMemoCurioFilter = v);
+        gate(builder
                 .comment("Run the camera shake entity scan once per tick instead of once per frame. Client.")
-                .define("cacheShakeScan", true);
+                .define("cacheShakeScan", true), v -> goetyCacheShakeScan = v);
         builder.pop();
 
         builder.comment("L_Ender's Cataclysm patches.").push("cataclysm");
-        this.cataclysmCacheShakeScanValue = builder
+        gate(builder
                 .comment("Run the camera shake entity scan once per tick instead of once per frame. Client.")
-                .define("cacheShakeScan", true);
+                .define("cacheShakeScan", true), v -> cataclysmCacheShakeScan = v);
         builder.pop();
 
         builder.comment("Dodo's Mobs patches.").push("dodosmobs");
-        this.dodosmobsCacheShakeScanValue = builder
+        gate(builder
                 .comment("Run the camera shake entity scan once per tick instead of once per frame. Client.")
-                .define("cacheShakeScan", true);
+                .define("cacheShakeScan", true), v -> dodosmobsCacheShakeScan = v);
         builder.pop();
 
         builder.comment("EEEAB's Mobs patches.").push("eeeabsmobs");
-        this.eeeabsmobsCacheShakeScanValue = builder
+        gate(builder
                 .comment("Run the camera shake entity scan once per tick instead of once per frame. Client.")
-                .define("cacheShakeScan", true);
+                .define("cacheShakeScan", true), v -> eeeabsmobsCacheShakeScan = v);
         builder.pop();
 
         builder.comment("From The Shadows patches.").push("fromtheshadows");
-        this.fromtheshadowsCacheShakeScanValue = builder
+        gate(builder
                 .comment("Run the camera shake entity scan once per tick instead of once per frame. Client.")
-                .define("cacheShakeScan", true);
+                .define("cacheShakeScan", true), v -> fromtheshadowsCacheShakeScan = v);
         builder.pop();
 
         builder.comment("GTBCS Spell Lib patches.").push("gtbcs");
-        this.gtbcsCacheShakeScanValue = builder
+        gate(builder
                 .comment("Run both camera shake entity scans once per tick instead of once per frame. Client.")
-                .define("cacheShakeScan", true);
+                .define("cacheShakeScan", true), v -> gtbcsCacheShakeScan = v);
         builder.pop();
 
         builder.comment("Legendary Monsters patches.").push("legendarymonsters");
-        this.legendarymonstersCacheShakeScanValue = builder
+        gate(builder
                 .comment("Run the camera shake and dynamic zoom entity scans once per tick instead of once per frame. Client.")
-                .define("cacheShakeScan", true);
+                .define("cacheShakeScan", true), v -> legendarymonstersCacheShakeScan = v);
         builder.pop();
 
         builder.comment("Myths and Legends patches.").push("mythsandlegends");
-        this.mythsandlegendsCacheFogBossScanValue = builder
+        gate(builder
                 .comment("Run the boss scan behind the fog and fog colour listeners once per tick instead of once per posted event. Client.")
-                .define("cacheFogBossScan", true);
-        this.mythsandlegendsCacheShakeScanValue = builder
+                .define("cacheFogBossScan", true), v -> mythsandlegendsCacheFogBossScan = v);
+        gate(builder
                 .comment("Run the screen shake entity scan once per tick instead of once per frame. Client.")
-                .define("cacheShakeScan", true);
+                .define("cacheShakeScan", true), v -> mythsandlegendsCacheShakeScan = v);
         builder.pop();
 
         builder.comment("AmbientSounds patches.").push("ambientsounds");
-        this.ambientsoundsMemoBiomeMatchValue = builder
+        gate(builder
                 .comment("Work out whether a biome matches a region's biome patterns once instead of running the regex every client tick. Client.")
-                .define("memoBiomeMatch", true);
+                .define("memoBiomeMatch", true), v -> ambientsoundsMemoBiomeMatch = v);
         builder.pop();
 
         builder.comment("Ars Nouveau patches.").push("arsnouveau");
-        this.arsnouveauSkyTextureIntervalValue = builder
+        gate(builder
                 .comment("Ticks between refreshes of the offscreen sky texture, which costs a second full sky, cloud and weather pass plus a fog event post every frame. 1 refreshes once a tick, 0 restores the stock every frame behaviour. Client.")
-                .defineInRange("skyTextureInterval", 1, 0, 200);
+                .defineInRange("skyTextureInterval", 1, 0, 200), 0, v -> arsnouveauSkyTextureInterval = v);
         builder.pop();
 
         builder.comment("Goety Revelation patches.").push("goetyrevelation");
-        this.goetyrevelationCacheHaloLookupValue = builder
+        gate(builder
                 .comment("Answer ATAHelper#hasHalo and #hasBrokenHalo from the per-tick curio set.")
-                .define("cacheHaloLookup", true);
+                .define("cacheHaloLookup", true), v -> goetyrevelationCacheHaloLookup = v);
         builder.pop();
 
         builder.comment("RevelationFix patches. RevelationFix ships jar-in-jar inside Goety Revelation.")
                 .push("revelationfix");
-        this.revelationfixSkipMobFluidStandScanValue = builder
+        gate(builder
                 .comment("Skip the walk-on-fluid probe for entities that can never walk on fluid.")
-                .define("skipMobFluidStandScan", true);
-        this.revelationfixSkipNonSpiderHurtByTargetEventsValue = builder
+                .define("skipMobFluidStandScan", true), v -> revelationfixSkipMobFluidStandScan = v);
+        gate(builder
                 .comment("Stop posting RevelationFix's hurt-by-target events for mobs that ignore them.")
-                .define("skipNonSpiderHurtByTargetEvents", true);
+                .define("skipNonSpiderHurtByTargetEvents", true), v -> revelationfixSkipNonSpiderHurtByTargetEvents = v);
         builder.pop();
 
         builder.comment("Macabre patches.").push("macabre");
-        this.macabreSkipForeignEntityAnimationsValue = builder
+        gate(builder
                 .comment("Skip Macabre's entity animation handler for entities that are not Macabre's.")
-                .define("skipForeignEntityAnimations", true);
-        this.macabreSkipItemAnimationCopiesValue = builder
+                .define("skipForeignEntityAnimations", true), v -> macabreSkipForeignEntityAnimations = v);
+        gate(builder
                 .comment("Bail out of Macabre's held item animation handler before it copies your hands.")
-                .define("skipItemAnimationCopies", true);
-        this.macabreCoalesceVariableSyncValue = builder
+                .define("skipItemAnimationCopies", true), v -> macabreSkipItemAnimationCopies = v);
+        gate(builder
                 .comment("Send Macabre's variable sync packets once per tick instead of once per assignment.")
-                .define("coalesceVariableSync", true);
+                .define("coalesceVariableSync", true), v -> macabreCoalesceVariableSync = v);
         builder.pop();
 
         builder.comment("Alex's Mobs patches.").push("alexsmobs");
-        this.alexsmobsSkipCreeperAvoidGoalsValue = builder
+        gate(builder
                 .comment("Stop attaching the snow leopard and tiger avoidance goals to every creeper.")
-                .define("skipCreeperAvoidGoals", true);
-        this.alexsmobsSpiderFlyScanIntervalValue = builder
+                .define("skipCreeperAvoidGoals", true), v -> alexsmobsSkipCreeperAvoidGoals = v);
+        gate(builder
                 .comment("How often a vanilla spider may scan for Alex's Mobs flies, in goal evaluations.")
-                .defineInRange("spiderFlyScanInterval", 10, 1, 200);
-        this.alexsmobsReleaseLevelMapsValue = builder
+                .defineInRange("spiderFlyScanInterval", 10, 1, 200), 1, v -> alexsmobsSpiderFlyScanInterval = v);
+        gate(builder
                 .comment("Release the level keyed maps Alex's Mobs never clears, when a server stops.")
-                .define("releaseLevelMaps", true);
+                .define("releaseLevelMaps", true), v -> alexsmobsReleaseLevelMaps = v);
         builder.pop();
 
         builder.comment("Alex's Caves patches.").push("alexscaves");
-        this.alexscavesMemoRareBiomeQuadsValue = builder
+        gate(builder
                 .comment("Stop recomputing Alex's Caves' cave biome placement 96 times per column.")
-                .define("memoRareBiomeQuads", true);
-        this.alexscavesMemoClimateSampleValue = builder
+                .define("memoRareBiomeQuads", true), v -> alexscavesMemoRareBiomeQuads = v);
+        gate(builder
                 .comment("Answer Alex's Caves' duplicate climate sample from a one entry cache.")
-                .define("memoClimateSample", true);
-        this.alexscavesCacheShakeScanValue = builder
+                .define("memoClimateSample", true), v -> alexscavesMemoClimateSample = v);
+        gate(builder
                 .comment("Look for screen shaking mobs once per tick instead of once per frame.")
-                .define("cacheShakeScan", true);
+                .define("cacheShakeScan", true), v -> alexscavesCacheShakeScan = v);
         builder.pop();
 
         builder.comment("Ad Astra patches.").push("adastra");
-        this.adastraMemoPlanetDefaultsValue = builder
+        gate(builder
                 .comment("Memoise Ad Astra's per-dimension gravity and temperature constants.")
-                .define("memoPlanetDefaults", true);
+                .define("memoPlanetDefaults", true), v -> adastraMemoPlanetDefaults = v);
         builder.pop();
 
         builder.comment("Supplementaries patches.").push("supplementaries");
-        this.supplementariesLeanEndermanSkullWatchValue = builder
+        gate(builder
                 .comment("Skip the enderman skull's 64 block look ray when no player is aiming anywhere near it.")
-                .define("leanEndermanSkullWatch", true);
-        this.supplementariesSkipNonSignCapSyncValue = builder
+                .define("leanEndermanSkullWatch", true), v -> supplementariesLeanEndermanSkullWatch = v);
+        gate(builder
                 .comment("Only run Supplementaries' antique ink chunk sync for signs instead of every block entity in every chunk sent.")
-                .define("skipNonSignCapSync", true);
-        this.supplementariesMemoMapTintLookupValue = builder
+                .define("skipNonSignCapSync", true), v -> supplementariesSkipNonSignCapSync = v);
+        gate(builder
                 .comment("Cache the tinted map block lookup instead of walking five tags per map pixel per tick.")
-                .define("memoMapTintLookup", true);
+                .define("memoMapTintLookup", true), v -> supplementariesMemoMapTintLookup = v);
         builder.pop();
 
         builder.comment("Amendments patches.").push("amendments");
-        this.amendmentsSkipIdleSwaySyncValue = builder
+        gate(builder
                 .comment("Stop wall lanterns broadcasting a sway packet every tick for entities that are not moving.")
-                .define("skipIdleSwaySync", true);
+                .define("skipIdleSwaySync", true), v -> amendmentsSkipIdleSwaySync = v);
         builder.pop();
 
         builder.comment("Create: Copycats+ patches.").push("copycats");
-        this.copycatsMemoStateOcclusionValue = builder
+        gate(builder
                 .comment("Remember each block state's occlusion answer instead of re-running Copycats+' holder and instanceof checks on every canOcclude call.")
-                .define("memoStateOcclusion", true);
-        this.copycatsFastMigrationChecksValue = builder
+                .define("memoStateOcclusion", true), v -> copycatsMemoStateOcclusion = v);
+        gate(builder
                 .comment("Skip the config lookup, registry lookup and string building Copycats+ runs for every block entity and structure block that is not a copycat.")
-                .define("fastMigrationChecks", true);
-        this.copycatsCachedModelConfigValue = builder
+                .define("fastMigrationChecks", true), v -> copycatsFastMigrationChecks = v);
+        gate(builder
                 .comment("Read the two Copycats+ client model settings at most once per second instead of twice per copycat model query.")
-                .define("cachedModelConfig", true);
-        this.copycatsLeanVirtualWorldCheckValue = builder
+                .define("cachedModelConfig", true), v -> copycatsCachedModelConfig = v);
+        gate(builder
                 .comment("Replace the lambda and platform lookups Copycats+ runs on every Create block entity update with one cached class check.")
-                .define("leanVirtualWorldCheck", true);
+                .define("leanVirtualWorldCheck", true), v -> copycatsLeanVirtualWorldCheck = v);
         builder.pop();
 
         builder.comment("Vanilla patches. These are the only patches here that are not aimed at a specific mod.").push("vanilla");
-        this.itemEntityRenderCapValue = builder
+        gate(builder
                 .comment("Maximum times a dropped item stack's model is drawn.")
-                .defineInRange("itemEntityRenderCap", 1, 0, 5);
-        this.vanillaMemoGlyphFontSetValue = builder
+                .defineInRange("itemEntityRenderCap", 1, 0, 5), 0, v -> itemEntityRenderCap = v);
+        gate(builder
                 .comment("Resolve a rendered string's font set once instead of once per glyph.")
-                .define("memoGlyphFontSet", true);
-        this.vanillaFasterStructureLocationValue = builder
+                .define("memoGlyphFontSet", true), v -> vanillaMemoGlyphFontSet = v);
+        gate(builder
                 .comment("Makes /locate a lot faster, especially for rare structures.")
-                .define("fasterStructureLocation", true);
-        this.vanillaFixBoatFallDamageValue = builder
+                .define("fasterStructureLocation", true), v -> vanillaFasterStructureLocation = v);
+        gate(builder
                 .comment("Stops boats breaking into planks when you ride them off a drop.")
-                .define("fixBoatFallDamage", false);
-        this.vanillaPredictableItemDropsValue = builder
+                .define("fixBoatFallDamage", false), v -> vanillaFixBoatFallDamage = v);
+        gate(builder
                 .comment("Drops from broken blocks land dead centre instead of scattering.")
-                .define("predictableItemDrops", false);
-        this.vanillaLeanTrackerSectionPosValue = builder
+                .define("predictableItemDrops", false), v -> vanillaPredictableItemDrops = v);
+        gate(builder
                 .comment("Stop the entity tracker allocating a SectionPos for every tracked entity every tick.")
-                .define("leanTrackerSectionPos", true);
-        this.vanillaLeanSuffocationScanValue = builder
+                .define("leanTrackerSectionPos", true), v -> vanillaLeanTrackerSectionPos = v);
+        gate(builder
                 .comment("Do the suffocation check with a loop instead of a Java stream.")
-                .define("leanSuffocationScan", true);
-        this.vanillaLeanMenuBroadcastValue = builder
+                .define("leanSuffocationScan", true), v -> vanillaLeanSuffocationScan = v);
+        gate(builder
                 .comment("Stop the container sync allocating a memoizing supplier for every slot every tick.")
-                .define("leanMenuBroadcast", true);
-        this.vanillaLeanTrackerDeltaValue = builder
+                .define("leanMenuBroadcast", true), v -> vanillaLeanMenuBroadcast = v);
+        gate(builder
                 .comment("Stop the entity tracker allocating a movement vector for entities that did not move.")
-                .define("leanTrackerDelta", true);
-        this.vanillaCacheBiomeQuartLookupsValue = builder
+                .define("leanTrackerDelta", true), v -> vanillaLeanTrackerDelta = v);
+        gate(builder
                 .comment("Answer repeated biome lookups on the render thread from a small per tick cache. Fog and sky colour sample 27 biomes per call, several times a frame.")
-                .define("cacheBiomeQuartLookups", true);
-        this.vanillaMemoCameraFluidValue = builder
+                .define("cacheBiomeQuartLookups", true), v -> vanillaCacheBiomeQuartLookups = v);
+        gate(builder
                 .comment("Work out what fluid the camera is in once per camera position instead of once per caller.")
-                .define("memoCameraFluid", true);
-        this.vanillaMemoSkyColourValue = builder
+                .define("memoCameraFluid", true), v -> vanillaMemoCameraFluid = v);
+        gate(builder
                 .comment("Work out the sky colour once per camera position per frame. Fog setup, the sky renderer and shader uniform packs each ask for it separately and every call samples 27 biomes.")
-                .define("memoSkyColour", true);
-        this.vanillaFastBiomeBlendValue = builder
+                .define("memoSkyColour", true), v -> vanillaMemoSkyColour = v);
+        fastBiomeBlendValue = gate(builder
                 .comment("Blend biome colours from a cached, incrementally summed grid instead of resampling the biome under every block in the blend square. Vanilla resamples the full square for every block, which is up to 225 biome lookups per block at the default blend radius. Output is identical.")
-                .define("fastBiomeBlend", true);
-        this.vanillaMovementCheckSlackValue = builder
+                .define("fastBiomeBlend", true), v -> vanillaFastBiomeBlend = v);
+        gate(builder
                 .comment("Multiplier for the four thresholds the server uses to reject a movement packet: the 100 and 300 blocks per tick squared speed caps in handleMovePlayer, the 100 in handleMoveVehicle, and the 0.0625 desync tolerance in both. At the default of 100 a player may cover 100 blocks in a tick and land 2.5 blocks away from where the server simulated them before anything is rejected, which is what stops elytra, mounts, teleports and scaled entities getting rubberbanded on a loaded server. The block clipping checks are untouched, so a client still cannot walk into a wall. Set to 1 for vanilla behaviour.")
-                .defineInRange("movementCheckSlack", 100.0D, 1.0D, 1.0E9D);
-        this.vanillaDisableFlyingKickValue = builder
+                .defineInRange("movementCheckSlack", 100.0D, 1.0D, 1.0E9D), 1.0D, v -> vanillaMovementCheckSlack = v);
+        gate(builder
                 .comment("Stop the server kicking a player with \"Flying is not enabled on this server\" after 80 ticks of unsupported hovering. The check only ever arms when allow-flight is false in server.properties, which cannot be changed without a restart, and it fires on anything that keeps you off the ground without the fly ability: elytra stalls, jetpacks, grappling hooks, scaled entities, riding a laggy vehicle. Nothing else in the game reads that setting, so turning this on leaves no other behaviour changed, and it skips a block scan on every accepted movement packet.")
-                .define("disableFlyingKick", true);
-        this.vanillaPurgeGhostPlayersValue = builder
+                .define("disableFlyingKick", true), v -> vanillaDisableFlyingKick = v);
+        gate(builder
                 .comment("Every five seconds, drop dead player copies that another mod left registered as chunk loaders. Such ghosts keep hundreds of chunks loaded and spawning mobs at wherever they died until restart.")
-                .define("purgeGhostPlayers", true);
+                .define("purgeGhostPlayers", true), v -> vanillaPurgeGhostPlayers = v);
+        gate(builder
+                .comment("Remember which bone of a model a given name belongs to instead of walking the whole model tree again for every bone of every keyframe animation. Vanilla answers that question with a recursive stream over every part of the model, once per animated bone per entity per frame, and every walk allocates a few objects per part it visits. Result is identical.")
+                .define("cacheModelPartLookups", true), v -> vanillaCacheModelPartLookups = v);
+        gate(builder
+                .comment("Run keyframe animations with plain loops. Vanilla allocates two capturing lambdas per animated bone and one more per animation channel, every entity every frame, which is a large part of the garbage the render thread produces. Output is identical, but a mod injecting into the middle of KeyframeAnimations.animate will not run while this is on.")
+                .define("leanKeyframeAnimation", true), v -> vanillaLeanKeyframeAnimation = v);
         builder.pop();
 
         builder.push("gnetum");
-        this.gnetumMemoCacheSettingsValue = builder
+        gate(builder
                 .comment("Answer gnetum's per element caching question once per tick instead of once per element per frame. Each ask is a set lookup plus a guava cache lookup and there are dozens of elements.")
-                .define("memoCacheSettings", true);
+                .define("memoCacheSettings", true), v -> gnetumMemoCacheSettings = v);
+        builder.pop();
+
+        builder.comment("Create: Solar patches.").push("createsolar");
+        gate(builder
+                .comment("Look up Create's goggles check once instead of once per frame. Create: Solar reflects for a method that this Create version does not have, so every single frame it builds and throws a NoSuchMethodException, fills in its stack trace and gives up. The overlay it was going to draw is dead either way, this just stops it costing anything.")
+                .define("memoGogglesLookup", true), v -> createsolarMemoGogglesLookup = v);
         builder.pop();
 
         builder.comment("MCreator mod patches.").push("mcreator");
-        this.mcreatorShareDefaultPlayerVariablesValue = builder
+        gate(builder
                 .comment("Hand MCreator mods one shared empty player variables object instead of allocating a throwaway on every single variable read. Procedures that read variables per tick or per frame can otherwise churn hundreds of megabytes of garbage. This rewrites the mods' classes as they load, so a change here only takes effect from the next launch.")
-                .define("shareDefaultPlayerVariables", true);
+                .define("shareDefaultPlayerVariables", true), v -> mcreatorShareDefaultPlayerVariables = v);
         builder.pop();
 
         builder.comment("Distant Horizons patches.").push("distanthorizons");
-        this.distanthorizonsClearBiomeCachesOnUnloadValue = builder
+        gate(builder
                 .comment("Drop Distant Horizons' biome wrapper caches when it unloads its world. Those caches are static, are never cleared, and are keyed on the biome registry objects the server hands out on join, so every world you leave keeps its whole biome registry alive for the rest of the session. It also means the LOD tint colours after a world change are still resolved against the previous world's biomes.")
-                .define("clearBiomeCachesOnUnload", true);
-        this.distanthorizonsMemoBiomeBlendColorsValue = builder
+                .define("clearBiomeCachesOnUnload", true), v -> distanthorizonsClearBiomeCachesOnUnload = v);
+        gate(builder
                 .comment("Remember the last biome colour while Distant Horizons blends the biome tint of an LOD block. At the default blend radius of three the blend samples forty nine neighbours per tinted block and looks each one's colour up through three concurrent hash maps, and neighbouring blocks are almost always in the same biome. Result is identical.")
-                .define("memoBiomeBlendColors", true);
-        this.distanthorizonsCacheChunkBiomeLookupValue = builder
+                .define("memoBiomeBlendColors", true), v -> distanthorizonsMemoBiomeBlendColors = v);
+        gate(builder
                 .comment("Remember the last biome while Distant Horizons converts a chunk column into an LOD. Biomes are stored per four blocks but the converter asks for one per block going down the whole column, so three out of four lookups repeat the previous answer. Result is identical.")
-                .define("cacheChunkBiomeLookup", true);
+                .define("cacheChunkBiomeLookup", true), v -> distanthorizonsCacheChunkBiomeLookup = v);
         builder.pop();
     }
 
@@ -1514,7 +1337,7 @@ public final class CoOConfig {
     public static void setFastBiomeBlend(boolean value) {
         vanillaFastBiomeBlend = masterEnabled && value;
         if (SPEC.isLoaded()) {
-            VALUES.vanillaFastBiomeBlendValue.set(value);
+            fastBiomeBlendValue.set(value);
         }
     }
 
@@ -1528,224 +1351,8 @@ public final class CoOConfig {
         if (!SPEC.isLoaded()) {
             return;
         }
-        masterEnabled = VALUES.masterEnabledValue.get();
-        curiosSkipSlotlessEntities = masterEnabled && VALUES.curiosSkipSlotlessEntitiesValue.get();
-        curiosSkipClientTickOnNonPlayers = masterEnabled && VALUES.curiosSkipClientTickOnNonPlayersValue.get();
-        curiosSkipNonPlayerRenderLayer = masterEnabled && VALUES.curiosSkipNonPlayerRenderLayerValue.get();
-        curiosCacheEntitySlotLookup = masterEnabled && VALUES.curiosCacheEntitySlotLookupValue.get();
-        curiosFastEquippedItemMiss = masterEnabled && VALUES.curiosFastEquippedItemMissValue.get();
-        curiosFastFindFirstMiss = masterEnabled && VALUES.curiosFastFindFirstMissValue.get();
-        curiosReuseCurioMapView = masterEnabled && VALUES.curiosReuseCurioMapViewValue.get();
-        artifactsSkipClientTickOnNonPlayers = masterEnabled && VALUES.artifactsSkipClientTickOnNonPlayersValue.get();
-        artifactsFastPathKittySlippers = masterEnabled && VALUES.artifactsFastPathKittySlippersValue.get();
-        artifactsFastPathUmbrella = masterEnabled && VALUES.artifactsFastPathUmbrellaValue.get();
-        caelusSkipGroundedNonPlayers = masterEnabled && VALUES.caelusSkipGroundedNonPlayersValue.get();
-        blockswapPaletteFilteredRetroGen = masterEnabled && VALUES.blockswapPaletteFilteredRetroGenValue.get();
-        justdirethingsAvoidChunkTickets = masterEnabled && VALUES.justdirethingsAvoidChunkTicketsValue.get();
-        justdirethingsLeanAreaPreviewScan = masterEnabled && VALUES.justdirethingsLeanAreaPreviewScanValue.get();
-        goetydelightCakeScanInterval = masterEnabled ? VALUES.goetydelightCakeScanIntervalValue.get() : 1;
-        goetydelightSkipIdleVisualEffects = masterEnabled && VALUES.goetydelightSkipIdleVisualEffectsValue.get();
-        bettercombatCacheWeaponAttributes = masterEnabled && VALUES.bettercombatCacheWeaponAttributesValue.get();
-        cofhCacheTranslucentRenderers = masterEnabled && VALUES.cofhCacheTranslucentRenderersValue.get();
-        createDedupeBigOutlineProbes = masterEnabled && VALUES.createDedupeBigOutlineProbesValue.get();
-        xaerolibCacheConfigProfile = masterEnabled && VALUES.xaerolibCacheConfigProfileValue.get();
-        xaerolibCacheEnforcementCheck = masterEnabled && VALUES.xaerolibCacheEnforcementCheckValue.get();
-        xaeroworldmapVramPollInterval = masterEnabled ? VALUES.xaeroworldmapVramPollIntervalValue.get() : 0;
-        geckolibReuseRenderVectors = masterEnabled && VALUES.geckolibReuseRenderVectorsValue.get();
-        geckolibCacheBoneLookup = masterEnabled && VALUES.geckolibCacheBoneLookupValue.get();
-        saintsdragonsSkipRedundantBoneTracking = masterEnabled && VALUES.saintsdragonsSkipRedundantBoneTrackingValue.get();
-        saintsdragonsCacheShakeScan = masterEnabled && VALUES.saintsdragonsCacheShakeScanValue.get();
-        immediatelyfastSingleBufferLookup = masterEnabled && VALUES.immediatelyfastSingleBufferLookupValue.get();
-        immediatelyfastSkipIdleLayers = masterEnabled && VALUES.immediatelyfastSkipIdleLayersValue.get();
-        fancymenuSeamlessCaptureInterval = masterEnabled ? VALUES.fancymenuSeamlessCaptureIntervalValue.get() : 1;
-        fancymenuSkipRedundantScaleWrites = masterEnabled && VALUES.fancymenuSkipRedundantScaleWritesValue.get();
-        fancymenuPinRenderStateToRenderThread = masterEnabled && VALUES.fancymenuPinRenderStateToRenderThreadValue.get();
-        emfDropZeroAngerEntries = masterEnabled && VALUES.emfDropZeroAngerEntriesValue.get();
-        etfFastValidPath = masterEnabled && VALUES.etfFastValidPathValue.get();
-        oculusSkipSignTextInShadowPass = masterEnabled && VALUES.oculusSkipSignTextInShadowPassValue.get();
-        oculusSkipGlintInShadowPass = masterEnabled && VALUES.oculusSkipGlintInShadowPassValue.get();
-        oculusSkipNameTagsInShadowPass = masterEnabled && VALUES.oculusSkipNameTagsInShadowPassValue.get();
-        oculusSkipBannerPatternsInShadowPass = masterEnabled && VALUES.oculusSkipBannerPatternsInShadowPassValue.get();
-        lootrSkipIdleTileTicker = masterEnabled && VALUES.lootrSkipIdleTileTickerValue.get();
-        lootrTileTickerBudget = masterEnabled ? VALUES.lootrTileTickerBudgetValue.get() : 0;
-        naturesauraFastAuraChunkSweep = masterEnabled && VALUES.naturesauraFastAuraChunkSweepValue.get();
-        xaeroMinimapRenderFpsCap = masterEnabled ? VALUES.xaeroMinimapRenderFpsCapValue.get() : 0;
-        w2w2DeferWaypointSave = masterEnabled && VALUES.w2w2DeferWaypointSaveValue.get();
-        biolithRestampSwappedBiomeSource = masterEnabled && VALUES.biolithRestampSwappedBiomeSourceValue.get();
-        biolithEarlyRegistryCapture = masterEnabled && VALUES.biolithEarlyRegistryCaptureValue.get();
-        biolithReuseBiomeEntries = masterEnabled && VALUES.biolithReuseBiomeEntriesValue.get();
-        terrablenderCacheNamespaceRule = masterEnabled && VALUES.terrablenderCacheNamespaceRuleValue.get();
-        biomeswevegoneSkipForeignChunkTerrain = masterEnabled && VALUES.biomeswevegoneSkipForeignChunkTerrainValue.get();
-        terramitySkipItemAnimationCopies = masterEnabled && VALUES.terramitySkipItemAnimationCopiesValue.get();
-        terramitySkipForeignEntityAnimations = masterEnabled && VALUES.terramitySkipForeignEntityAnimationsValue.get();
-        terramityMemoizeProcedureRaycasts = masterEnabled && VALUES.terramityMemoizeProcedureRaycastsValue.get();
-        terramitySkipClientCurioScans = masterEnabled && VALUES.terramitySkipClientCurioScansValue.get();
-        terramitySkipArmorAnimationScan = masterEnabled && VALUES.terramitySkipArmorAnimationScanValue.get();
-        terramityFixPhasingShaderStomp = masterEnabled && VALUES.terramityFixPhasingShaderStompValue.get();
-        armageddonSkipForeignEntityAnimations = masterEnabled && VALUES.armageddonSkipForeignEntityAnimationsValue.get();
-        armageddonCacheProgressionIds = masterEnabled && VALUES.armageddonCacheProgressionIdsValue.get();
-        borninchaosSkipItemAnimationCopies = masterEnabled && VALUES.borninchaosSkipItemAnimationCopiesValue.get();
-        borninchaosSkipForeignEntityAnimations = masterEnabled && VALUES.borninchaosSkipForeignEntityAnimationsValue.get();
-        borninchaosSkipRedundantDimensionRefresh = masterEnabled && VALUES.borninchaosSkipRedundantDimensionRefreshValue.get();
-        borninchaosNarrowMinionScans = masterEnabled && VALUES.borninchaosNarrowMinionScansValue.get();
-        skarriermobsSkipForeignEntityAnimations = masterEnabled && VALUES.skarriermobsSkipForeignEntityAnimationsValue.get();
-        skarriermobsLeanDaylightBurnScan = masterEnabled && VALUES.skarriermobsLeanDaylightBurnScanValue.get();
-        skarriermobsLeanResisteelToolScan = masterEnabled && VALUES.skarriermobsLeanResisteelToolScanValue.get();
-        skarriermobsLeanResisteelSwordScan = masterEnabled && VALUES.skarriermobsLeanResisteelSwordScanValue.get();
-        skarriermobsLeanResisteelSetTracking = masterEnabled && VALUES.skarriermobsLeanResisteelSetTrackingValue.get();
-        skarriermobsLeanTargetProximityScans = masterEnabled && VALUES.skarriermobsLeanTargetProximityScansValue.get();
-        skarriermobsNarrowRegionScans = masterEnabled && VALUES.skarriermobsNarrowRegionScansValue.get();
-        industrialforegoingSkipStasisTagChurn = masterEnabled && VALUES.industrialforegoingSkipStasisTagChurnValue.get();
-        enigmaticaddonsSkipUnsetPersistentData = masterEnabled && VALUES.enigmaticaddonsSkipUnsetPersistentDataValue.get();
-        enigmaticdelicacySkipUnsetPersistentData = masterEnabled && VALUES.enigmaticdelicacySkipUnsetPersistentDataValue.get();
-        travelopticsLeanClimbCurioScan = masterEnabled && VALUES.travelopticsLeanClimbCurioScanValue.get();
-        travelopticsLeanCastEffectChecks = masterEnabled && VALUES.travelopticsLeanCastEffectChecksValue.get();
-        celestialenchantmentsSkipUnenchantedTick = masterEnabled && VALUES.celestialenchantmentsSkipUnenchantedTickValue.get();
-        celestialenchantmentsLeanSlotEnchScan = masterEnabled && VALUES.celestialenchantmentsLeanSlotEnchScanValue.get();
-        uniqueaccessoriesLeanWaistWarmerScan = masterEnabled && VALUES.uniqueaccessoriesLeanWaistWarmerScanValue.get();
-        uniqueaccessoriesSkipUnsetPersistentData = masterEnabled && VALUES.uniqueaccessoriesSkipUnsetPersistentDataValue.get();
-        bloodmagicCacheArcRecipeList = masterEnabled && VALUES.bloodmagicCacheArcRecipeListValue.get();
-        bloodmagicCacheArcFurnaceRecipe = masterEnabled && VALUES.bloodmagicCacheArcFurnaceRecipeValue.get();
-        bloodmagicFastRoutingConnectivity = masterEnabled && VALUES.bloodmagicFastRoutingConnectivityValue.get();
-        animusCacheEquivalencyPreview = masterEnabled && VALUES.animusCacheEquivalencyPreviewValue.get();
-        patchouliCacheBookItemLookup = masterEnabled && VALUES.patchouliCacheBookItemLookupValue.get();
-        structurifyFastStructureSetLookup = masterEnabled && VALUES.structurifyFastStructureSetLookupValue.get();
-        structurifySkipDisabledStructureChecks = masterEnabled && VALUES.structurifySkipDisabledStructureChecksValue.get();
-        structurifyLeanHeightCache = masterEnabled && VALUES.structurifyLeanHeightCacheValue.get();
-        structurifyLeanOverlapSections = masterEnabled && VALUES.structurifyLeanOverlapSectionsValue.get();
-        structurifyCacheStructureSetEntries = masterEnabled && VALUES.structurifyCacheStructureSetEntriesValue.get();
-        structurifySkipStartCheckWrap = masterEnabled && VALUES.structurifySkipStartCheckWrapValue.get();
-        bossesriseNarrowCinematicScan = masterEnabled && VALUES.bossesriseNarrowCinematicScanValue.get();
-        bossesriseLeanVfxScan = masterEnabled && VALUES.bossesriseLeanVfxScanValue.get();
-        soulsweaponsLeanDespawnTimer = masterEnabled && VALUES.soulsweaponsLeanDespawnTimerValue.get();
-        konweaponSkipItemAnimationCopies = masterEnabled && VALUES.konweaponSkipItemAnimationCopiesValue.get();
-        immersiveaircraftBatchOverlay = masterEnabled && VALUES.immersiveaircraftBatchOverlayValue.get();
-        ftbchunksSkipHiddenMinimapWork = masterEnabled && VALUES.ftbchunksSkipHiddenMinimapWorkValue.get();
-        ftbchunksFastRegionWrite = masterEnabled && VALUES.ftbchunksFastRegionWriteValue.get();
-        punchyCacheResourceStackMisses = masterEnabled && VALUES.punchyCacheResourceStackMissesValue.get();
-        l2hostilitySkipTraitlessCapLookup = masterEnabled && VALUES.l2hostilitySkipTraitlessCapLookupValue.get();
-        iceandfireFastEntityDataLookup = masterEnabled && VALUES.iceandfireFastEntityDataLookupValue.get();
-        iceandfireSkipPathDebugRender = masterEnabled && VALUES.iceandfireSkipPathDebugRenderValue.get();
-        iceandfireSkipEmptyArmorLayer = masterEnabled && VALUES.iceandfireSkipEmptyArmorLayerValue.get();
-        iceandfireCacheDragonTexture = masterEnabled && VALUES.iceandfireCacheDragonTextureValue.get();
-        iceandfireSkipEmptyDragonLayers = masterEnabled && VALUES.iceandfireSkipEmptyDragonLayersValue.get();
-        iceandfireLeanMultipartTick = masterEnabled && VALUES.iceandfireLeanMultipartTickValue.get();
-        iceandfireDragonTargetSearchHeight = masterEnabled ? VALUES.iceandfireDragonTargetSearchHeightValue.get() : -1;
-        iafdragonfixStructureDens = masterEnabled && VALUES.iafdragonfixStructureDensValue.get();
-        iafdragonfixRoostSpawnDistance = VALUES.iafdragonfixRoostSpawnDistanceValue.get();
-        iafdragonfixCaveSpawnDistance = VALUES.iafdragonfixCaveSpawnDistanceValue.get();
-        mowziesmobsFastCapabilityLookup = masterEnabled && VALUES.mowziesmobsFastCapabilityLookupValue.get();
-        mowziesmobsDedupeCapabilityAttach = masterEnabled && VALUES.mowziesmobsDedupeCapabilityAttachValue.get();
-        mowziesmobsCacheCameraShakeScan = masterEnabled && VALUES.mowziesmobsCacheCameraShakeScanValue.get();
-        mowziesmobsBossMusicPacketInterval = masterEnabled ? VALUES.mowziesmobsBossMusicPacketIntervalValue.get() : 1;
-        mowziesmobsLeanBoneLookup = masterEnabled && VALUES.mowziesmobsLeanBoneLookupValue.get();
-        mowziesmobsHoistChainRenderMatrix = masterEnabled && VALUES.mowziesmobsHoistChainRenderMatrixValue.get();
-        mowziesmobsDynamicChainSubstepCap = masterEnabled ? VALUES.mowziesmobsDynamicChainSubstepCapValue.get() : 0;
-        mowziesmobsCacheUmvuthanaLeader = masterEnabled && VALUES.mowziesmobsCacheUmvuthanaLeaderValue.get();
-        mowziesmobsLeanModelBoxVectors = masterEnabled && VALUES.mowziesmobsLeanModelBoxVectorsValue.get();
-        mowziesmobsSkipBlankElokosaTransform = masterEnabled && VALUES.mowziesmobsSkipBlankElokosaTransformValue.get();
-        mowziesmobsLeanLayerBoneScan = masterEnabled && VALUES.mowziesmobsLeanLayerBoneScanValue.get();
-        mowziesmobsCacheEffectRenderTypes = masterEnabled && VALUES.mowziesmobsCacheEffectRenderTypesValue.get();
-        pickupnotifierSkipOpaqueSpriteBuffer = masterEnabled && VALUES.pickupnotifierSkipOpaqueSpriteBufferValue.get();
-        placeboSkipEmptyEnchantmentEvent = masterEnabled && VALUES.placeboSkipEmptyEnchantmentEventValue.get();
-        photonLeanParticleQuads = masterEnabled && VALUES.photonLeanParticleQuadsValue.get();
-        photonLeanParticleLight = masterEnabled && VALUES.photonLeanParticleLightValue.get();
-        photonLeanTrailVertices = masterEnabled && VALUES.photonLeanTrailVerticesValue.get();
-        photonDropEmptyEffectCacheEntries = masterEnabled && VALUES.photonDropEmptyEffectCacheEntriesValue.get();
-        integratedapiSkipEmptyBeardifier = masterEnabled && VALUES.integratedapiSkipEmptyBeardifierValue.get();
-        echelonCacheTierAttributeUuids = masterEnabled && VALUES.echelonCacheTierAttributeUuidsValue.get();
-        elysiumapiMemoClimateSample = masterEnabled && VALUES.elysiumapiMemoClimateSampleValue.get();
-        elysiumapiSkipUnusedBiomeReplacerLookup = masterEnabled && VALUES.elysiumapiSkipUnusedBiomeReplacerLookupValue.get();
-        enigmaticdiceFastCurioMiss = masterEnabled && VALUES.enigmaticdiceFastCurioMissValue.get();
-        balmMemoDynamicModelKeys = masterEnabled && VALUES.balmMemoDynamicModelKeysValue.get();
-        dungeoncrawlSkipBlockEntityProbe = masterEnabled && VALUES.dungeoncrawlSkipBlockEntityProbeValue.get();
-        moonlightSkipEmptyMapMarkerScan = masterEnabled && VALUES.moonlightSkipEmptyMapMarkerScanValue.get();
-        pehkuiLeanScaleTick = masterEnabled && VALUES.pehkuiLeanScaleTickValue.get();
-        pehkuiMemoModifierType = masterEnabled && VALUES.pehkuiMemoModifierTypeValue.get();
-        tonsofenchantsSkipAbsentAttributeRemoval = masterEnabled && VALUES.tonsofenchantsSkipAbsentAttributeRemovalValue.get();
-        tonsofenchantsFrostbiteSkipClient = masterEnabled && VALUES.tonsofenchantsFrostbiteSkipClientValue.get();
-        tonsofenchantsLeanAttributeLookup = masterEnabled && VALUES.tonsofenchantsLeanAttributeLookupValue.get();
-        tonsofenchantsSinglePhasePlayerTick = masterEnabled && VALUES.tonsofenchantsSinglePhasePlayerTickValue.get();
-        subtleeffectsFireflyDarknessGate = masterEnabled && VALUES.subtleeffectsFireflyDarknessGateValue.get();
-        subtleeffectsCapBiomeParticleScan = masterEnabled && VALUES.subtleeffectsCapBiomeParticleScanValue.get();
-        subtleeffectsLeanTickerRemoval = masterEnabled && VALUES.subtleeffectsLeanTickerRemovalValue.get();
-        subtleeffectsGeyserBlockPreFilter = masterEnabled && VALUES.subtleeffectsGeyserBlockPreFilterValue.get();
-        arsengSkipDeadRelayListeners = masterEnabled && VALUES.arsengSkipDeadRelayListenersValue.get();
-        arsengGateGenericInvWrapper = masterEnabled && VALUES.arsengGateGenericInvWrapperValue.get();
-
-        perceptionShareDefaultTrailData = masterEnabled && VALUES.perceptionShareDefaultTrailDataValue.get();
-        quarkSkipPigLitterTagChurn = masterEnabled && VALUES.quarkSkipPigLitterTagChurnValue.get();
-        zetaLeanStructureReplacement = masterEnabled && VALUES.zetaLeanStructureReplacementValue.get();
-        zetaShareEventWrappers = masterEnabled && VALUES.zetaShareEventWrappersValue.get();
-        goetyCacheCapabilityOptional = masterEnabled && VALUES.goetyCacheCapabilityOptionalValue.get();
-        goetySkipCapabilityFallback = masterEnabled && VALUES.goetySkipCapabilityFallbackValue.get();
-        goetyMemoAttributeModifiers = masterEnabled && VALUES.goetyMemoAttributeModifiersValue.get();
-        goetyFastEmptyAllyCheck = masterEnabled && VALUES.goetyFastEmptyAllyCheckValue.get();
-        goetyFastCurioItemMiss = masterEnabled && VALUES.goetyFastCurioItemMissValue.get();
-        goetySkipBossMusicTargetLookup = masterEnabled && VALUES.goetySkipBossMusicTargetLookupValue.get();
-        goetyCacheFogWightScan = masterEnabled && VALUES.goetyCacheFogWightScanValue.get();
-        goetyMemoCurioFilter = masterEnabled && VALUES.goetyMemoCurioFilterValue.get();
-        goetyCacheShakeScan = masterEnabled && VALUES.goetyCacheShakeScanValue.get();
-        cataclysmCacheShakeScan = masterEnabled && VALUES.cataclysmCacheShakeScanValue.get();
-        dodosmobsCacheShakeScan = masterEnabled && VALUES.dodosmobsCacheShakeScanValue.get();
-        eeeabsmobsCacheShakeScan = masterEnabled && VALUES.eeeabsmobsCacheShakeScanValue.get();
-        fromtheshadowsCacheShakeScan = masterEnabled && VALUES.fromtheshadowsCacheShakeScanValue.get();
-        gtbcsCacheShakeScan = masterEnabled && VALUES.gtbcsCacheShakeScanValue.get();
-        legendarymonstersCacheShakeScan = masterEnabled && VALUES.legendarymonstersCacheShakeScanValue.get();
-        mythsandlegendsCacheFogBossScan = masterEnabled && VALUES.mythsandlegendsCacheFogBossScanValue.get();
-        mythsandlegendsCacheShakeScan = masterEnabled && VALUES.mythsandlegendsCacheShakeScanValue.get();
-        ambientsoundsMemoBiomeMatch = masterEnabled && VALUES.ambientsoundsMemoBiomeMatchValue.get();
-        arsnouveauSkyTextureInterval = masterEnabled ? VALUES.arsnouveauSkyTextureIntervalValue.get() : 0;
-        pehkuiMemoInteractionBoxScales = masterEnabled && VALUES.pehkuiMemoInteractionBoxScalesValue.get();
-        pehkuiCacheClientScales = masterEnabled && VALUES.pehkuiCacheClientScalesValue.get();
-        relicsClampEssenceSpeed = masterEnabled && VALUES.relicsClampEssenceSpeedValue.get();
-        morerelicsHoistEquippedCurios = masterEnabled && VALUES.morerelicsHoistEquippedCuriosValue.get();
-        terracurioCachedCurioLookup = masterEnabled && VALUES.terracurioCachedCurioLookupValue.get();
-        terracurioLeanAttributeMap = masterEnabled && VALUES.terracurioLeanAttributeMapValue.get();
-        cosmeticarmorPerPlayerRestoreQueue = masterEnabled && VALUES.cosmeticarmorPerPlayerRestoreQueueValue.get();
-        relicsEssenceMaxSpeed = VALUES.relicsEssenceMaxSpeedValue.get();
-        morehitboxesSkipAbsentMultiPartFilter = masterEnabled && VALUES.morehitboxesSkipAbsentMultiPartFilterValue.get();
-        goetyrevelationCacheHaloLookup = masterEnabled && VALUES.goetyrevelationCacheHaloLookupValue.get();
-        revelationfixSkipMobFluidStandScan = masterEnabled && VALUES.revelationfixSkipMobFluidStandScanValue.get();
-        revelationfixSkipNonSpiderHurtByTargetEvents = masterEnabled && VALUES.revelationfixSkipNonSpiderHurtByTargetEventsValue.get();
-        macabreSkipForeignEntityAnimations = masterEnabled && VALUES.macabreSkipForeignEntityAnimationsValue.get();
-        macabreSkipItemAnimationCopies = masterEnabled && VALUES.macabreSkipItemAnimationCopiesValue.get();
-        macabreCoalesceVariableSync = masterEnabled && VALUES.macabreCoalesceVariableSyncValue.get();
-        alexsmobsSkipCreeperAvoidGoals = masterEnabled && VALUES.alexsmobsSkipCreeperAvoidGoalsValue.get();
-        alexsmobsSpiderFlyScanInterval = masterEnabled ? VALUES.alexsmobsSpiderFlyScanIntervalValue.get() : 1;
-        alexsmobsReleaseLevelMaps = masterEnabled && VALUES.alexsmobsReleaseLevelMapsValue.get();
-        alexscavesMemoRareBiomeQuads = masterEnabled && VALUES.alexscavesMemoRareBiomeQuadsValue.get();
-        alexscavesMemoClimateSample = masterEnabled && VALUES.alexscavesMemoClimateSampleValue.get();
-        alexscavesCacheShakeScan = masterEnabled && VALUES.alexscavesCacheShakeScanValue.get();
-        adastraMemoPlanetDefaults = masterEnabled && VALUES.adastraMemoPlanetDefaultsValue.get();
-        supplementariesLeanEndermanSkullWatch = masterEnabled && VALUES.supplementariesLeanEndermanSkullWatchValue.get();
-        supplementariesSkipNonSignCapSync = masterEnabled && VALUES.supplementariesSkipNonSignCapSyncValue.get();
-        supplementariesMemoMapTintLookup = masterEnabled && VALUES.supplementariesMemoMapTintLookupValue.get();
-        amendmentsSkipIdleSwaySync = masterEnabled && VALUES.amendmentsSkipIdleSwaySyncValue.get();
-        copycatsMemoStateOcclusion = masterEnabled && VALUES.copycatsMemoStateOcclusionValue.get();
-        copycatsFastMigrationChecks = masterEnabled && VALUES.copycatsFastMigrationChecksValue.get();
-        copycatsCachedModelConfig = masterEnabled && VALUES.copycatsCachedModelConfigValue.get();
-        copycatsLeanVirtualWorldCheck = masterEnabled && VALUES.copycatsLeanVirtualWorldCheckValue.get();
-        itemEntityRenderCap = masterEnabled ? VALUES.itemEntityRenderCapValue.get() : 0;
-        vanillaMemoGlyphFontSet = masterEnabled && VALUES.vanillaMemoGlyphFontSetValue.get();
-        vanillaFasterStructureLocation = masterEnabled && VALUES.vanillaFasterStructureLocationValue.get();
-        vanillaFixBoatFallDamage = masterEnabled && VALUES.vanillaFixBoatFallDamageValue.get();
-        vanillaPredictableItemDrops = masterEnabled && VALUES.vanillaPredictableItemDropsValue.get();
-        vanillaLeanTrackerSectionPos = masterEnabled && VALUES.vanillaLeanTrackerSectionPosValue.get();
-        vanillaLeanSuffocationScan = masterEnabled && VALUES.vanillaLeanSuffocationScanValue.get();
-        vanillaLeanMenuBroadcast = masterEnabled && VALUES.vanillaLeanMenuBroadcastValue.get();
-        vanillaLeanTrackerDelta = masterEnabled && VALUES.vanillaLeanTrackerDeltaValue.get();
-        vanillaCacheBiomeQuartLookups = masterEnabled && VALUES.vanillaCacheBiomeQuartLookupsValue.get();
-        vanillaMemoSkyColour = masterEnabled && VALUES.vanillaMemoSkyColourValue.get();
-        gnetumMemoCacheSettings = masterEnabled && VALUES.gnetumMemoCacheSettingsValue.get();
-        vanillaMemoCameraFluid = masterEnabled && VALUES.vanillaMemoCameraFluidValue.get();
-        vanillaPurgeGhostPlayers = masterEnabled && VALUES.vanillaPurgeGhostPlayersValue.get();
-        vanillaFastBiomeBlend = masterEnabled && VALUES.vanillaFastBiomeBlendValue.get();
-        vanillaMovementCheckSlack = masterEnabled ? VALUES.vanillaMovementCheckSlackValue.get() : 1.0D;
-        vanillaDisableFlyingKick = masterEnabled && VALUES.vanillaDisableFlyingKickValue.get();
-        mcreatorShareDefaultPlayerVariables = masterEnabled && VALUES.mcreatorShareDefaultPlayerVariablesValue.get();
-        distanthorizonsClearBiomeCachesOnUnload = masterEnabled && VALUES.distanthorizonsClearBiomeCachesOnUnloadValue.get();
-        distanthorizonsMemoBiomeBlendColors = masterEnabled && VALUES.distanthorizonsMemoBiomeBlendColorsValue.get();
-        distanthorizonsCacheChunkBiomeLookup = masterEnabled && VALUES.distanthorizonsCacheChunkBiomeLookupValue.get();
+        for (Runnable baker : BAKERS) {
+            baker.run();
+        }
     }
 }

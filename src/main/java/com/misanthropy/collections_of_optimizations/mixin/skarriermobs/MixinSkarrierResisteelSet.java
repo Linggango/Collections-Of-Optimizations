@@ -1,6 +1,7 @@
 package com.misanthropy.collections_of_optimizations.mixin.skarriermobs;
 
 import com.misanthropy.collections_of_optimizations.CoOConfig;
+import com.misanthropy.collections_of_optimizations.mixin.vanilla.EntityPersistentDataAccessor;
 import net.mcreator.skarriermobs.init.SkarrierMobsModItems;
 import net.mcreator.skarriermobs.procedures.ResisteelArmorEquippedEffectProcedure;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +31,7 @@ public abstract class MixinSkarrierResisteelSet {
         if (entity == null || coo$wearsResisteel(entity)) {
             return;
         }
-        CompoundTag data = entity instanceof SkarrierEntityDataAccessor access ? access.coo$persistentData() : null;
+        CompoundTag data = entity instanceof EntityPersistentDataAccessor access ? access.coo$persistentData() : null;
         if (data != null && data.getDouble("ResisteelSetCompletion") != 0.0D) {
             return;
         }

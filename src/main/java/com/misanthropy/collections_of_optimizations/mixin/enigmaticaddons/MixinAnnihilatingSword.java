@@ -2,6 +2,7 @@ package com.misanthropy.collections_of_optimizations.mixin.enigmaticaddons;
 
 import auviotre.enigmatic.addon.contents.items.AnnihilatingSword;
 import com.misanthropy.collections_of_optimizations.CoOConfig;
+import com.misanthropy.collections_of_optimizations.mixin.vanilla.EntityPersistentDataAccessor;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import org.spongepowered.asm.mixin.Mixin;

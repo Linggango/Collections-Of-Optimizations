@@ -32,6 +32,9 @@ public abstract class MixinTileParticle {
     private static final ThreadLocal<Vector3f> COO$LIGHT_POS = ThreadLocal.withInitial(Vector3f::new);
 
     @Unique
+    private static final ThreadLocal<Quaternionf> COO$ROTATION = ThreadLocal.withInitial(Quaternionf::new);
+
+    @Unique
     private BlockPos coo$lastLightPos;
 
     @Shadow
@@ -166,7 +169,7 @@ public abstract class MixinTileParticle {
 
         Quaternionf quaternion = renderMode.quaternion.apply(self, camera, partialTicks);
         if (rotX != 0 || rotY != 0 || rotZ != 0) {
-            quaternion = new Quaternionf(quaternion).rotateXYZ(rotX, rotY, rotZ);
+            quaternion = COO$ROTATION.get().set(quaternion).rotateXYZ(rotX, rotY, rotZ);
         }
 
         float sX = Mth.lerp(partialTicks, this.sizeXo, this.sizeX);

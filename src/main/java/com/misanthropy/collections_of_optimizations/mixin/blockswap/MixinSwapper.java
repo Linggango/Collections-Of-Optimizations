@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
+import java.util.function.Predicate;
 
 @Mixin(value = Swapper.class, remap = false)
 public abstract class MixinSwapper {
@@ -55,9 +56,11 @@ public abstract class MixinSwapper {
         int baseX = SectionPos.sectionToBlockCoord(chunk.getPos().x);
         int baseZ = SectionPos.sectionToBlockCoord(chunk.getPos().z);
 
+        Predicate<BlockState> tracked = config::contains;
+
         for (int index = 0; index < sections.length; index++) {
             LevelChunkSection section = sections[index];
-            if (section == null || !section.maybeHas(config::contains)) {
+            if (section == null || !section.maybeHas(tracked)) {
                 continue;
             }
 

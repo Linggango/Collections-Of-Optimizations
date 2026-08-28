@@ -4,6 +4,7 @@ import com.misanthropy.collections_of_optimizations.core.CameraShakeScanCache;
 import com.misanthropy.collections_of_optimizations.core.CoOEmbeddiumOptions;
 import com.misanthropy.collections_of_optimizations.core.ClientTickStamp;
 import com.misanthropy.collections_of_optimizations.core.GhostPlayerPurge;
+import com.misanthropy.collections_of_optimizations.core.GoetyDelightLogItems;
 import com.misanthropy.collections_of_optimizations.core.LeakProbe;
 import com.misanthropy.collections_of_optimizations.core.CurioPresenceCache;
 import com.misanthropy.collections_of_optimizations.core.CuriosSlotCache;
@@ -29,6 +30,10 @@ public class Collections_of_optimizations {
 
         if (ModList.get().isLoaded("bloodmagic")) {
             RecipeCacheGeneration.register();
+        }
+
+        if (ModList.get().isLoaded("goetydelight")) {
+            GoetyDelightLogItems.register();
         }
 
         if (ModList.get().isLoaded("supplementaries")) {

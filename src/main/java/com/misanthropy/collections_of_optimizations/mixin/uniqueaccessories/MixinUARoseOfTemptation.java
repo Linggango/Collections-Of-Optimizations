@@ -1,6 +1,7 @@
 package com.misanthropy.collections_of_optimizations.mixin.uniqueaccessories;
 
 import com.misanthropy.collections_of_optimizations.CoOConfig;
+import com.misanthropy.collections_of_optimizations.mixin.vanilla.EntityPersistentDataAccessor;
 import net.genzyuro.uniqueaccessories.system.RoseOfTemptationEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingEvent;

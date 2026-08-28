@@ -1,11 +1,9 @@
 package com.misanthropy.collections_of_optimizations.core;
 
 import com.github.alexmodguy.alexscaves.server.misc.VoronoiGenerator;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public final class CaveBiomeQuadCache {
 
@@ -20,7 +18,7 @@ public final class CaveBiomeQuadCache {
 
     private static boolean configListenerRegistered;
 
-    private final Map<Long, VoronoiGenerator.VoronoiInfo> entries = new HashMap<>();
+    private final Long2ObjectOpenHashMap<VoronoiGenerator.VoronoiInfo> entries = new Long2ObjectOpenHashMap<>();
 
     private long seed;
     private int seenGeneration = -1;
