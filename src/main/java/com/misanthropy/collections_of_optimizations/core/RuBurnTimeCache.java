@@ -1,4 +1,4 @@
-4package com.misanthropy.collections_of_optimizations.core;
+package com.misanthropy.collections_of_optimizations.core;
 
 import net.minecraft.world.item.Item;
 
