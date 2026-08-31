@@ -198,6 +198,7 @@
     "vanilla.MixinKeyframeAnimations",
     "createsolar.MixinCreateSolarClientIntegration",
     "xaeroworldmap.MixinMapProcessorFrameWait",
+    "xaeroworldmap.MixinMapProcessorTickThrottle",
     "vanilla.MixinCameraFluidFog",
     "vanilla.BufferSourceFixedBuffersAccessor",
     "alexscaves.MixinAlexsCavesShakeScan",

@@ -156,7 +156,9 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
 
             "morerelics.MixinMoreRelicsUtil", new String[]{"curios", "relics"},
 
-            "modernfix.MixinJEIRuntimeCapturer", new String[]{"jei"}
+            "modernfix.MixinJEIRuntimeCapturer", new String[]{"jei"},
+
+            "w2w2.MixinW2w2Mod", new String[]{"xaerominimap"}
     );
 
     private static final Map<String, String[]> MIXIN_ANY_OF = Map.of(

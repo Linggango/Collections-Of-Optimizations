@@ -302,6 +302,7 @@ public final class CoOConfig {
     public static boolean createsolarMemoGogglesLookup = true;
     public static boolean xaeroworldmapIdleMapFrameWait = true;
     public static int xaeroworldmapMapFrameSpinTail = 200;
+    public static int xaeroworldmapRenderProcessInterval = 1;
     public static boolean gnetumMemoCacheSettings = true;
     public static boolean mcreatorShareDefaultPlayerVariables = true;
 
@@ -459,6 +460,9 @@ public final class CoOConfig {
         gate(builder
                 .comment("Microseconds of the world map frame budget still spent spinning, so the wait ends on time even though the operating system wakes a parked thread late. Raise it if the map screen feels choppier than before, lower it to give the core back sooner.")
                 .defineInRange("mapFrameSpinTail", 200, 0, 1600), 1600, v -> xaeroworldmapMapFrameSpinTail = v);
+        gate(builder
+                .comment("Client ticks between world map background processing passes while no screen is open. Stock runs the whole map writer, texture upload and cave scan once per rendered frame, so at high frame rates it repeats work dozens of times over for world data that only changes twenty times a second. 0 restores the stock every frame behaviour. Client.")
+                .defineInRange("renderProcessInterval", 1, 0, 20), 0, v -> xaeroworldmapRenderProcessInterval = v);
         builder.pop();
 
         builder.comment("GeckoLib patches.").push("geckolib");
