@@ -66,6 +66,8 @@ public final class CoOConfig {
     public static boolean immediatelyfastSingleBufferLookup = true;
     public static boolean immediatelyfastSkipIdleLayers = true;
 
+    public static boolean modernfixFastRepresentedTabs = true;
+
     public static int fancymenuSeamlessCaptureInterval = 30;
     public static boolean fancymenuSkipRedundantScaleWrites = true;
     public static boolean fancymenuPinRenderStateToRenderThread = true;
@@ -484,6 +486,12 @@ public final class CoOConfig {
         gate(builder
                 .comment("End only the render layers that were actually drawn into instead of walking every fixed buffer on each flush.")
                 .define("skipIdleLayers", true), v -> immediatelyfastSkipIdleLayers = v);
+        builder.pop();
+
+        builder.comment("ModernFix patches.").push("modernfix");
+        gate(builder
+                .comment("Work out which creative tabs JEI covers by indexing its item list once, instead of asking every tab whether it holds every item. Stock compares each item against each tab, and each comparison hashes the item's NBT, so the first creative search freezes for as long as it takes. Client.")
+                .define("fastRepresentedTabs", true), v -> modernfixFastRepresentedTabs = v);
         builder.pop();
 
         builder.comment("FancyMenu patches.").push("fancymenu");

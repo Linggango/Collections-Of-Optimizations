@@ -92,6 +92,7 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("pickupnotifier", "pickupnotifier"),
             Map.entry("photon", "photon"),
             Map.entry("immediatelyfast", "immediatelyfast"),
+            Map.entry("modernfix", "modernfix"),
             Map.entry("fancymenu", "fancymenu"),
             Map.entry("bettercombat", "bettercombat"),
             Map.entry("cofh", "cofh_core"),
@@ -153,7 +154,9 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
 
             "goety.MixinCuriosFinderFilter", new String[]{"curios"},
 
-            "morerelics.MixinMoreRelicsUtil", new String[]{"curios", "relics"}
+            "morerelics.MixinMoreRelicsUtil", new String[]{"curios", "relics"},
+
+            "modernfix.MixinJEIRuntimeCapturer", new String[]{"jei"}
     );
 
     private static final Map<String, String[]> MIXIN_ANY_OF = Map.of(

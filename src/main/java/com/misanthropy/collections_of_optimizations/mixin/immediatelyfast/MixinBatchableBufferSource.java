@@ -86,7 +86,14 @@ public abstract class MixinBatchableBufferSource {
             return;
         }
         ReferenceSet<BufferBuilder> fallback = this.fallbackBuffers.get(layer);
-        cir.setReturnValue(fallback != null ? fallback.iterator().next() : this.addNewFallbackBuffer(layer));
+        cir.setReturnValue(fallback != null ? coo$firstBuffer(fallback) : this.addNewFallbackBuffer(layer));
+    }
+
+    @Unique
+    private static BufferBuilder coo$firstBuffer(ReferenceSet<BufferBuilder> buffers) {
+        return buffers instanceof ReferenceLinkedOpenHashSet<BufferBuilder> linked
+                ? linked.first()
+                : buffers.iterator().next();
     }
 
     @Inject(
