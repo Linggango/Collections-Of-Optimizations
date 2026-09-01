@@ -120,7 +120,11 @@ public final class CoOConfig {
     public static boolean skarriermobsNarrowRegionScans = true;
     public static boolean industrialforegoingSkipStasisTagChurn = true;
     public static boolean enigmaticaddonsSkipUnsetPersistentData = true;
+    public static boolean enigmaticaddonsSkipIdleFrostScan = true;
     public static boolean enigmaticdelicacySkipUnsetPersistentData = true;
+    public static int enigmaticlegacyGuardianHeartScanInterval = 4;
+    public static boolean enigmaticlegacyNarrowCursedRingAngerScan = true;
+    public static boolean enigmaticlegacyPruneAngeredGuardians = true;
     public static boolean travelopticsLeanClimbCurioScan = true;
     public static boolean travelopticsLeanCastEffectChecks = true;
     public static boolean celestialenchantmentsSkipUnenchantedTick = true;
@@ -665,14 +669,29 @@ public final class CoOConfig {
 
         builder.comment("Enigmatic Addons patches.").push("enigmaticaddons");
         gate(builder
-                .comment("Stop the Annihilating Sword, Violence Scroll and Extradimensional Scepter tick handlers from reading, and thereby creating, a ForgeData compound on every entity in the world. Also removes the UUID parse and ImmutableMultimap build the sword did for every living entity every tick.")
+                .comment("Stop the addon event handler and the Annihilating Sword, Violence Scroll and Extradimensional Scepter tick handlers from reading, and thereby creating, a ForgeData compound on every entity in the world. Also removes the UUID parse and ImmutableMultimap build the sword did for every living entity every tick.")
                 .define("skipUnsetPersistentData", true), v -> enigmaticaddonsSkipUnsetPersistentData = v);
+        gate(builder
+                .comment("Skip the Frost Protection armour scan on entities that have no freeze ticks. The addon looks the enchantment up twice for every living entity every tick, once in its own living tick handler and once through the canFreeze injector that its LivingEntity tick handler calls before checking whether the entity is freezing at all, and the second one drags two Curios inventory walks along with it. Both call sites do nothing at zero freeze ticks.")
+                .define("skipIdleFrostScan", true), v -> enigmaticaddonsSkipIdleFrostScan = v);
         builder.pop();
 
         builder.comment("Enigmatic Delicacy patches.").push("enigmaticdelicacy");
         gate(builder
                 .comment("Stop the Slicing enchantment tick handler from reading, and thereby creating, a ForgeData compound on every entity on both sides every tick.")
                 .define("skipUnsetPersistentData", true), v -> enigmaticdelicacySkipUnsetPersistentData = v);
+        builder.pop();
+
+        builder.comment("Enigmatic Legacy patches.").push("enigmaticlegacy");
+        gate(builder
+                .comment("How often the Heart of the Guardian runs its monster scan, in ticks. The item scans every hostile in a forty eight block cube every tick for every copy in an inventory, before it checks whether the wearer is cursed or whether the active ability is off cooldown, and then line of sight traces from every guardian it finds. One is the vanilla rate.")
+                .defineInRange("guardianHeartScanInterval", 4, 1, 40), 1, v -> enigmaticlegacyGuardianHeartScanInterval = v);
+        gate(builder
+                .comment("Ask the Cursed Ring anger scan for the piglins and neutral mobs its loop can actually anger instead of every living entity in a forty eight block cube. The loop computes an armour and invisibility visibility fraction for every entity it is handed and then discards everything that is not a piglin or a neutral mob. Result is identical.")
+                .define("narrowCursedRingAngerScan", true), v -> enigmaticlegacyNarrowCursedRingAngerScan = v);
+        gate(builder
+                .comment("Drop removed entities from the angered guardian map when a new one is added. Enigmatic Legacy keeps every guardian that has ever targeted a Heart of the Guardian bearer in a strong keyed multimap and only clears it when a world is loaded, so a session at a guardian farm retains every dead guardian.")
+                .define("pruneAngeredGuardians", true), v -> enigmaticlegacyPruneAngeredGuardians = v);
         builder.pop();
 
         builder.comment("Traveloptics patches.").push("traveloptics");
