@@ -119,7 +119,8 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("uniqueaccessories", "uniqueaccessories"),
             Map.entry("biolith", "biolith"),
             Map.entry("skarriermobs", "skarrier_mobs"),
-            Map.entry("createsolar", "createsolar")
+            Map.entry("createsolar", "createsolar"),
+            Map.entry("summonity", "summonity")
     );
 
     private static final Map<String, Integer> GROUP_MIN_MAJOR = Map.of(
@@ -159,7 +160,13 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
 
             "modernfix.MixinJEIRuntimeCapturer", new String[]{"jei"},
 
-            "w2w2.MixinW2w2Mod", new String[]{"xaerominimap"}
+            "w2w2.MixinW2w2Mod", new String[]{"xaerominimap"},
+
+            "summonity.MixinSoloistsSealItem", new String[]{"curios"},
+
+            "summonity.MixinPolychromicNecklaceItem", new String[]{"curios"},
+
+            "summonity.MixinConductiveBatteryItem", new String[]{"curios"}
     );
 
     private static final Map<String, String[]> MIXIN_ANY_OF = Map.of(

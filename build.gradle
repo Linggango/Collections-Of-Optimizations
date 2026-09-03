@@ -244,6 +244,7 @@ dependencies {
     compileOnly files('libs-compile/EndingLibraryTweaked-1.20.1-2.1.19.jar')
     compileOnly files('libs-compile/modernfix-forge-5.27.77+mc1.20.1.jar')
     compileOnly files('libs-compile/jei-1.20.1-forge-15.49.0.191.jar')
+    compileOnly files('libs-compile/summonity-0.1.4.jar')
 
     implementation fg.deobf(fileTree(dir: 'libs', include: ['*.jar']))
 }

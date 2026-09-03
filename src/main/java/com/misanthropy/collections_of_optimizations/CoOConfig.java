@@ -314,6 +314,13 @@ public final class CoOConfig {
     public static boolean distanthorizonsMemoBiomeBlendColors = true;
     public static boolean distanthorizonsCacheChunkBiomeLookup = true;
 
+    public static boolean summonityCacheOwnedMinionScans = true;
+    public static int summonityIdleTargetScanInterval = 4;
+    public static boolean summonityCacheDragonParts = true;
+    public static boolean summonityFastCurioMiss = true;
+    public static boolean summonitySkipUnchangedSlotSync = true;
+    public static boolean summonityMemoDroneModifierIds = true;
+
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         define(builder);
@@ -1362,6 +1369,27 @@ public final class CoOConfig {
         gate(builder
                 .comment("Remember the last biome while Distant Horizons converts a chunk column into an LOD. Biomes are stored per four blocks but the converter asks for one per block going down the whole column, so three out of four lookups repeat the previous answer. Result is identical.")
                 .define("cacheChunkBiomeLookup", true), v -> distanthorizonsCacheChunkBiomeLookup = v);
+        builder.pop();
+
+        builder.comment("Summonity patches.").push("summonity");
+        gate(builder
+                .comment("Remember each player's owned minion list for the rest of the tick. MinionHelper#getOwnedMinions is a 256 block wide entity scan plus a sort, and almost every minion asks for it every tick to work out its formation slot, on top of the per player tick handlers, so ten minions were ten to fifteen of those scans a tick. The list is dropped the moment any minion joins or leaves the level, so summoning, dismissing and slot counting inside the same tick still see the real state.")
+                .define("cacheOwnedMinionScans", true), v -> summonityCacheOwnedMinionScans = v);
+        gate(builder
+                .comment("Only let an idle minion scan for a new enemy every this many ticks, staggered per minion. Every minion without a target scans a minion range wide box of mobs every tick and streams for the closest one. A minion can react up to interval minus one ticks later than stock. Set to 1 for stock behaviour.")
+                .defineInRange("idleTargetScanInterval", 4, 1, 20), 1, v -> summonityIdleTargetScanInterval = v);
+        gate(builder
+                .comment("Keep the Stardust Dragon's list of body parts for five ticks instead of running a 128 block wide entity scan once or twice per tick per dragon head. The list is refreshed whenever a part spawns or goes away, and rescanned on the same five tick cadence the dragon already uses to repair its body chain.")
+                .define("cacheDragonParts", true), v -> summonityCacheDragonParts = v);
+        gate(builder
+                .comment("Answer the Soloist's Seal, Polychromic Necklace and Conductive Battery 'is it equipped' checks from the shared per tick curio presence set when the answer is no. The seal and necklace checks run for every player every tick and the battery check on every minion hit, and each one walked every curio slot and built a list. A curio swapped without firing CurioChangeEvent reads stale for the rest of that tick.")
+                .define("fastCurioMiss", true), v -> summonityFastCurioMiss = v);
+        gate(builder
+                .comment("Only send the summon slot sync packet when the used slot count actually changed. Stock sends it to every player four times a second forever.")
+                .define("skipUnchangedSlotSync", true), v -> summonitySkipUnchangedSlotSync = v);
+        gate(builder
+                .comment("Remember the Copper Drone's two attribute modifier ids instead of rebuilding them from an MD5 of the entity uuid twice per drone per tick.")
+                .define("memoDroneModifierIds", true), v -> summonityMemoDroneModifierIds = v);
         builder.pop();
     }
 

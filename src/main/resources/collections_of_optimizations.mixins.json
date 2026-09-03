@@ -186,7 +186,16 @@
     "vanilla.MixinServerLevelStructureState",
     "vanilla.MixinStructureCheck",
     "vanilla.MixinMovementCheckSlack",
-    "distanthorizons.MixinDhLodDataBuilder"
+    "distanthorizons.MixinDhLodDataBuilder",
+    "summonity.MixinPlayerSummonityCache",
+    "summonity.MixinMinionHelper",
+    "summonity.MixinSummonityIdleTargetScans",
+    "summonity.MixinStardustDragonParts",
+    "summonity.MixinSoloistsSealItem",
+    "summonity.MixinPolychromicNecklaceItem",
+    "summonity.MixinConductiveBatteryItem",
+    "summonity.MixinModNetworkSlotSync",
+    "summonity.MixinCopperDroneModifierIds"
   ],
   "client": [
     "distanthorizons.DhTintGetterBiomeHolderAccessor",
