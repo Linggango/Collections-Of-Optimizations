@@ -86,7 +86,7 @@ public final class CoOConfig {
 
     public static boolean naturesauraFastAuraChunkSweep = true;
 
-    public static int xaeroMinimapRenderFpsCap = 30;
+    public static int xaeroMinimapRenderFpsCap = 0;
     public static boolean w2w2DeferWaypointSave = true;
 
     public static boolean terrablenderCacheNamespaceRule = true;
@@ -111,6 +111,31 @@ public final class CoOConfig {
     public static boolean borninchaosSkipForeignEntityAnimations = true;
     public static boolean borninchaosSkipRedundantDimensionRefresh = true;
     public static boolean borninchaosNarrowMinionScans = true;
+    public static boolean cncSkipClientEncounterScans = true;
+    public static int cncEncounterScanInterval = 5;
+    public static boolean cncSkipForeignEntityAnimations = true;
+    public static boolean cncSkipRedundantDimensionRefresh = true;
+    public static boolean cncGateCaribouDashScan = true;
+    public static boolean cncCacheWechugeFogScan = true;
+    public static int cncSasquatchTextureScanInterval = 4;
+    public static boolean cncSkipClientWoodKnockScan = true;
+    public static boolean cncFixSobbingShaderStomp = true;
+
+    public static boolean crittersandcompanionsGateRedPandaAvoidGoal = true;
+    public static int crittersandcompanionsKoiLuckScanInterval = 10;
+    public static boolean crittersandcompanionsMemoNecklaceLookup = true;
+    public static boolean crittersandcompanionsSkipEmptyLeashRender = true;
+    public static int crittersandcompanionsCritterItemScanInterval = 4;
+    public static boolean crittersandcompanionsFastBehaviourLookup = true;
+
+    public static boolean cucumberLeanTileDispatch = true;
+    public static boolean cucumberLeanTagTooltip = true;
+
+    public static boolean mysticalagricultureLeanAugmentLookup = true;
+    public static boolean mysticalagricultureLeanAbilityCache = true;
+    public static boolean mysticalagricultureSkipIdleSoulExtractor = true;
+    public static boolean mysticalagricultureMemoCropNameKey = true;
+
     public static boolean skarriermobsSkipForeignEntityAnimations = true;
     public static boolean skarriermobsLeanDaylightBurnScan = true;
     public static boolean skarriermobsLeanResisteelToolScan = true;
@@ -306,7 +331,6 @@ public final class CoOConfig {
     public static boolean createsolarMemoGogglesLookup = true;
     public static boolean xaeroworldmapIdleMapFrameWait = true;
     public static int xaeroworldmapMapFrameSpinTail = 200;
-    public static int xaeroworldmapRenderProcessInterval = 1;
     public static boolean gnetumMemoCacheSettings = true;
     public static boolean mcreatorShareDefaultPlayerVariables = true;
 
@@ -471,9 +495,6 @@ public final class CoOConfig {
         gate(builder
                 .comment("Microseconds of the world map frame budget still spent spinning, so the wait ends on time even though the operating system wakes a parked thread late. Raise it if the map screen feels choppier than before, lower it to give the core back sooner.")
                 .defineInRange("mapFrameSpinTail", 200, 0, 1600), 1600, v -> xaeroworldmapMapFrameSpinTail = v);
-        gate(builder
-                .comment("Client ticks between world map background processing passes while no screen is open. Stock runs the whole map writer, texture upload and cave scan once per rendered frame, so at high frame rates it repeats work dozens of times over for world data that only changes twenty times a second. 0 restores the stock every frame behaviour. Client.")
-                .defineInRange("renderProcessInterval", 1, 0, 20), 0, v -> xaeroworldmapRenderProcessInterval = v);
         builder.pop();
 
         builder.comment("GeckoLib patches.").push("geckolib");
@@ -642,6 +663,81 @@ public final class CoOConfig {
         gate(builder
                 .comment("Narrow the four Born in Chaos minion claim scans to the mod's own entities.")
                 .define("narrowMinionScans", true), v -> borninchaosNarrowMinionScans = v);
+        builder.pop();
+
+        builder.comment("Critters n' Crawlers patches.").push("cnc");
+        gate(builder
+                .comment("Skip the twenty seven 'have you met this animal yet' player tick handlers on the client. Each one scans a four block box for its own mob and walks your whole inventory before it looks at the flag it is trying to set, and the client copy of that flag is overwritten by the server sync anyway.")
+                .define("skipClientEncounterScans", true), v -> cncSkipClientEncounterScans = v);
+        gate(builder
+                .comment("Only let those twenty seven handlers run every this many ticks on the server. Stock runs all of them every tick for every player forever, including long after every animal has been met. A toast can appear up to interval minus one ticks later than stock. Set to 1 for stock behaviour.")
+                .defineInRange("encounterScanInterval", 5, 1, 40), 1, v -> cncEncounterScanInterval = v);
+        gate(builder
+                .comment("Skip the mod's twenty eight way instanceof chain for entities that are not its own.")
+                .define("skipForeignEntityAnimations", true), v -> cncSkipForeignEntityAnimations = v);
+        gate(builder
+                .comment("Stop the mod's twenty eight mobs from resizing themselves once per tick for no reason. Their hitbox only ever changes with baby state, which the game already refreshes on its own.")
+                .define("skipRedundantDimensionRefresh", true), v -> cncSkipRedundantDimensionRefresh = v);
+        gate(builder
+                .comment("Only run the caribou trample check while a caribou is actually loaded. Stock builds a box, an entity scan, a comparator and a sorted stream for every living entity in the world every tick, whether or not the mod's caribou exists.")
+                .define("gateCaribouDashScan", true), v -> cncGateCaribouDashScan = v);
+        gate(builder
+                .comment("Look for a nearby wechuge once per client tick instead of four times per rendered frame. The fog colour and fog distance handlers each run two entity scans every frame just to ask whether one is close by.")
+                .define("cacheWechugeFogScan", true), v -> cncCacheWechugeFogScan = v);
+        gate(builder
+                .comment("Only let the sasquatch decide whether to wear its hidden texture every this many ticks. Stock runs two sixteen block player scans per sasquatch per tick to make that call. Set to 1 for stock behaviour.")
+                .defineInRange("sasquatchTextureScanInterval", 4, 1, 40), 1, v -> cncSasquatchTextureScanInterval = v);
+        gate(builder
+                .comment("Skip the sasquatch wood knock handler on the client, where its two hundred and sixteen block reads per sasquatch per tick can only end in a sound the client never plays.")
+                .define("skipClientWoodKnockScan", true), v -> cncSkipClientWoodKnockScan = v);
+        gate(builder
+                .comment("Keep the Sobbing screen shader to your own player and to shaders Critters n' Crawlers loaded. Stock reacts to every player it ticks and tears down whatever post effect happens to be running, whether or not the mod put it there.")
+                .define("fixSobbingShaderStomp", true), v -> cncFixSobbingShaderStomp = v);
+        builder.pop();
+
+        builder.comment("Critters and Companions patches.").push("crittersandcompanions");
+        gate(builder
+                .comment("Only run the red panda flee scan while a red panda is actually loaded. Critters and Companions bolts a priority minus one avoid goal onto bees, endermen, iron golems, llamas, polar bears, spiders, vexes and wolves, and the goal selector asks that goal whether it wants to start every other tick, which is a thirty three by eight by thirty three entity scan plus a fresh box and list per mob forever. Result is identical because a world with no red panda in it cannot contain the red panda the scan is looking for.")
+                .define("gateRedPandaAvoidGoal", true), v -> crittersandcompanionsGateRedPandaAvoidGoal = v);
+        gate(builder
+                .comment("Only look for the three nearby koi fish that grant Luck every this many ticks. Stock runs a twenty block wide koi scan for every player every server tick, and the Luck it hands out already lasts two hundred and ten ticks, so the effect timer just ticks down a little between refreshes. Set to 1 for stock behaviour.")
+                .defineInRange("koiLuckScanInterval", 10, 1, 40), 1, v -> crittersandcompanionsKoiLuckScanInterval = v);
+        gate(builder
+                .comment("Work out which pearl necklace you are wearing once per player per tick instead of once per question. The lookup builds six chained streams over your thirty six inventory slots plus every curios slot, and every drowned and guardian that considers you as a target asks it again, so a dozen of them was a dozen full walks. A necklace swapped mid tick reads stale until the next tick.")
+                .define("memoNecklaceLookup", true), v -> crittersandcompanionsMemoNecklaceLookup = v);
+        gate(builder
+                .comment("Return from the silk leash renderer before it opens an iterator over an empty leash list. Critters and Companions calls it at the end of every living entity render and every geckolib entity render, so on a modded pack that is one throwaway iterator per visible mob per frame.")
+                .define("skipEmptyLeashRender", true), v -> crittersandcompanionsSkipEmptyLeashRender = v);
+        gate(builder
+                .comment("Only let an empty handed otter or leaf insect look for dropped food every this many ticks. Each one runs a twenty four block wide item entity scan every tick while it has nothing in hand. A critter can notice a dropped item up to interval minus one ticks later than stock, and a critter that already found food keeps scanning every tick so its goal does not stop early. Set to 1 for stock behaviour.")
+                .defineInRange("critterItemScanInterval", 4, 1, 20), 1, v -> crittersandcompanionsCritterItemScanInterval = v);
+        gate(builder
+                .comment("Read a critter behaviour straight out of its map instead of wrapping it in two Optionals, and skip the behaviour walk entirely when a mob has none. Critters and Companions attaches a behaviour map to every entity in the game and walks it from Mob tick, Mob aiStep and LivingEntity travel, and its models ask for a behaviour by class every frame. Result is identical.")
+                .define("fastBehaviourLookup", true), v -> crittersandcompanionsFastBehaviourLookup = v);
+        builder.pop();
+
+        builder.comment("Cucumber Library patches.").push("cucumber");
+        gate(builder
+                .comment("Look for a player within sixty four blocks before serialising a block entity, not after. Cucumber's dispatch helper writes the whole tile, inventory NBT and all, into a fresh update packet and only then asks whether anyone is close enough to receive it, and every Mystical Agriculture machine calls it at the end of every tick it changed, which for a running machine is every tick. Also swaps the Math.hypot distance test for the squared distance. Result is identical.")
+                .define("leanTileDispatch", true), v -> cucumberLeanTileDispatch = v);
+        gate(builder
+                .comment("Ask whether an item has any tags instead of building the full lists, when you are not holding CTRL. With advanced tooltips on, stock collects every block tag, every item tag and every fluid tag, running a fluid handler capability lookup and a sorted distinct pass over them, once per hovered item per frame, and then throws all of it away to print 'Hold CTRL for tags'. Result is identical.")
+                .define("leanTagTooltip", true), v -> cucumberLeanTagTooltip = v);
+        builder.pop();
+
+        builder.comment("Mystical Agriculture patches.").push("mysticalagriculture");
+        gate(builder
+                .comment("Read augments off a tinkerable with interned slot keys and a remembered id lookup. Stock builds the string 'Augment-' plus the slot number twice per slot, parses a fresh ResourceLocation for every augment it finds and allocates five lists for one set of armour, and it does that from inventoryTick on all twelve essence tools, from onArmorTick on all four armour pieces and from the armour augment tick handler, on both sides. Result is identical.")
+                .define("leanAugmentLookup", true), v -> mysticalagricultureLeanAugmentLookup = v);
+        gate(builder
+                .comment("Walk the augment ability cache with a plain loop and only build the player key once something is actually cached. Stock concatenates the player name and side into a fresh string and runs a stream, a filter, a map and a collector over the whole cache for every player every tick on both sides, even when nobody in the world has an augment equipped. Result is identical.")
+                .define("leanAbilityCache", true), v -> mysticalagricultureLeanAbilityCache = v);
+        gate(builder
+                .comment("Skip the Soul Extractor's recipe lookup while its input slot is empty. Every other machine in the mod checks its input first, this one does not, so an idle extractor runs a full linear scan of every soul extraction recipe every tick and allocates an inventory wrapper for each one. An empty input cannot match any recipe, so the result is identical.")
+                .define("skipIdleSoulExtractor", true), v -> mysticalagricultureSkipIdleSoulExtractor = v);
+        gate(builder
+                .comment("Remember a crop's translation key instead of rebuilding it with String.format on every name lookup. The mystical seed and essence items, roughly a hundred of them, resolve their name and their description id through it, so it runs once per hovered item per frame and again whenever a recipe viewer indexes or searches names. Result is identical.")
+                .define("memoCropNameKey", true), v -> mysticalagricultureMemoCropNameKey = v);
         builder.pop();
 
         builder.comment("Skarrier Mobs patches.").push("skarriermobs");

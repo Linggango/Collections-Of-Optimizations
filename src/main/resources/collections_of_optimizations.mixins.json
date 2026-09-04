@@ -195,7 +195,25 @@
     "summonity.MixinPolychromicNecklaceItem",
     "summonity.MixinConductiveBatteryItem",
     "summonity.MixinModNetworkSlotSync",
-    "summonity.MixinCopperDroneModifierIds"
+    "summonity.MixinCopperDroneModifierIds",
+    "cnc.MixinCncEncounterProcedures",
+    "cnc.MixinCncEntityAnimationFactory",
+    "cnc.MixinCncEntityDimensions",
+    "cnc.MixinCncCaribouDashDamage",
+    "cnc.MixinCncSasquatchTexture",
+    "cnc.MixinCncSasquatchWoodKnock",
+    "crittersandcompanions.MixinCacEntityTracking",
+    "crittersandcompanions.MixinCacRedPandaAvoidGoal",
+    "crittersandcompanions.MixinCacPlayerHandler",
+    "crittersandcompanions.MixinPlayerCacNecklace",
+    "crittersandcompanions.MixinCacPearlNecklace",
+    "crittersandcompanions.MixinCacCritterItemScan",
+    "crittersandcompanions.MixinCacBehaviours",
+    "cucumber.MixinCucumberTileDispatch",
+    "mysticalagriculture.MixinMaAugmentUtils",
+    "mysticalagriculture.MixinMaAbilityCache",
+    "mysticalagriculture.MixinMaSoulExtractor",
+    "mysticalagriculture.MixinMaCrop"
   ],
   "client": [
     "distanthorizons.DhTintGetterBiomeHolderAccessor",
@@ -212,7 +230,6 @@
     "vanilla.MixinKeyframeAnimations",
     "createsolar.MixinCreateSolarClientIntegration",
     "xaeroworldmap.MixinMapProcessorFrameWait",
-    "xaeroworldmap.MixinMapProcessorTickThrottle",
     "vanilla.MixinCameraFluidFog",
     "vanilla.BufferSourceFixedBuffersAccessor",
     "alexscaves.MixinAlexsCavesShakeScan",
@@ -288,7 +305,12 @@
     "photon.MixinTileParticle",
     "photon.MixinTrailTailArray",
     "photon.MixinBlockEffect",
-    "copycats.MixinCopycatModelCorePrepare"
+    "copycats.MixinCopycatModelCorePrepare",
+    "cnc.MixinCncFogColorSetup",
+    "cnc.MixinCncFogDistanceSetup",
+    "cnc.MixinCncSobbingShaderProcedure",
+    "crittersandcompanions.MixinCacSilkLeashRenderer",
+    "cucumber.MixinCucumberTagTooltip"
   ],
   "injectors": {
     "defaultRequire": 0

@@ -120,7 +120,11 @@ public class CoOMixinPlugin implements IMixinConfigPlugin {
             Map.entry("biolith", "biolith"),
             Map.entry("skarriermobs", "skarrier_mobs"),
             Map.entry("createsolar", "createsolar"),
-            Map.entry("summonity", "summonity")
+            Map.entry("summonity", "summonity"),
+            Map.entry("cnc", "cnc"),
+            Map.entry("crittersandcompanions", "crittersandcompanions"),
+            Map.entry("cucumber", "cucumber"),
+            Map.entry("mysticalagriculture", "mysticalagriculture")
     );
 
     private static final Map<String, Integer> GROUP_MIN_MAJOR = Map.of(

@@ -1,5 +1,6 @@
 package com.misanthropy.collections_of_optimizations;
 
+import com.misanthropy.collections_of_optimizations.core.CacRedPandaTracker;
 import com.misanthropy.collections_of_optimizations.core.CameraShakeScanCache;
 import com.misanthropy.collections_of_optimizations.core.CoOEmbeddiumOptions;
 import com.misanthropy.collections_of_optimizations.core.ClientTickStamp;
@@ -48,6 +49,10 @@ public class Collections_of_optimizations {
 
         if (ModList.get().isLoaded("summonity")) {
             SummonityMinionCache.register();
+        }
+
+        if (ModList.get().isLoaded("crittersandcompanions")) {
+            CacRedPandaTracker.register();
         }
 
         if (FMLEnvironment.dist == Dist.CLIENT && ModList.get().isLoaded("embeddium")) {
